@@ -2,6 +2,8 @@
 //
 
 #include <iostream>
+#include <thread>
+#include <mutex>
 #include <random>
 
 
@@ -10,7 +12,18 @@ int main()
 	std::random_device rnd;
 	std::mt19937 mt(rnd());
 	std::uniform_int_distribution<> rand1000(0, 999);
-	unsigned long long alNum = 0;
+
+	std::mutex lock_;
+	std::mutex mtlock_;
+	std::thread thr1;
+	std::thread thr2;
+	std::thread thr3;
+	std::thread thr4;
+	std::thread thr5;
+
+	std::cout << "諭吉溶かし中";
+
+	unsigned long long allNum = 0;
 
 	auto kantotuFunc = [&]() {
 		int cnt = 0;
@@ -22,10 +35,12 @@ int main()
 			for (int i = 0; i < 10; i++)
 			{
 				juelCnt += 150;
-				if (rand1000(mt) < 5)
 				{
-					//std::cout << "メジロマックイーン当たり！！" << std::endl;
-					cnt++;
+					if (rand1000(mt) < 5)
+					{
+						//std::cout << "メジロマックイーン当たり！！" << std::endl;
+						cnt++;
+					}
 				}
 			}
 
@@ -37,17 +52,38 @@ int main()
 				//std::cout << "メジロマックイーン天井…" << std::endl;
 			}
 		}
-
-		//std::cout << "メジロマックイーンを完凸までにかかったジュエル数は" << juelCnt << "です" << std::endl;
 		return juelCnt;
 	};
 
-	for (int i = 0; i < 1000000; i++)
-	{
-		alNum += kantotuFunc();
-	}
+	auto thrFunc = [&]() {
+		unsigned long long tmpNum = 0;
+		for (int i = 0; i < 200000; i++)
+		{
+			tmpNum += kantotuFunc();
+		}
+		{
+			std::lock_guard<std::mutex> lock(lock_);
+			allNum += tmpNum;
+		}
 
-	std::cout << "メジロマックイーンを100万回完凸までにかかったジュエル平均数数は" << alNum / 1000000 << "です" << std::endl;
+	};
+	thr1 = std::thread(thrFunc);
+	thr2 = std::thread(thrFunc);
+	thr3 = std::thread(thrFunc);
+	thr4 = std::thread(thrFunc);
+	thr5 = std::thread(thrFunc);
+
+	thr1.join();
+	thr2.join();
+	thr3.join();
+	thr4.join();
+	thr5.join();
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
+	std::cout << "メジロマックイーンを100万回完凸までにかかったジュエル平均数数は" << allNum / 1000000 << "です" << std::endl;
 
 	system("pause");
 }
