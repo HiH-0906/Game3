@@ -14,7 +14,6 @@ int main()
 	std::uniform_int_distribution<> rand1000(0, 999);
 
 	std::mutex lock_;
-	std::mutex mtlock_;
 	std::thread thr1;
 	std::thread thr2;
 	std::thread thr3;
