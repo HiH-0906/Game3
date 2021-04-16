@@ -53,6 +53,7 @@ bool NumPad::UpDate(const Vector2& pos, bool flag)
 			if(numPadStr_[cursor].first == "C")
 			{
 				inputNum_.clear();
+				inputStr_.clear();
 			}
 			else if (numPadStr_[cursor].first == "BS")
 			{
