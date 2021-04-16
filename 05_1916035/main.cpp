@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};
 
 
-
+	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 16);
 	ChangeWindowMode(true);
 	SetWindowText("–â5_1916035_‹´–{‘å‹P");
@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		for (int x = 0; x < SCREEN_SIZE_X; x++)
 		{
-			DrawPixel(SCREEN_SIZE_X - x, a * (x - SCREEN_SIZE_X / 2) + (b * -DIVISION_X) + SCREEN_SIZE_X / 2, 0xffffff);
+			DrawPixel(SCREEN_SIZE_X - x, a * (x - SCREEN_SIZE_X / 2) + (b * -DIVISION_X) + SCREEN_SIZE_X / 2, 0xff0000);
 		}
 
 		ScreenFlip();
