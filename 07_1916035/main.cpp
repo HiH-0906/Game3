@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 16);
 	ChangeWindowMode(true);
-	SetWindowText(L"–â6_1916035_‹´–{‘å‹P");
+	SetWindowText(L"–â7_1916035_‹´–{‘å‹P");
 	if (DxLib_Init() == -1)
 	{
 		return 0;

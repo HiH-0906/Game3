@@ -24,6 +24,7 @@ HanoiStack hStackB_;
 HanoiStack hStackC_;
 int clickCnt;
 int hCnt_;
+int cnt;
 bool leftold;
 bool leftnow;
 bool rightold;
@@ -122,6 +123,7 @@ void NumUpdate()
 		if (hCnt_ >= 3)
 		{
 			clickCnt = 0;
+			cnt = 0;
 			InitHanoi();
 			hStackA_.second.emplace_back(hStackA_.first);
 			hStackB_.second.emplace_back(hStackB_.first);
@@ -177,11 +179,22 @@ void hUpdate()
 	}
 	if (clickCnt >= hStackA_.second.size()-1)
 	{
-		DrawFormatString(0, 192, 0xffffff, "エンターキーでもう一度", hCnt_);
+		if (cnt / 30 % 2 == 0)
+		{
+			auto tmp = GetFontSize();
+			SetFontSize(tmp * 3);
+			DrawFormatString(380, 300, 0x00ffff, "エンターキーでもう一度", hCnt_);
+			SetFontSize(tmp);
+		}
+		cnt++;
 		if (CheckHitKey(KEY_INPUT_RETURN))
 		{
 			padnit();
 		}
+	}
+	else
+	{
+		cnt = 0;
 	}
 }
 
