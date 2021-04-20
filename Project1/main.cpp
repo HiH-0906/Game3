@@ -1,4 +1,6 @@
 #include <Dxlib.h>
+#include "Class/Shape.h"
+#include "_debug/_DebugDispOut.h"
 
 namespace {
 	constexpr int screenSizeX = 640;
@@ -10,17 +12,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(screenSizeX, screenSizeY, 32);
 	ChangeWindowMode(true);
-	SetWindowText(L"1916035_‹´–{‘å‹P");
+	SetWindowText("1916035_‹´–{‘å‹P");
 
 	if (DxLib_Init() == -1)
 	{
 		return 0;
 	}
 
+	Shape shape;
+
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
+		_dbgStartDraw();
 		ClsDrawScreen();
-		
+		shape.Draw();
+		_dbgDraw();
 		ScreenFlip();
 	}
 
