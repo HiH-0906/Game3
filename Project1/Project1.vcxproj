@@ -150,12 +150,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Class\Shape.cpp" />
+    <ClCompile Include="common\Vector2.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Class\Square.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class\Shape.h" />
+    <ClInclude Include="Class\Square.h" />
+    <ClInclude Include="common\Vector2.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>

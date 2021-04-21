@@ -3,9 +3,16 @@
 
 void Shape::Draw(void)
 {
-	DrawBox(posX_ - (sizeX_ / 2), posY_ - (sizeY_ / 2), posX_ + (sizeX_ / 2), posY_ + (sizeY_ / 2), 0xffffff, true);
+	DrawBox(pos_.x - (size_.x / 2), pos_.y - (size_.y / 2), pos_.x + (size_.x / 2), pos_.y + (size_.y / 2), 0xffffff, true);
 }
 
-Shape::Shape() :posX_(320), posY_(240), sizeX_(50), sizeY_(50)
+Shape::Shape(const int& posX, const int& posY, const int& sizeX, const int sizeY) :
+	pos_(posX,posY), size_(sizeX,sizeY)
 {
+}
+
+Shape::Shape(const Vector2& pos, const Vector2& size)
+{
+	pos_ = pos;
+	size_ = size;
 }
