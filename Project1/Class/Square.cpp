@@ -22,7 +22,5 @@ void Square::Draw(const float& rate)
 
 void Square::Draw(const float& rate, const Vector2& offSet)
 {
-	const auto tmpPos = Vector2{ pos_.x + offSet.x,pos_.y + offSet.y };
-	const auto tmpSize = Vector2{ size_.x * static_cast<int>(rate),size_.y * static_cast<int>(rate) };
-	DrawBox(tmpPos.x - (tmpSize.x / 2), tmpPos.y - (tmpSize.y / 2), tmpPos.x + (tmpSize.x / 2), tmpPos.y + (tmpSize.y / 2), 0xff0000, true);
+
 }
