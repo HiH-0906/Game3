@@ -87,11 +87,13 @@ Vector2Temple<T> Vector2Temple<T>::operator-() const
 	return Vector2Temple(-this->x, -this->y);
 }
 
+
 template<class T>
 inline Vector2Temple<T>::operator Vector2Temple<float>()
 {
-	return Vector2Flt(static_cast<float>(x), static_cast<float>(y));
+	return Vector2Temple<float>(static_cast<float>(x), static_cast<float>(y));
 }
+
 
 template <class T>
 Vector2Temple<T>& Vector2Temple<T>::operator+=(const T u)
