@@ -22,6 +22,8 @@ public:
 	Vector2Temple operator + ()const;
 	Vector2Temple operator - ()const;
 
+	explicit operator Vector2Temple<float>();
+
 	Vector2Temple& operator += (const T u);
 
 	// ”äŠr‰‰ŽZŽq

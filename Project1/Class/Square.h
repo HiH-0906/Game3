@@ -10,7 +10,7 @@ public:
 
 	void Draw(void)override final;
 	void Draw(const float& rate)override final;
-	void Draw(const float& rate,const Vector2& offSet)override final;
+	void Draw(const float& rate, Vector2 offSet)override final;
 	
 private:
 

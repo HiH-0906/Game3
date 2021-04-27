@@ -1,3 +1,4 @@
+#include "..\Vector2.h"
 
 template <class T>
 Vector2Temple<T>::Vector2Temple()
@@ -84,6 +85,12 @@ template <class T>
 Vector2Temple<T> Vector2Temple<T>::operator-() const
 {
 	return Vector2Temple(-this->x, -this->y);
+}
+
+template<class T>
+inline Vector2Temple<T>::operator Vector2Temple<float>()
+{
+	return Vector2Flt(static_cast<float>(x), static_cast<float>(y));
 }
 
 template <class T>

@@ -9,7 +9,7 @@ public:
 
 	virtual void Draw(void) = 0;
 	virtual void Draw(const float& rate) = 0;
-	virtual void Draw(const float& rate, const Vector2& offSet) = 0;
+	virtual void Draw(const float& rate,  Vector2 offSet) = 0;
 
 	Vector2 pos_;
 	Vector2 size_;
