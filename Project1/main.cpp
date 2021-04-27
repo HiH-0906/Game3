@@ -7,8 +7,6 @@ namespace
 {
 	constexpr int screenSizeX = 640;
 	constexpr int screenSizeY = 480;
-	int mx = 0;
-	int my = 0;
 }
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -25,29 +23,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 
 	_dbgSetup(screenSizeX, screenSizeY, 255);
 
-	Shape* shape1;
-	shape1 = new Square(screenSizeX / 2, screenSizeY / 2, 100, 100);
-	
-	Shape* shape2;
-	shape2 = new Shape(screenSizeX / 2, screenSizeY / 2, 100, 100);
-	//
-	//Shape* shape3;
-	//shape3 = new Square((screenSizeX / 4) * 3, screenSizeY / 2, 50, 50);
-
+	Shape* shape1 = new Square(screenSizeX / 2, screenSizeY / 2, 100, 100, 0xff0000);
 
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
 		_dbgStartDraw();
 		ClsDrawScreen();
-		shape1->Draw(2.0f, Vector2{ 25,25 });
-		shape2->Shape::Draw(2.0f, Vector2{ 0,0 });
-		/*shape2->Draw();
-		shape3->Shape::Draw();*/
+
+		shape1->Draw(2.0f, { 25,25 });
 
 		_dbgDraw();
 		ScreenFlip();
 	}
-	delete shape1;
 	DxLib_End();
 
 	return 1;
