@@ -20,7 +20,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	{
 		return 0;
 	}
-
+	
 	_dbgSetup(screenSizeX, screenSizeY, 255);
 
 	Shape* shape1 = new Square(screenSizeX / 2, screenSizeY / 2, 100, 100, 0xff0000);

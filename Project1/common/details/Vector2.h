@@ -1,4 +1,7 @@
+#include <cassert>
+#include <numeric>
 #include "..\Vector2.h"
+
 
 template <class T>
 Vector2Temple<T>::Vector2Temple()
@@ -23,7 +26,7 @@ Vector2Temple<T>&Vector2Temple<T>::operator=(const Vector2Temple<T>& vec)
 {
 	x = vec.x;
 	y = vec.y;
-	return (*this);
+	return *this;
 }
 template <class T>
 T& Vector2Temple<T>::operator[](int num)
@@ -39,6 +42,7 @@ T& Vector2Temple<T>::operator[](int num)
 	else
 	{
 		// ‘z’è‚µ‚Ä‚¢‚È‚¢“Y‚¦š‚ª—ˆ‚½ê‡‚Æ‚è‚ ‚¦‚¸x‚ğ‚©‚¦‚·
+		assert(!"‘z’è‚µ‚Ä‚¢‚È‚¢“Y‚¦šFVector2Temple");
 		return x;
 	}
 }
@@ -59,19 +63,26 @@ Vector2Temple<T>& Vector2Temple<T>::operator-=(const Vector2Temple<T>& vec)
 	return *this;
 }
 
-template <class T>
-Vector2Temple<T>& Vector2Temple<T>::operator*=(T k)
+template<class T>
+Vector2Temple<T>& Vector2Temple<T>::operator*=(const Vector2Temple& vec)
 {
-	x *= k;
-	y *= k;
+	x *= vec.x;
+	y *= vec.y;
 	return *this;
 }
 
-template <class T>
-Vector2Temple<T>& Vector2Temple<T>::operator/=(T k)
+template<class T>
+Vector2Temple<T>& Vector2Temple<T>::operator/=(const Vector2Temple& vec)
 {
-	x /= k;
-	y /= k;
+	if (vec.x == 0 || vec.y == 0)
+	{
+		assert(!"0œZ Œ^‚ÌÅ‘å’l‚ğ•Ô‚µ‚Ü‚·FVector2Temple");
+		x = std::numeric_limits<T>::max();
+		y = std::numeric_limits<T>::max();
+		return *this;
+	}
+	x /= vec.x;
+	y /= vec.y;
 	return *this;
 }
 
@@ -88,13 +99,6 @@ Vector2Temple<T> Vector2Temple<T>::operator-() const
 }
 
 
-template<class T>
-inline Vector2Temple<T>::operator Vector2Temple<float>()
-{
-	return Vector2Temple<float>(static_cast<float>(x), static_cast<float>(y));
-}
-
-
 template <class T>
 Vector2Temple<T>& Vector2Temple<T>::operator+=(const T u)
 {
@@ -102,6 +106,44 @@ Vector2Temple<T>& Vector2Temple<T>::operator+=(const T u)
 	this->y += u;
 	return *this;
 }
+template<class T>
+Vector2Temple<T>& Vector2Temple<T>::operator-=(const T u)
+{
+	this->x -= u;
+	this->y -= u;
+	return *this;
+}
+template <class T>
+Vector2Temple<T>& Vector2Temple<T>::operator*=(const T k)
+{
+	x *= k;
+	y *= k;
+	return *this;
+}
+
+template <class T>
+Vector2Temple<T>& Vector2Temple<T>::operator/=(const T k)
+{
+	if (k == 0)
+	{
+		assert(!"0œZ Œ^‚ÌÅ‘å’l‚ğ•Ô‚µ‚Ü‚·FVector2Temple");
+		x = std::numeric_limits<T>::max();
+		y = std::numeric_limits<T>::max();
+		return *this;
+	}
+	x /= k;
+	y /= k;
+	return *this;
+}
+
+template<class T>
+Vector2Temple<int> Vector2Temple<T>::operator%=(const Vector2Temple& vec)
+{
+	Vector2Temple<int> intthis = static_cast<Vector2Temple<int>>(*this);
+	Vector2Temple<int> intvec = static_cast<Vector2Temple<int>>(vec);
+	return Vector2Temple<int>(intthis.x % intvec.x, intthis.y % intvec.y);
+}
+
 template <class T>
 bool Vector2Temple<T>::operator==(const Vector2Temple<T>& vec) const
 {
@@ -150,12 +192,14 @@ Vector2Temple<T> operator*(const Vector2Temple<T>& vec, T u)
 template <class T>
 Vector2Temple<T> operator/(const Vector2Temple<T>& vec, T u)
 {
+	if (vec.x == 0 || vec.y == 0)
+	{
+		assert(!"0œZ Œ^‚ÌÅ‘å’l‚ğ•Ô‚µ‚Ü‚·FVector2Temple");
+		vec.x = std::numeric_limits<T>::max();
+		vec.y = std::numeric_limits<T>::max();
+		return vec;
+	}
 	return Vector2Temple<T>(vec.x / u, vec.y / u);
-}
-template <class T>
-Vector2Temple<T> operator%(const Vector2Temple<T>& vec, T u)
-{
-	return Vector2Temple<T>(vec.x % u, vec.y % u);
 }
 template <class T>
 Vector2Temple<T> operator*(T u, const Vector2Temple<T>& vec)
@@ -180,10 +224,23 @@ Vector2Temple<T> operator*(const Vector2Temple<T>& veca, const Vector2Temple<T>&
 template <class T>
 Vector2Temple<T> operator/(const Vector2Temple<T>& veca, const Vector2Temple<T>& vecb)
 {
+	if (vecb.x == 0 || vecb.y == 0)
+	{
+		assert(!"0œZ Œ^‚ÌÅ‘å’l‚ğ•Ô‚µ‚Ü‚·FVector2Temple");
+		return  Vector2Temple<T>(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+	}
 	return Vector2Temple<T>(veca.x / vecb.x, veca.y / vecb.y);
 }
 template <class T>
-Vector2Temple<T> operator%(const Vector2Temple<T>& veca, const Vector2Temple<T>& vecb)
+Vector2Temple<int> operator%(const Vector2Temple<T>& vec, const int u)
 {
-	return Vector2Temple<T>(veca.x % vecb.x, veca.y % vecb.y);
+	Vector2Temple<int> intvec = static_cast<Vector2Temple<int>>(vec);
+	return Vector2Temple<int>(intvec.x % u, intvec.y % u);
+}
+template <class T>
+Vector2Temple<int> operator%(const Vector2Temple<T>& veca, const Vector2Temple<T>& vecb)
+{
+	Vector2Temple<int> intveca = static_cast<Vector2Temple<int>>(veca);
+	Vector2Temple<int> intvecb = static_cast<Vector2Temple<int>>(vecb);
+	return Vector2Temple<int>(intveca.x % intvecb.x, intveca.y % intvecb.y);
 }

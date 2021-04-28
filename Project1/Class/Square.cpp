@@ -22,10 +22,8 @@ void Square::Draw(const float& rate)
 
 void Square::Draw(const float& rate, Vector2 offSet)
 {
-	auto bbb = ((Vector2Temple<float>)offSet / (Vector2Temple<float>)size_);
 	Vector2 pos = pos_ + offSet;
-	Vector2Flt tmp = { offSet.x / static_cast<float>(size_.x) ,offSet.y / static_cast<float>(size_.y) };
-	pos.x -= static_cast<int>(rate * size_.x * tmp.x);
-	pos.y -= static_cast<int>(rate * size_.x * tmp.y);
+	Vector2Flt tmp = static_cast<Vector2Flt>(offSet) / static_cast<Vector2Flt>(size_);
+	pos -= static_cast<Vector2>(rate * static_cast<Vector2Flt>(size_) * tmp);
 	DrawBox(pos.x, pos.y, pos.x + size_.x * static_cast<int>(rate), pos.y + size_.y * static_cast<int>(rate), col_, true);
 }
