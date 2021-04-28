@@ -23,8 +23,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	
 	_dbgSetup(screenSizeX, screenSizeY, 255);
 
-	Shape* shape1 = new Square(screenSizeX / 2, screenSizeY / 2, 100, 100, 0xff0000);
-	Shape* shape2 = new Square(screenSizeX / 2, screenSizeY / 2, 100, 100, 0xffffff);
+	Shape* shape1 = new Square(screenSizeX / 2.0f, screenSizeY / 2.0f, 100.0f, 100.0f, 0xff0000);
+	Shape* shape2 = new Square(screenSizeX / 2.0f, screenSizeY / 2.0f, 100.0f, 100.0f, 0xffffff);
+
 
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
@@ -35,7 +36,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		DrawLine(0, screenSizeY / 2, screenSizeX, screenSizeY / 2, 0xffffff);
 
 
-		shape1->Draw(2.0f, { 50,50 });
+		shape1->Draw(1.5f, { 50,50 });
 		shape2->Draw(1.0f, { 0,0 });
 
 		_dbgDraw();

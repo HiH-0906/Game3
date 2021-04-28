@@ -5,12 +5,12 @@ class Square :
 	public Shape
 {
 public:
-	Square(const int& posX, const int& posY, const int& sizeX, const int& sizeY,const unsigned int& col);
-	Square(const Vector2& pos, const Vector2& size);
+	Square(const float& posX, const float& posY, const float& sizeX, const float& sizeY, const unsigned int& col);
+	Square(const Vector2Flt& pos, const Vector2Flt& size);
 
 	void Draw(void)override final;
 	void Draw(const float& rate)override final;
-	void Draw(const float& rate, Vector2 offSet)override final;
+	void Draw(const float& rate, Vector2Flt offSet)override final;
 	
 private:
 

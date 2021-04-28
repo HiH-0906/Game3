@@ -4,15 +4,15 @@
 class Shape
 {
 public:
-	Shape(const int& posX,const int& posY,const int& sizeX,const int& sizeY,const unsigned int& col);
-	Shape(const Vector2& pos,const Vector2& size);
+	Shape(const float& posX, const float& posY, const float& sizeX, const float& sizeY, const unsigned int& col);
+	Shape(const Vector2Flt& pos,const Vector2Flt& size);
 
 	virtual void Draw(void) = 0;
 	virtual void Draw(const float& rate) = 0;
-	virtual void Draw(const float& rate,  Vector2 offSet) = 0;
+	virtual void Draw(const float& rate, Vector2Flt offSet) = 0;
 
-	Vector2 pos_;
-	Vector2 size_;
+	Vector2Flt pos_;
+	Vector2Flt size_;
 	int col_;
 
 private:
