@@ -1,3 +1,4 @@
+#include <utility>
 #include <DxLib.h>
 #include "Shape.h"
 
@@ -7,8 +8,7 @@ Shape::Shape(const float& posX, const float& posY, const float& sizeX, const flo
 {
 }
 
-Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size)
+Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col) : 
+	pos_(pos), size_(size), col_(col)
 {
-	pos_ = pos;
-	size_ = size;
 }

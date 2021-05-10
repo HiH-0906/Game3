@@ -1,3 +1,4 @@
+#include <utility>
 #include <DxLib.h>
 #include "Square.h"
 
@@ -6,9 +7,10 @@ Square::Square(const float& posX, const float& posY, const float& sizeX, const f
 {
 }
 
-Square::Square(const Vector2Flt& pos, const Vector2Flt& size) : Shape(pos, size)
+Square::Square(const Vector2Flt&& pos, const Vector2Flt&& size, const unsigned int& col) : Shape(pos, size, col)
 {
 }
+
 
 void Square::Draw(void)
 {
