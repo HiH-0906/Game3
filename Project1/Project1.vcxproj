@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\Circle.cpp" />
     <ClCompile Include="Class\Shape.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Class\Square.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\Circle.h" />
     <ClInclude Include="Class\Shape.h" />
     <ClInclude Include="Class\Square.h" />
     <ClInclude Include="common\details\Vector2.h" />

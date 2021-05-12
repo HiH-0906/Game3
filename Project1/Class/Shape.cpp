@@ -2,13 +2,15 @@
 #include <DxLib.h>
 #include "Shape.h"
 
-
-Shape::Shape(const float& posX, const float& posY, const float& sizeX, const float& sizeY, const unsigned int& col) :
-	pos_(posX, posY), size_(sizeX, sizeY), col_(col)
+Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col, const float& rate, const Vector2Flt& offSet) :
+	pos_(pos), size_(size), col_(col), offSet_(offSet), rate_(rate)
 {
 }
 
-Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col) : 
-	pos_(pos), size_(size), col_(col)
+void Shape::Update(const float& delta)
+{
+}
+
+void Shape::Draw(const float& rate, Vector2Flt offSet)
 {
 }

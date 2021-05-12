@@ -5,8 +5,9 @@ class Square :
 	public Shape
 {
 public:
-	Square(const float& posX, const float& posY, const float& sizeX, const float& sizeY, const unsigned int& col);
-	Square(const Vector2Flt&& pos, const Vector2Flt&& size,const unsigned int& col);
+	Square(const Vector2Flt&& pos, const Vector2Flt&& size, const unsigned int& col, const float& rate = 1.0f, const Vector2Flt& offSet = {});
+
+	void Update(const float& delta)override final;
 
 	void Draw(void)override final;
 	void Draw(const float& rate)override final;
