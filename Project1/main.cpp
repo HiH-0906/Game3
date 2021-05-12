@@ -49,13 +49,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	}
 	
 
-	std::vector<std::unique_ptr<Shape>> objList;
+	std::vector<std::shared_ptr<Shape>> objList;
 
 	objList.reserve(100);
 
-	objList.emplace_back(std::make_unique<Circle>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f ,50.0f }, 0xff0000));
-	objList.emplace_back(std::make_unique<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 100.0f, 100.0f }, 0xffffff));
-	objList.emplace_back(std::make_unique<Square>(Vector2Flt{ 100.0f, 300.0f }, Vector2Flt{ 100.0f, 100.0f }, 0x00ff00));
+	objList.emplace_back(std::make_shared<Circle>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f ,50.0f }, 0xff0000, Vector2Flt{ 1.0f ,1.0f },50.0f));
+	objList.emplace_back(std::make_shared<Circle>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f ,50.0f }, 0xff8800, Vector2Flt{ 0.0f ,-1.0f }, 50.0f));
+	objList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 100.0f, 100.0f }, 0xffffff, Vector2Flt{ 0.0f ,1.0f }, 50.0f));
+	objList.emplace_back(std::make_shared<Square>(Vector2Flt{ 100.0f, 300.0f }, Vector2Flt{ 100.0f, 100.0f }, 0x00ff00, Vector2Flt{ 1.0f ,0.0f }, 50.0f));
 
 	now = std::chrono::system_clock().now();
 	
@@ -65,11 +66,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		now = std::chrono::system_clock().now();
 		ClsDrawScreen();
 
-		float delta = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(now - old).count() / 1000.0f);
+		float delta = static_cast<float>(std::chrono::duration_cast<std::chrono::microseconds>(now - old).count() / 1000000.0f);
 
 		for (const auto& obj : objList)
 		{
-			obj->Update(delta);
+			obj->Update(delta, Vector2{ screenSizeX,screenSizeY });
 		}
 
 		DrawLine(50);

@@ -1,12 +1,14 @@
 #include <DxLib.h>
 #include "Circle.h"
 
-Circle::Circle(const Vector2Flt&& pos, const Vector2Flt&& size, const unsigned int col, const float& rate, const Vector2Flt& offSet) :Shape(pos, size, col, rate, offSet)
+Circle::Circle(const Vector2Flt&& pos, const Vector2Flt&& size, const unsigned int col, const Vector2Flt vec, const float& speed, const float& rate, const Vector2Flt& offSet) :
+	Shape(pos, size, col, vec, speed, rate, offSet)
 {
 }
 
-void Circle::Update(const float& delta)
+void Circle::Update(const float& delta, const Vector2& scrSize)
 {
+	Shape::Update(delta,scrSize);
 }
 
 void Circle::Draw()
@@ -37,4 +39,9 @@ void Circle::Draw(const float& rate, const Vector2Flt offSet)
 	Vector2 tmpSize = static_cast<Vector2>(size_ * rate);
 
 	DrawOval(tmpPos.x, tmpPos.y, tmpSize.x, tmpSize.y, col_, true);
+}
+
+bool Circle::CheckHitWall(const Vector2& scrSize)
+{
+	return !(pos_.x - size_.x<0 || pos_.y - size_.y<0 || pos_.x + size_.x>scrSize.x || pos_.y + size_.y>scrSize.y);
 }
