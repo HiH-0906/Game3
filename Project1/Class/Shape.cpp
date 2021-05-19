@@ -14,7 +14,7 @@ Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& 
 	isDead_ = false;
 }
 
-void Shape::Update(const float& delta, const Vector2& scrSize, std::vector<std::shared_ptr<Shape>>list, std::vector<InstanceData>& instanceData)
+void Shape::Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>& list, std::vector<InstanceData>& instanceData)
 {
 	bool upDown = false;
 	if (!CheckHitWall(scrSize, upDown))
@@ -42,6 +42,11 @@ void Shape::Update(const float& delta, const Vector2& scrSize, std::vector<std::
 	}
 }
 
+void Shape::UpDate(const int& x, const int& y)
+{
+	pos_ = { static_cast<float>(x),static_cast<float>(y) };
+}
+
 void Shape::ScrDraw(const Vector2 offSet)
 {
 	DrawGraph(static_cast<int>(pos_.x) + offSet.x, static_cast<int>(pos_.y) + offSet.y, screen_, true);
@@ -63,7 +68,7 @@ const int& Shape::GetDrawScreen(void)
 	return screen_;
 }
 
-bool Shape::CheckHit(const std::weak_ptr<Shape> shape)
+bool Shape::CheckHit(const std::weak_ptr<Shape>& shape)
 {
 	if (CheckHitDrawSpace(shape))
 	{
@@ -75,7 +80,7 @@ bool Shape::CheckHit(const std::weak_ptr<Shape> shape)
 	return false;
 }
 
-bool Shape::CheckHitDrawSpace(const std::weak_ptr<Shape> shape)
+bool Shape::CheckHitDrawSpace(const std::weak_ptr<Shape>& shape)
 {
 	Vector2 pos = {};
 	Vector2 size = {};
@@ -84,23 +89,92 @@ bool Shape::CheckHitDrawSpace(const std::weak_ptr<Shape> shape)
 	return ((hitPos.x + scrSize_.x > pos.x) && (hitPos.x < pos.x + size.x) && (hitPos.y + scrSize_.y > pos.y) && (hitPos.y < pos.y + size.y));
 }
 
-bool Shape::CheckHitCol(const std::weak_ptr<Shape> shape)
+bool Shape::CheckHitCol(const std::weak_ptr<Shape>& shape)
 {
 	Vector2 pos = {};
 	Vector2 size = {};
 	Vector2 hitPos = static_cast<Vector2>(pos_) + hitOffSet_;
 	shape.lock()->GetDrawSpace(pos, size);
 	return true;
-	int startX = 0;
-	if (pos_.x <= pos.x)
+
+	int offSetX = 0;
+	int offSetY = 0;
+	bool isLeft = false;
+
+	if (pos_.x < pos.x)
 	{
-		startX = 0;
+		offSetX = static_cast<int>(pos_.x + size_.x) - pos.x;
+		isLeft = true;
 	}
 	else
 	{
-		startX = 0;
+		offSetX = pos.x + size.x - static_cast<int>(pos_.x);
+		isLeft = false;
+	}
+	if (pos_.y < pos.y)
+	{
+		offSetY = static_cast<int>(pos_.y + size_.y) - pos.y;
+		isLeft = true;
+	}
+	else
+	{
+		offSetY = pos.y + size.y - static_cast<int>(pos_.y);
+		isLeft = false;
 	}
 }
+
+bool Shape::CheckHitScreen(const std::weak_ptr<Shape>& shape, bool isLeft)
+{
+	auto checkScreen = [](const int& screen, const int& sX, const int& sY, const int& eX, const int& eY, const unsigned int& col)
+	{
+		bool reflag = false;
+		SetDrawScreen(screen);
+		for (int x = sX; x < eX; x++)
+		{
+			for (int y = sY; y < eY; y++)
+			{
+				if (col == GetPixel(x, y))
+				{
+					reflag = true;
+				}
+			}
+		}
+		SetDrawScreen(DX_SCREEN_BACK);
+		return reflag;
+	};
+	bool hit = false;
+	bool opHit = false;
+
+	// Ž©•ªintŒ^î•ñ
+	Vector2 pos = static_cast<Vector2>(pos_);
+	Vector2 size = static_cast<Vector2>(size_);
+	// ‘ŠŽèî•ñ
+	Vector2 opPos = {};
+	Vector2 opSize = {};
+	const int& opScr = shape.lock()->GetDrawScreen();
+	unsigned int opCol = shape.lock()->GetCol();
+
+	shape.lock()->GetDrawSpace(opPos, opSize);
+
+	int offsetX = 0;
+	int offsetY = 0;
+	if (isLeft)
+	{
+		offsetX = pos.x + size.x - opPos.x;
+		offsetY = pos.y + size.y - opPos.y;
+		hit = checkScreen(screen_, size.x - offsetX, size.y - offsetY, size.x, size.y, col_);
+		opHit = checkScreen(opScr, 0, 0, offsetX, offsetY, opCol);
+	}
+	else
+	{
+		offsetX = opPos.x + opSize.x - pos.x;
+		offsetY = opPos.y + opSize.y - pos.y;
+		hit = checkScreen(screen_, 0, 0, offsetX, offsetY, col_);
+		opHit = checkScreen(opScr, opSize.x + opPos.x - offsetX, opSize.y + opPos.y - offsetY, opSize.x, opSize.y, opCol);
+	}
+	return hit && opHit;
+}
+
 
 void Shape::SetIsDead(void)
 {
@@ -115,6 +189,11 @@ bool Shape::GetIsDead(void)
 void Shape::SetCol(const unsigned int& col)
 {
 	col_ = col;
+}
+
+const unsigned int& Shape::GetCol(void) const
+{
+	return col_;
 }
 
 void Shape::RefVec(bool UpDown)

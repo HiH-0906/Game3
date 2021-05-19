@@ -12,7 +12,7 @@ Square::Square(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int
 	screen_ = MakeScreen(scrSize_.x, scrSize_.y ,true);
 }
 
-void Square::Update(const float& delta, const Vector2& scrSize, std::vector<std::shared_ptr<Shape>>list,std::vector<InstanceData>& instanceData)
+void Square::Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>& list,std::vector<InstanceData>& instanceData)
 {
 	Shape::Update(delta, scrSize,list,instanceData);
 }

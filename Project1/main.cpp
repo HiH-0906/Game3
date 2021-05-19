@@ -70,7 +70,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	//shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f ,50.0f }, 0xff0000, Vector2Flt{ 1.0f ,1.0f },100.0f));
 	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 100.0f ,100.0f }, 0xff8800, Vector2Flt{ 0.0f ,-1.0f }, 150.0f));
 	//shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 100.0f, 100.0f }, 0xffffff, Vector2Flt{ 0.4f ,0.6f },200.0f));
-	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ 100.0f, 300.0f }, Vector2Flt{ 100.0f, 100.0f }, 0x00ff00, Vector2Flt{ 1.0f ,0.0f }, 150.0f));
+	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 100.0f, 300.0f }, Vector2Flt{ 50.0f, 50.0f }, 0x00ff00, Vector2Flt{ 1.0f ,0.0f }, 150.0f));
 
 	now = std::chrono::system_clock().now();
 
@@ -83,11 +83,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		ClsDrawScreen();
 
 		float delta = static_cast<float>(std::chrono::duration_cast<std::chrono::microseconds>(now - old).count() / 1000000.0f);
-
+		bool test = false;
+		int x, y;
+		GetMousePoint(&x, &y);
 		for (const auto& shape : shapeList)
 		{
-			shape->Update(delta, Vector2{ screenSizeX,screenSizeY }, shapeList,instanceData);
+			shape->Update(0.0, Vector2{ screenSizeX,screenSizeY }, shapeList,instanceData);
+			if (!test)
+			{
+				shape->UpDate(x, y);
+				test = true;
+			}
 		}
+
+		/*for (auto shape = shapeList.begin(); shape != shapeList.end(); shape++)
+		{
+			(*shape)->Update(delta, Vector2{ screenSizeX,screenSizeY }, shapeList, instanceData);
+		}*/
 
 		DrawLine(50);
 

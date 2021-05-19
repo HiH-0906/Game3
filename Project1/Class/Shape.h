@@ -26,7 +26,9 @@ class Shape
 public:
 	Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col,const Vector2Flt& vec,const float& speed);
 
-	virtual void Update(const float& delta, const Vector2& scrSize, std::vector<std::shared_ptr<Shape>>list, std::vector<InstanceData>& instanceData);
+	virtual void Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>&list, std::vector<InstanceData>& instanceData);
+
+	void UpDate(const int& x, const int& y);
 
 	virtual void Draw(void) = 0;
 	virtual void Draw(const float& rate) = 0;
@@ -36,24 +38,27 @@ public:
 
 	const int& GetDrawScreen(void);
 
-	bool CheckHit(const std::weak_ptr<Shape> shape);
+	bool CheckHit(const std::weak_ptr<Shape>& shape);
 	/// <summary>
 	/// •`‰æ”ÍˆÍ‚ª‚©‚Ô‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	/// </summary>
 	/// <param name="shape">“–‚½‚è”»’è‚µ‚½‚¢‘ŠŽè</param>
 	/// <returns>true:“–‚½‚è</returns>
-	bool CheckHitDrawSpace(const std::weak_ptr<Shape> shape);
+	bool CheckHitDrawSpace(const std::weak_ptr<Shape>& shape);
 	/// <summary>
 	/// •`‰æ”ÍˆÍ‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚éShape‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	/// </summary>
 	/// <param name="shape">“–‚½‚è”»’è‚µ‚½‚¢‘ŠŽè</param>
 	/// <returns>true:“–‚½‚è</returns>
-	bool CheckHitCol(const std::weak_ptr<Shape> shape);
+	bool CheckHitCol(const std::weak_ptr<Shape>& shape);
+
+	bool CheckHitScreen(const std::weak_ptr<Shape>& shape,bool isLeft);
 
 	void SetIsDead(void);
 	bool GetIsDead(void);
 
 	void SetCol(const unsigned int& col);
+	const unsigned int& GetCol(void)const;
 
 	void RefVec(bool UpDown);
 

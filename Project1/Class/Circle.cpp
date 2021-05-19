@@ -12,7 +12,7 @@ Circle::Circle(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int
 	hitOffSet_ = Vector2{ -scrSize_.x / 2,-scrSize_.y / 2 };
 }
 
-void Circle::Update(const float& delta, const Vector2& scrSize, std::vector<std::shared_ptr<Shape>>list, std::vector<InstanceData>& instanceData)
+void Circle::Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>& list, std::vector<InstanceData>& instanceData)
 {
 	Shape::Update(delta,scrSize,list,instanceData);
 }
