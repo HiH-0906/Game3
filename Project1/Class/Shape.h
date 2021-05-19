@@ -52,7 +52,7 @@ public:
 	/// <returns>true:“–‚½‚è</returns>
 	bool CheckHitCol(const std::weak_ptr<Shape>& shape);
 
-	bool CheckHitScreen(const std::weak_ptr<Shape>& shape,bool isLeft);
+	bool CheckHitScreen(const std::weak_ptr<Shape>& shape,bool isLeft,bool isUP);
 
 	void SetIsDead(void);
 	bool GetIsDead(void);

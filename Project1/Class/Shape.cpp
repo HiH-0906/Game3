@@ -1,5 +1,6 @@
 #include <cmath>
 #include <utility>
+#include <ostream>
 #include <DxLib.h>
 #include "Shape.h"
 
@@ -95,59 +96,60 @@ bool Shape::CheckHitCol(const std::weak_ptr<Shape>& shape)
 	Vector2 size = {};
 	Vector2 hitPos = static_cast<Vector2>(pos_) + hitOffSet_;
 	shape.lock()->GetDrawSpace(pos, size);
-	return true;
 
-	int offSetX = 0;
-	int offSetY = 0;
 	bool isLeft = false;
+	bool isUP = false;
 
-	if (pos_.x < pos.x)
+	if (pos_.x + hitOffSet_.x < pos.x)
 	{
-		offSetX = static_cast<int>(pos_.x + size_.x) - pos.x;
 		isLeft = true;
 	}
 	else
 	{
-		offSetX = pos.x + size.x - static_cast<int>(pos_.x);
 		isLeft = false;
 	}
-	if (pos_.y < pos.y)
+	if (pos_.y + hitOffSet_.y < pos.y)
 	{
-		offSetY = static_cast<int>(pos_.y + size_.y) - pos.y;
-		isLeft = true;
+		isUP = true;
 	}
 	else
 	{
-		offSetY = pos.y + size.y - static_cast<int>(pos_.y);
-		isLeft = false;
+		isUP = false;
 	}
+	return CheckHitScreen(shape,isLeft,isUP);
 }
 
-bool Shape::CheckHitScreen(const std::weak_ptr<Shape>& shape, bool isLeft)
+bool Shape::CheckHitScreen(const std::weak_ptr<Shape>& shape, bool isLeft, bool isUP)
 {
 	auto checkScreen = [](const int& screen, const int& sX, const int& sY, const int& eX, const int& eY, const unsigned int& col)
 	{
-		bool reflag = false;
+		if ((eX < 0) || (eY < 0))
+		{
+			return false;
+		}
+		int checkCol = col + 0xff000000;
 		SetDrawScreen(screen);
 		for (int x = sX; x < eX; x++)
 		{
 			for (int y = sY; y < eY; y++)
 			{
-				if (col == GetPixel(x, y))
+				auto aaa = GetPixel(x, y);
+				if (checkCol == GetPixel(x, y))
 				{
-					reflag = true;
+					SetDrawScreen(DX_SCREEN_BACK);
+					return true;
 				}
 			}
 		}
 		SetDrawScreen(DX_SCREEN_BACK);
-		return reflag;
+		return false;
 	};
 	bool hit = false;
 	bool opHit = false;
 
 	// é©ï™intå^èÓïÒ
-	Vector2 pos = static_cast<Vector2>(pos_);
-	Vector2 size = static_cast<Vector2>(size_);
+	Vector2 pos = static_cast<Vector2>(pos_) + hitOffSet_;
+	Vector2 size = static_cast<Vector2>(scrSize_);
 	// ëäéËèÓïÒ
 	Vector2 opPos = {};
 	Vector2 opSize = {};
@@ -161,16 +163,48 @@ bool Shape::CheckHitScreen(const std::weak_ptr<Shape>& shape, bool isLeft)
 	if (isLeft)
 	{
 		offsetX = pos.x + size.x - opPos.x;
-		offsetY = pos.y + size.y - opPos.y;
-		hit = checkScreen(screen_, size.x - offsetX, size.y - offsetY, size.x, size.y, col_);
-		opHit = checkScreen(opScr, 0, 0, offsetX, offsetY, opCol);
+		
+		if (isUP)
+		{
+			OutputDebugString("ç∂ è„\n");
+			offsetY = pos.y + size.y - opPos.y;
+			hit = checkScreen(screen_, size.x - offsetX, size.y - offsetY, size.x, size.y, col_);
+			opHit = checkScreen(opScr, 0, 0, offsetX, offsetY, opCol);
+			if (hit && opHit)
+			{
+				auto aaa = 0;
+			}
+		}
+		else
+		{
+			OutputDebugString("ç∂ â∫\n");
+			offsetY = opPos.y + opSize.y - pos.y;
+			hit = checkScreen(screen_, size.x - offsetX, 0, size.x, offsetY, col_);
+			opHit = checkScreen(opScr, 0, opSize.y - offsetY, offsetX, size.y, opCol);
+		}
 	}
 	else
 	{
 		offsetX = opPos.x + opSize.x - pos.x;
-		offsetY = opPos.y + opSize.y - pos.y;
-		hit = checkScreen(screen_, 0, 0, offsetX, offsetY, col_);
-		opHit = checkScreen(opScr, opSize.x + opPos.x - offsetX, opSize.y + opPos.y - offsetY, opSize.x, opSize.y, opCol);
+		if (isUP)
+		{
+			OutputDebugString("âE è„\n");
+			offsetY = pos.y + size.y - opPos.y;
+			hit = checkScreen(screen_, 0, 0, offsetX, offsetY, col_);
+			opHit = checkScreen(opScr, opSize.x + opPos.x - offsetX, opSize.y - offsetY, opSize.x, opSize.y, opCol);
+			
+		}
+		else
+		{
+			OutputDebugString("âE â∫\n");
+			offsetY = opPos.y + opSize.y - pos.y;
+			hit = checkScreen(screen_, 0, size.y - offsetY, offsetX, size.y, col_);
+			opHit = checkScreen(opScr, opSize.x - offsetX, 0, opSize.x, offsetY, opCol);
+			if (hit && opHit)
+			{
+				auto aaa = 0;
+			}
+		}
 	}
 	return hit && opHit;
 }

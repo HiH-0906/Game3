@@ -68,9 +68,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	shapeList.reserve(100);
 
 	//shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f ,50.0f }, 0xff0000, Vector2Flt{ 1.0f ,1.0f },100.0f));
-	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 100.0f ,100.0f }, 0xff8800, Vector2Flt{ 0.0f ,-1.0f }, 150.0f));
+	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 0.0f, 0.0f }, Vector2Flt{ 50.0f ,50.0f }, 0xff0000, Vector2Flt{ 0.0f ,-1.0f }, 150.0f));
 	//shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 100.0f, 100.0f }, 0xffffff, Vector2Flt{ 0.4f ,0.6f },200.0f));
-	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 100.0f, 300.0f }, Vector2Flt{ 50.0f, 50.0f }, 0x00ff00, Vector2Flt{ 1.0f ,0.0f }, 150.0f));
+	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f, 50.0f }, 0xff0000, Vector2Flt{ 1.0f ,0.0f }, 150.0f));
 
 	now = std::chrono::system_clock().now();
 
