@@ -6,8 +6,8 @@ Circle::Circle(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int
 	Shape(pos, size, col, vec, speed)
 {
 	tag_ = ShapeTag::Circle;
-	// ぴったりサイズだと端がきれいに映らないので余裕を持たせて+10
-	scrSize_ = Vector2{ static_cast<int>(std::ceil(size_.x)) * 2 + 10, static_cast<int>(std::ceil(size_.y)) * 2 + 10 };
+	// ぴったりサイズだと端がきれいに映らないので余裕を持たせて+1
+	scrSize_ = Vector2{ static_cast<int>(std::ceil(size_.x)) * 2 +1, static_cast<int>(std::ceil(size_.y)) * 2 +1};
 	screen_ = MakeScreen(scrSize_.x, scrSize_.y, true);
 	hitOffSet_ = Vector2{ -scrSize_.x / 2,-scrSize_.y / 2 };
 }

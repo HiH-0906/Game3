@@ -7,7 +7,9 @@ enum class ShapeTag
 {
 	NON,
 	Squeare,
-	Circle
+	Circle,
+	Triangle,
+	Carrot
 };
 
 
@@ -44,15 +46,15 @@ public:
 	/// </summary>
 	/// <param name="shape">“–‚½‚è”»’è‚µ‚½‚¢‘ŠŽè</param>
 	/// <returns>true:“–‚½‚è</returns>
-	bool CheckHitDrawSpace(const std::weak_ptr<Shape>& shape);
+	virtual bool CheckHitDrawSpace(const std::weak_ptr<Shape>& shape);
 	/// <summary>
 	/// •`‰æ”ÍˆÍ‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚éShape‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	/// </summary>
 	/// <param name="shape">“–‚½‚è”»’è‚µ‚½‚¢‘ŠŽè</param>
 	/// <returns>true:“–‚½‚è</returns>
-	bool CheckHitCol(const std::weak_ptr<Shape>& shape);
+	virtual bool CheckHitCol(const std::weak_ptr<Shape>& shape);
 
-	bool CheckHitScreen(const std::weak_ptr<Shape>& shape,bool isLeft,bool isUP);
+	virtual bool CheckHitScreen(const std::weak_ptr<Shape>& shape,bool isLeft,bool isUP);
 
 	void SetIsDead(void);
 	bool GetIsDead(void);
@@ -76,6 +78,7 @@ protected:
 	bool isDead_;
 	float speed_;
 	unsigned int col_;
+	unsigned int defCol_;
 	int screen_;
 
 	ShapeTag tag_;

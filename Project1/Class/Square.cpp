@@ -7,8 +7,7 @@ Square::Square(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int
 	Shape(pos, size, col, vec, speed)
 {
 	tag_ = ShapeTag::Circle;
-	// ぴったりサイズだと端がきれいに映らないので余裕を持たせて+10
-	scrSize_ = Vector2{ static_cast<int>(std::ceil(size_.x)) + 10, static_cast<int>(std::ceil(size_.y)) + 10 };
+	scrSize_ = Vector2{ static_cast<int>(std::ceil(size_.x)), static_cast<int>(std::ceil(size_.y))};
 	screen_ = MakeScreen(scrSize_.x, scrSize_.y ,true);
 }
 

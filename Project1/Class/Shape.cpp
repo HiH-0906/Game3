@@ -5,7 +5,7 @@
 #include "Shape.h"
 
 Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col, const Vector2Flt& vec, const float& speed) :
-	pos_(pos), size_(size), col_(col), vec_(vec), speed_(speed)
+	pos_(pos), size_(size), col_(col), vec_(vec), speed_(speed),defCol_(col)
 {
 	tag_ = ShapeTag::NON;
 	screen_ = -1;
@@ -39,7 +39,7 @@ void Shape::Update(const float& delta, const Vector2& scrSize, const std::vector
 	}
 	else
 	{
-		col_ = 0xff0000;
+		col_ = defCol_;
 	}
 }
 
@@ -92,6 +92,7 @@ bool Shape::CheckHitDrawSpace(const std::weak_ptr<Shape>& shape)
 
 bool Shape::CheckHitCol(const std::weak_ptr<Shape>& shape)
 {
+	return true;
 	Vector2 pos = {};
 	Vector2 size = {};
 	Vector2 hitPos = static_cast<Vector2>(pos_) + hitOffSet_;
