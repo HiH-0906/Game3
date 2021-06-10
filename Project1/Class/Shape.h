@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <map>
+#include <functional>
 #include "../common/Vector2.h"
 
 enum class ShapeTag
@@ -22,64 +24,66 @@ struct InstanceData
 	Vector2Flt vec = {};
 	float speed = 0.0f;
 };
+class Collision;
 
 class Shape
 {
 public:
 	Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col,const Vector2Flt& vec,const float& speed);
 
-	virtual void Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>&list, std::vector<InstanceData>& instanceData);
+	void SetCollisionOwner(std::shared_ptr<Shape> owner);
 
-	void UpDate(const int& x, const int& y);
+	void HitUpdate(const float& delta,const std::vector<std::shared_ptr<Shape>>& list);
+
+	virtual void Update(const float& delta, const Vector2& scrSize);
+
+	virtual void Update(const int& x, const int& y);
+
+	virtual void HitAction(std::shared_ptr<Shape> shape) = 0;
 
 	virtual void Draw(void) = 0;
 	virtual void Draw(const float& rate) = 0;
 	virtual void Draw(const float& rate, Vector2Flt offSet);
-	virtual void GetDrawSpace(Vector2& pos, Vector2& size);
-	virtual bool CheckHitWall(const Vector2& scrSize, bool& UpDown) = 0;
-
-	const int& GetDrawScreen(void);
+	bool CheckHitWall(const Vector2& scrSize, bool& UpDown);
 
 	bool CheckHit(const std::weak_ptr<Shape>& shape);
-	/// <summary>
-	/// •`‰æ”ÍˆÍ‚ª‚©‚Ô‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
-	/// </summary>
-	/// <param name="shape">“–‚½‚è”»’è‚µ‚½‚¢‘ŠŽè</param>
-	/// <returns>true:“–‚½‚è</returns>
-	virtual bool CheckHitDrawSpace(const std::weak_ptr<Shape>& shape);
-	/// <summary>
-	/// •`‰æ”ÍˆÍ‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚éShape‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
-	/// </summary>
-	/// <param name="shape">“–‚½‚è”»’è‚µ‚½‚¢‘ŠŽè</param>
-	/// <returns>true:“–‚½‚è</returns>
-	virtual bool CheckHitCol(const std::weak_ptr<Shape>& shape);
-
-	virtual bool CheckHitScreen(const std::weak_ptr<Shape>& shape,bool isLeft,bool isUP);
 
 	void SetIsDead(void);
 	bool GetIsDead(void);
 
+
+	const Vector2Flt GetVec(void);
 	void SetCol(const unsigned int& col);
+	void SetVec(const Vector2Flt& vec);
+	void SetSpeed(const float& speed);
+	const float& GetIntervel(void)const;
+	void SetInterval(const float& inter);
 	const unsigned int& GetCol(void)const;
 
+	Vector2Flt& GetPos(void);
+	const Vector2Flt& GetSize(void); 
+
 	void RefVec(bool UpDown);
+	void ReSetVec(void);
 
-	void ScrDraw(const Vector2 offSet);
-
-	void PreparaScreen(void);
+	const ShapeTag& GetTag()const;
 
 protected:
 	Vector2Flt pos_;
 	Vector2Flt size_;
 	Vector2Flt vec_;
-	Vector2 scrSize_;
-	Vector2 hitOffSet_;
+	Vector2Flt defvec_;
+
+	float interval_;
+
+	std::vector<std::shared_ptr<Collision>> colls_;
 
 	bool isDead_;
 	float speed_;
 	unsigned int col_;
 	unsigned int defCol_;
-	int screen_;
+
+	std::vector<std::weak_ptr<Shape>> hitShapes_;
 
 	ShapeTag tag_;
 };

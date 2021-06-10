@@ -1,29 +1,23 @@
 #include <cmath>
 #include <DxLib.h>
 #include "Circle.h"
+#include "Square.h"
+#include "Triangle.h"
+#include "collision/CircleCollision.h"
 
-Circle::Circle(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int col, const Vector2Flt vec, const float& speed) :
-	Shape(pos, size, col, vec, speed)
+Circle::Circle(const Vector2Flt& pos, const float& radius, const unsigned int col, const Vector2Flt vec, const float& speed) :
+	Shape(pos, Vector2Flt{ radius ,radius }, col, vec, speed)
 {
 	tag_ = ShapeTag::Circle;
-	// ぴったりサイズだと端がきれいに映らないので余裕を持たせて+1
-	scrSize_ = Vector2{ static_cast<int>(std::ceil(size_.x)) * 2 +1, static_cast<int>(std::ceil(size_.y)) * 2 +1};
-	screen_ = MakeScreen(scrSize_.x, scrSize_.y, true);
-	hitOffSet_ = Vector2{ -scrSize_.x / 2,-scrSize_.y / 2 };
+	colls_.emplace_back(std::make_shared<CircleCollision>(radius));
 }
 
-void Circle::Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>& list, std::vector<InstanceData>& instanceData)
-{
-	Shape::Update(delta,scrSize,list,instanceData);
-}
 
 void Circle::Draw()
 {
-	PreparaScreen();
+	Vector2 pos = static_cast<Vector2>(pos_);
 	Vector2 size = static_cast<Vector2>(size_);
-	DrawOval(scrSize_.x / 2, scrSize_.y / 2, size.x, size.y, col_,true);
-	SetDrawScreen(DX_SCREEN_BACK);
-	ScrDraw(hitOffSet_);
+	DrawOval(pos.x, pos.y, size.x, size.y, col_, true);
 }
 
 void Circle::Draw(const float& rate)
@@ -43,38 +37,21 @@ void Circle::Draw(const float& rate, const Vector2Flt offSet)
 	DrawOval(tmpPos.x, tmpPos.y, tmpSize.x, tmpSize.y, col_, true);
 }
 
-void Circle::GetDrawSpace(Vector2& pos, Vector2& size)
+const float& Circle::GetRadius(void) const
 {
-	pos = static_cast<Vector2>(pos_) + hitOffSet_;
-	size = static_cast<Vector2>(size_ * 2.0f);
+	return size_.x;
 }
 
-
-bool Circle::CheckHitWall(const Vector2& scrSize, bool& UpDown)
+void Circle::HitAction(std::shared_ptr<Shape> shape)
 {
-	if (pos_.x - size_.x < 0)
+	if (shape->GetTag() == ShapeTag::Squeare)
 	{
-		pos_.x = size_.x;
-		UpDown = false;
+		auto sq = std::dynamic_pointer_cast<Square>(shape);
+		sq->SetSize((sq->GetSize() / 1000.0f) * 1001.0f);
 	}
-	else if (pos_.x + size_.x > scrSize.x)
+	if (shape->GetTag() == ShapeTag::Triangle)
 	{
-		pos_.x = scrSize.x - size_.x;
-		UpDown = false;
+		auto tr = std::dynamic_pointer_cast<Triangle>(shape);
+		tr->SetVec((tr->GetVec() / 100.0f) * 99.0f);
 	}
-	else if (pos_.y - size_.y < 0)
-	{
-		pos_.y = size_.y;
-		UpDown = true;
-	}
-	else if (pos_.y + size_.y > scrSize.y)
-	{
-		pos_.y = scrSize.y - size_.y;
-		UpDown = true;
-	}
-	else
-	{
-		return true;
-	}
-	return false;
 }

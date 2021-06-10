@@ -53,6 +53,11 @@ public:
 	bool operator < (const Vector2Template& vec) const;
 	bool operator >= (const Vector2Template& vec) const;
 	bool operator > (const Vector2Template& vec) const;
+
+	T Magnitude()const;
+	void Nomalize();
+	Vector2Template Nomalized()const;
+
 };
 template <class T>
 Vector2Template<T> operator + (const Vector2Template<T>& vec, T u);
@@ -77,6 +82,12 @@ template <class T>
 Vector2Template<int> operator % (const Vector2Template<T>& vec, const int u);
 template <class T>
 Vector2Template<int> operator % (const Vector2Template<T>& veca, const Vector2Template<T>& vecb);
+
+template <class T>
+T Dot(const Vector2Template<T>& veca, const Vector2Template<T>& vecb);
+
+template <class T>
+T Cross(const Vector2Template<T>& veca, const Vector2Template<T>& vecb);
 
 using Vector2 = Vector2Template<int>;
 using Vector2Dbl = Vector2Template<double>;

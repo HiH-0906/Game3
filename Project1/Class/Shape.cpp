@@ -1,213 +1,88 @@
 #include <cmath>
 #include <utility>
 #include <ostream>
+#include <cassert>
 #include <DxLib.h>
 #include "Shape.h"
+#include "collision/Collision.h"
 
 Shape::Shape(const Vector2Flt& pos, const Vector2Flt& size, const unsigned int& col, const Vector2Flt& vec, const float& speed) :
-	pos_(pos), size_(size), col_(col), vec_(vec), speed_(speed),defCol_(col)
+	pos_(pos), size_(size), col_(col), vec_(vec), speed_(speed), defCol_(col), defvec_(vec)
 {
+	interval_ = 0;
 	tag_ = ShapeTag::NON;
-	screen_ = -1;
-	scrSize_ = {};
-	hitOffSet_ = {};
 
 	isDead_ = false;
 }
 
-void Shape::Update(const float& delta, const Vector2& scrSize, const std::vector<std::shared_ptr<Shape>>& list, std::vector<InstanceData>& instanceData)
+void Shape::SetCollisionOwner(std::shared_ptr<Shape> owner)
 {
-	bool upDown = false;
-	if (!CheckHitWall(scrSize, upDown))
+	for (const auto& col : colls_)
 	{
-		RefVec(upDown);
+		col->SetOwner(owner);
 	}
-	pos_ += vec_ * delta * speed_;
+}
 
-	bool hit = false;
+void Shape::HitUpdate(const float& delta,const std::vector<std::shared_ptr<Shape>>& list)
+{
 	for (const auto& hitShape : list)
 	{
 		if (this == &(*hitShape))
 		{
 			continue;
 		}
-		hit |= CheckHit(hitShape);
-	}
-	if (hit)
-	{
-		col_ = 0xffffff;
-	}
-	else
-	{
-		col_ = defCol_;
+		if (CheckHit(hitShape))
+		{
+			HitAction(hitShape);
+		}
 	}
 }
 
-void Shape::UpDate(const int& x, const int& y)
+void Shape::Update(const float& delta, const Vector2& scrSize)
+{
+	pos_ += vec_ * delta * speed_;
+	bool upDown = false;
+	if (!CheckHitWall(scrSize, upDown))
+	{
+		RefVec(upDown);
+	}
+}
+
+void Shape::Update(const int& x, const int& y)
 {
 	pos_ = { static_cast<float>(x),static_cast<float>(y) };
-}
-
-void Shape::ScrDraw(const Vector2 offSet)
-{
-	DrawGraph(static_cast<int>(pos_.x) + offSet.x, static_cast<int>(pos_.y) + offSet.y, screen_, true);
 }
 
 void Shape::Draw(const float& rate, Vector2Flt offSet)
 {
 }
 
-
-void Shape::GetDrawSpace(Vector2& pos, Vector2& size)
+bool Shape::CheckHitWall(const Vector2& scrSize, bool& UpDown)
 {
-	pos = static_cast<Vector2>(pos_) + hitOffSet_;
-	size = static_cast<Vector2>(scrSize_);
+	bool reFlag = true;
+	for (const auto& col : colls_)
+	{
+		if (!col->CheckHitWall(scrSize, UpDown))
+		{
+			reFlag=false;
+			break;
+		}
+	}
+	return reFlag;
 }
 
-const int& Shape::GetDrawScreen(void)
-{
-	return screen_;
-}
 
 bool Shape::CheckHit(const std::weak_ptr<Shape>& shape)
 {
-	if (CheckHitDrawSpace(shape))
+	bool isHit = false;
+	for (const auto& col : colls_)
 	{
-		if (CheckHitCol(shape))
+		for (const auto& hcol : shape.lock()->colls_)
 		{
-			return true;
+			isHit |= col->isHit(hcol);
 		}
 	}
-	return false;
-}
-
-bool Shape::CheckHitDrawSpace(const std::weak_ptr<Shape>& shape)
-{
-	Vector2 pos = {};
-	Vector2 size = {};
-	Vector2 hitPos = static_cast<Vector2>(pos_) + hitOffSet_;
-	shape.lock()->GetDrawSpace(pos, size);
-	return ((hitPos.x + scrSize_.x > pos.x) && (hitPos.x < pos.x + size.x) && (hitPos.y + scrSize_.y > pos.y) && (hitPos.y < pos.y + size.y));
-}
-
-bool Shape::CheckHitCol(const std::weak_ptr<Shape>& shape)
-{
-	return true;
-	Vector2 pos = {};
-	Vector2 size = {};
-	Vector2 hitPos = static_cast<Vector2>(pos_) + hitOffSet_;
-	shape.lock()->GetDrawSpace(pos, size);
-
-	bool isLeft = false;
-	bool isUP = false;
-
-	if (pos_.x + hitOffSet_.x < pos.x)
-	{
-		isLeft = true;
-	}
-	else
-	{
-		isLeft = false;
-	}
-	if (pos_.y + hitOffSet_.y < pos.y)
-	{
-		isUP = true;
-	}
-	else
-	{
-		isUP = false;
-	}
-	return CheckHitScreen(shape,isLeft,isUP);
-}
-
-bool Shape::CheckHitScreen(const std::weak_ptr<Shape>& shape, bool isLeft, bool isUP)
-{
-	auto checkScreen = [](const int& screen, const int& sX, const int& sY, const int& eX, const int& eY, const unsigned int& col)
-	{
-		if ((eX < 0) || (eY < 0))
-		{
-			return false;
-		}
-		int checkCol = col + 0xff000000;
-		SetDrawScreen(screen);
-		for (int x = sX; x < eX; x++)
-		{
-			for (int y = sY; y < eY; y++)
-			{
-				auto aaa = GetPixel(x, y);
-				if (checkCol == GetPixel(x, y))
-				{
-					SetDrawScreen(DX_SCREEN_BACK);
-					return true;
-				}
-			}
-		}
-		SetDrawScreen(DX_SCREEN_BACK);
-		return false;
-	};
-	bool hit = false;
-	bool opHit = false;
-
-	// é©ï™intå^èÓïÒ
-	Vector2 pos = static_cast<Vector2>(pos_) + hitOffSet_;
-	Vector2 size = static_cast<Vector2>(scrSize_);
-	// ëäéËèÓïÒ
-	Vector2 opPos = {};
-	Vector2 opSize = {};
-	const int& opScr = shape.lock()->GetDrawScreen();
-	unsigned int opCol = shape.lock()->GetCol();
-
-	shape.lock()->GetDrawSpace(opPos, opSize);
-
-	int offsetX = 0;
-	int offsetY = 0;
-	if (isLeft)
-	{
-		offsetX = pos.x + size.x - opPos.x;
-		
-		if (isUP)
-		{
-			OutputDebugString("ç∂ è„\n");
-			offsetY = pos.y + size.y - opPos.y;
-			hit = checkScreen(screen_, size.x - offsetX, size.y - offsetY, size.x, size.y, col_);
-			opHit = checkScreen(opScr, 0, 0, offsetX, offsetY, opCol);
-			if (hit && opHit)
-			{
-				auto aaa = 0;
-			}
-		}
-		else
-		{
-			OutputDebugString("ç∂ â∫\n");
-			offsetY = opPos.y + opSize.y - pos.y;
-			hit = checkScreen(screen_, size.x - offsetX, 0, size.x, offsetY, col_);
-			opHit = checkScreen(opScr, 0, opSize.y - offsetY, offsetX, size.y, opCol);
-		}
-	}
-	else
-	{
-		offsetX = opPos.x + opSize.x - pos.x;
-		if (isUP)
-		{
-			OutputDebugString("âE è„\n");
-			offsetY = pos.y + size.y - opPos.y;
-			hit = checkScreen(screen_, 0, 0, offsetX, offsetY, col_);
-			opHit = checkScreen(opScr, opSize.x + opPos.x - offsetX, opSize.y - offsetY, opSize.x, opSize.y, opCol);
-			
-		}
-		else
-		{
-			OutputDebugString("âE â∫\n");
-			offsetY = opPos.y + opSize.y - pos.y;
-			hit = checkScreen(screen_, 0, size.y - offsetY, offsetX, size.y, col_);
-			opHit = checkScreen(opScr, opSize.x - offsetX, 0, opSize.x, offsetY, opCol);
-			if (hit && opHit)
-			{
-				auto aaa = 0;
-			}
-		}
-	}
-	return hit && opHit;
+	return isHit;
 }
 
 
@@ -221,14 +96,49 @@ bool Shape::GetIsDead(void)
 	return isDead_;
 }
 
+const Vector2Flt Shape::GetVec(void)
+{
+	return vec_;
+}
+
 void Shape::SetCol(const unsigned int& col)
 {
 	col_ = col;
 }
 
+void Shape::SetVec(const Vector2Flt& vec)
+{
+	vec_ = vec;
+}
+
+void Shape::SetSpeed(const float& speed)
+{
+	speed_ = speed;
+}
+
+const float& Shape::GetIntervel(void) const
+{
+	return interval_;
+}
+
+void Shape::SetInterval(const float& inter)
+{
+	interval_ = inter;
+}
+
 const unsigned int& Shape::GetCol(void) const
 {
 	return col_;
+}
+
+Vector2Flt& Shape::GetPos(void)
+{
+	return pos_;
+}
+
+const Vector2Flt& Shape::GetSize(void)
+{
+	return size_;
 }
 
 void Shape::RefVec(bool UpDown)
@@ -243,9 +153,12 @@ void Shape::RefVec(bool UpDown)
 	}
 }
 
-void Shape::PreparaScreen(void)
+void Shape::ReSetVec(void)
 {
-	unsigned int reScr = GetDrawScreen();
-	SetDrawScreen(screen_);
-	ClsDrawScreen();
+	vec_ = defvec_;
+}
+
+const ShapeTag& Shape::GetTag() const
+{
+	return tag_;
 }

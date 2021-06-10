@@ -151,23 +151,29 @@
   <ItemGroup>
     <ClCompile Include="Class\Carrot.cpp" />
     <ClCompile Include="Class\Circle.cpp" />
+    <ClCompile Include="Class\collision\CircleCollision.cpp" />
+    <ClCompile Include="Class\collision\TriangleCollision.cpp" />
     <ClCompile Include="Class\Shape.cpp" />
+    <ClCompile Include="Class\Star.cpp" />
     <ClCompile Include="Class\Triangle.cpp" />
+    <ClCompile Include="Class\collision\Collision.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Class\Square.cpp" />
-    <ClCompile Include="_debug\_DebugConOut.cpp" />
-    <ClCompile Include="_debug\_DebugDispOut.cpp" />
+    <ClCompile Include="Class\collision\SquaerCollision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class\Carrot.h" />
     <ClInclude Include="Class\Circle.h" />
+    <ClInclude Include="Class\collision\CircleCollision.h" />
+    <ClInclude Include="Class\collision\SquaerCollision.h" />
+    <ClInclude Include="Class\collision\TriangleCollision.h" />
     <ClInclude Include="Class\Shape.h" />
     <ClInclude Include="Class\Square.h" />
+    <ClInclude Include="Class\Star.h" />
     <ClInclude Include="Class\Triangle.h" />
+    <ClInclude Include="Class\collision\Collision.h" />
     <ClInclude Include="common\details\Vector2.h" />
     <ClInclude Include="common\Vector2.h" />
-    <ClInclude Include="_debug\_DebugConOut.h" />
-    <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

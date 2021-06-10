@@ -1,5 +1,6 @@
 #include <cassert>
 #include <numeric>
+#include <cmath>
 #include "..\Vector2.h"
 
 
@@ -183,6 +184,30 @@ bool Vector2Template<T>::operator>(const Vector2Template<T>& vec) const
 {
 	return ((this->x > vec.x) && (this->y > vec.y));
 }
+template<class T>
+inline T Vector2Template<T>::Magnitude() const
+{
+	return std::hypot(x, y);
+}
+template<class T>
+inline void Vector2Template<T>::Nomalize()
+{
+	auto len = Magnitude();
+	if (len == 0) return;
+
+	x /= len;
+	y /= len;
+}
+template<class T>
+inline Vector2Template<T> Vector2Template<T>::Nomalized() const
+{
+	auto len = Magnitude();
+
+	if (len == 0) return { 0,0 };
+
+	Vector2Template<T> vec = { x / len,y / len };
+	return vec;
+}
 template <class T>
 Vector2Template<T> operator+(const Vector2Template<T>& vec, T u)
 {
@@ -204,8 +229,7 @@ Vector2Template<T> operator/(const Vector2Template<T>& vec, T u)
 	if (vec.x == 0 || vec.y == 0)
 	{
 		assert(!"0èúéZ å^ÇÃç≈ëÂílÇï‘ÇµÇ‹Ç∑ÅFVector2Temple");
-		vec.x = std::numeric_limits<T>::max();
-		vec.y = std::numeric_limits<T>::max();
+		
 		return vec;
 	}
 	return Vector2Template<T>(vec.x / u, vec.y / u);
@@ -252,4 +276,16 @@ Vector2Template<int> operator%(const Vector2Template<T>& veca, const Vector2Temp
 	Vector2Template<int> intveca = static_cast<Vector2Template<int>>(veca);
 	Vector2Template<int> intvecb = static_cast<Vector2Template<int>>(vecb);
 	return Vector2Template<int>(intveca.x % intvecb.x, intveca.y % intvecb.y);
+}
+
+template<class T>
+inline T Dot(const Vector2Template<T>& veca, const Vector2Template<T>& vecb)
+{
+	return veca.x * vecb.x + veca.y * vecb.y;
+}
+
+template<class T>
+inline T Cross(const Vector2Template<T>& veca, const Vector2Template<T>& vecb)
+{
+	return veca.x * vecb.y - veca.y * vecb.x;
 }

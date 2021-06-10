@@ -2,6 +2,7 @@
 #include <utility>
 #include <memory>
 #include <vector>
+#include <array>
 #include <map>
 #include <functional>
 #include <chrono>
@@ -12,6 +13,7 @@
 #include "Class/Circle.h"
 #include "Class/Triangle.h"
 #include "Class/Carrot.h"
+#include "Class/Star.h"
 #include "_debug/_DebugDispOut.h"
 #include "_debug/_DebugConOut.h"
 
@@ -19,11 +21,9 @@ namespace
 {
 	constexpr int screenSizeX = 640;
 	constexpr int screenSizeY = 480;
+
 	std::chrono::system_clock::time_point now;
 	std::chrono::system_clock::time_point old;
-
-	std::vector<InstanceData> instanceData;
-	std::map<ShapeTag, std::function<void(std::vector<std::shared_ptr<Shape>>& list, const InstanceData& data)>> instanceFunc;
 }
 
 /// <summary>
@@ -57,87 +57,76 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	{
 		return -1;
 	}
-	
-	instanceFunc.try_emplace(ShapeTag::NON, [](std::vector<std::shared_ptr<Shape>>& list,const InstanceData& data) {assert(!"instanceFunc:shapeTag‚ªNON"); });
-	instanceFunc.try_emplace(ShapeTag::Squeare, [](std::vector<std::shared_ptr<Shape>>& list, const InstanceData& data) {
-		list.emplace_back(std::make_shared<Square>(data.pos, data.size, data.col, data.vec, data.speed));
-	});
-	instanceFunc.try_emplace(ShapeTag::Circle, [](std::vector<std::shared_ptr<Shape>>& list, const InstanceData& data) {
-		list.emplace_back(std::make_shared<Circle>(data.pos, data.size, data.col, data.vec, data.speed));
-	});
+	SetAlwaysRunFlag(true);
 
 	std::vector<std::shared_ptr<Shape>> shapeList;
 
 	shapeList.reserve(100);
 
-	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ 300.0f, 150.0f }, Vector2Flt{ 100.0f ,100.0f }, 0xffff00, Vector2Flt{ 1.0f ,1.0f },100.0f));
-	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ 150.0f,300.0f }, Vector2Flt{ 100.0f, 150.0f }, 0xff00ff, Vector2Flt{ 0.4f ,0.6f }, 200.0f));
-	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 0.0f, 0.0f }, Vector2Flt{ 50.0f ,50.0f }, 0x00ff00, Vector2Flt{ 0.0f ,-1.0f }, 150.0f));
-	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f, 50.0f }, 0xff0000, Vector2Flt{ 1.0f ,0.0f }, 150.0f));
-	shapeList.emplace_back(std::make_shared<Triangle>(Vector2Flt{ 100.0f, 150.0f }, Vector2Flt{ 100.0f ,100.0f }, 0x0000ff, Vector2Flt{ 0.3f ,1.0f }, 100.0f,false));
-	shapeList.emplace_back(std::make_shared<Triangle>(Vector2Flt{ 50.0f, 150.0f }, Vector2Flt{ 30.0f ,100.0f }, 0x00ffff, Vector2Flt{ 2.0f ,0.8f }, 100.0f,true));
-	shapeList.emplace_back(std::make_shared<Carrot>(Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f ,150.0f }, 0x00ffff, Vector2Flt{ 2.0f ,1.0f }, 100.0f));
+	
+
+	std::array<Vector2Flt, 3> vertex;
+	vertex[0] = Vector2Flt{ 0.0f,-50.0f };
+	vertex[1] = Vector2Flt{ 50.0f,50.0f };
+	vertex[2] = Vector2Flt{ -50.0f,50.0f };
+
+	shapeList.emplace_back(std::make_shared<Triangle>(Vector2Flt{ 300.0f, 150.0f }, vertex, Vector2Flt{ 100.0f ,100.0f }, 0xff0000, Vector2Flt{ -0.4f ,1.5f },200.0f));
+
+	vertex[0] = Vector2Flt{ 0.0f,-75.0f };
+	vertex[1] = Vector2Flt{ 50.0f,50.0f };
+	vertex[2] = Vector2Flt{ -50.0f,25.0f };
+	shapeList.emplace_back(std::make_shared<Triangle>(Vector2Flt{ 150.0f, 250.0f }, vertex, Vector2Flt{ 100.0f ,100.0f }, 0x00ff00, Vector2Flt{ 1.0f ,-0.5f }, 200.0f));
+
+	vertex[0] = Vector2Flt{ 0.0f,-10.0f };
+	vertex[1] = Vector2Flt{ 50.0f,30.0f };
+	vertex[2] = Vector2Flt{ -50.0f,20.0f };
+	shapeList.emplace_back(std::make_shared<Triangle>(Vector2Flt{ 400.0f, 250.0f }, vertex, Vector2Flt{ 100.0f ,100.0f }, 0x0000ff, Vector2Flt{ 1.6f ,1.5f }, 200.0f));
+
+	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ 100.0f,50.0f }, Vector2Flt{ 50.0f,50.0f }, 0x00ffff, Vector2Flt{ -1.0f ,0.2f }, 200.0f));
+	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ 400.0f,350.0f }, Vector2Flt{ 60.0f,60.0f }, 0x88000f, Vector2Flt{ 0.4f ,1.5f }, 200.0f));
+	shapeList.emplace_back(std::make_shared<Square>(Vector2Flt{ 500.0f,50.0f }, Vector2Flt{ 20.0f,70.0f }, 0x00ff7f, Vector2Flt{ 0.4f ,1.5f }, 200.0f));
+
+	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 200.0f,150.0f },50.0f , 0x880088f, Vector2Flt{ 2.0f ,-0.5f }, 200.0f));
+	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 100.0f,250.0f }, 60.0f, 0x008800f, Vector2Flt{ 0.5f ,-2.0f }, 200.0f));
+	shapeList.emplace_back(std::make_shared<Circle>(Vector2Flt{ 50.0f,250.0f }, 35.0f, 0x008888f, Vector2Flt{ 1.5f ,-2.0f }, 200.0f));
+
+	shapeList.emplace_back(std::make_shared<Star>(Vector2Flt{ 100.0f,200.0f }, Vector2Flt{ 100.0f ,100.0f }, 0xffff00, Vector2Flt{ 1.7f ,1.3f }, 200.0f));
+	shapeList.emplace_back(std::make_shared<Carrot>(Vector2Flt{ 100.0f,200.0f }, Vector2Flt{ 50.0f ,100.0f }, 0xff00ff, Vector2Flt{ 1.0f ,2.0f }, 200.0f));
+
+	for (const auto& shape : shapeList)
+	{
+		shape->SetCollisionOwner(shape);
+	}
 
 	now = std::chrono::system_clock().now();
-
-	int cnt = 0;
 	
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
 		old = now;
 		now = std::chrono::system_clock().now();
-		ClsDrawScreen();
 
 		float delta = static_cast<float>(std::chrono::duration_cast<std::chrono::microseconds>(now - old).count() / 1000000.0f);
-		bool test = false;
-		int x, y;
-		GetMousePoint(&x, &y);
 		for (const auto& shape : shapeList)
 		{
-			shape->Update(delta, Vector2{ screenSizeX,screenSizeY }, shapeList,instanceData);
-			/*if (!test)
-			{
-				shape->UpDate(x, y);
-				test = true;
-			}*/
+			shape->HitUpdate(delta,shapeList);
 		}
+		for (const auto& shape : shapeList)
+		{
+			shape->Update(delta, Vector2{ screenSizeX,screenSizeY });
+		}
+		
 
+		ClsDrawScreen();
 		DrawLine(50);
-
 		for (const auto& shape : shapeList)
 		{
 			shape->Draw();
 		}
-
+		DrawFormatString(0,0,0xffffff,"deltaTime::%lf\n",delta);
+		ScreenFlip();
 		auto itr = std::remove_if(shapeList.begin(), shapeList.end(), [](std::weak_ptr<Shape> shape) {return shape.lock()->GetIsDead(); });
 
 		shapeList.erase(itr, shapeList.end());
-
-		DrawFormatString(0,0,0xffffff,"deltaTime::%lf\n",delta);
-		ScreenFlip();
-
-		cnt++;
-		/*if (cnt == 600)
-		{
-			shapeList[1]->SetIsDead();
-		}
-		if (cnt == 300)
-		{
-			shapeList[3]->SetIsDead();
-		}
-		if (cnt == 900)
-		{
-			instanceData.emplace_back(ShapeTag::Circle,Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 25.0f, 25.0f }, 0xff0000, Vector2Flt{ 1.0f ,0.0f }, 150.0f);
-		}
-		if (cnt == 1200)
-		{
-			instanceData.emplace_back(ShapeTag::Squeare, Vector2Flt{ screenSizeX / 2.0f, screenSizeY / 2.0f }, Vector2Flt{ 50.0f, 50.0f }, 0xff00ff, Vector2Flt{ 0.5f ,2.0f }, 150.0f);
-		}*/
-		for (const auto& IData : instanceData)
-		{
-			instanceFunc[IData.tag](shapeList, IData);
-		}
-		instanceData.clear();
 	}
 
 	DxLib_End();
