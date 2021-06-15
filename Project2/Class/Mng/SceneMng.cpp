@@ -8,6 +8,7 @@
 #include "../../_debug/_DebugConOut.h"
 #include "../../_debug/_DebugDispOut.h"
 
+
 bool SceneMng::SysInit(void)
 {
 	screenSize_ = { 1024,768 };
@@ -32,7 +33,7 @@ void SceneMng::Run(void)
 	{
 		return;
 	}
-	scene_ = std::make_unique<TitleScene>();
+	scene_ = std::make_unique<GameScene>();
 	now_ = std::chrono::system_clock().now();
 
 	_dbgSetup(screenSize_.x, screenSize_.y, 255);

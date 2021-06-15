@@ -1,7 +1,9 @@
 #pragma once
+#include <vector>
 #include "BaseScene.h"
 
 class MapData;
+class Object;
 
 class GameScene :
     public BaseScene
@@ -19,5 +21,6 @@ private:
     void DrawOwnScreen(const double& delta)override final;
 
     std::unique_ptr<MapData> mapData_;
+    std::vector<std::unique_ptr<Object>> objList_;
 };
 
