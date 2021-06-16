@@ -3,8 +3,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "XML/TmxLoader/TmxLoader.h"
-
+#include "../XML/TmxLoader/TmxLoader.h"
+#include "../common/Vector2.h"
 
 enum class MAP_LAYER
 {

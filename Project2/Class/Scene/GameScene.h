@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <list>
 #include "BaseScene.h"
 
 class MapData;
@@ -21,6 +21,6 @@ private:
     void DrawOwnScreen(const double& delta)override final;
 
     std::unique_ptr<MapData> mapData_;
-    std::vector<std::unique_ptr<Object>> objList_;
+    std::list<std::unique_ptr<Object>> objList_;
 };
 

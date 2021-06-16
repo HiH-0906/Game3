@@ -5,7 +5,7 @@
 #include "Transition/FadeInOut.h"
 #include "../Map/MapData.h"
 #include "../Mng/ImageMng.h"
-#include "../Object/Object.h"
+#include "../Object/Player.h"
 
 GameScene::GameScene()
 {
@@ -23,15 +23,14 @@ const SceneID GameScene::GetSceneID(void) const
 
 bool GameScene::Init(void)
 {
-	lpImageMng.GetID("ryushen", "Image/ryushen.png");
 	mapData_ = std::make_unique<MapData>("mapData/map.tmx");
 	
 	const auto& info = mapData_->GetMapInfo(MAP_LAYER::BLOCK);
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	objList_.emplace_back(std::make_unique<Object>(Vector2{ 500,300 },120.0,PlayerColor::BLUE));
-	objList_.emplace_back(std::make_unique<Object>(Vector2{ 800,300 }, 120.0, PlayerColor::WHITE, 1));
+	objList_.emplace_back(std::make_unique<Player>(Vector2{ 500,300 },120.0,PlayerColor::BLUE));
+	objList_.emplace_back(std::make_unique<Player>(Vector2{ 800,300 }, 120.0, PlayerColor::WHITE, 1));
 
 	return true;
 }
@@ -53,8 +52,6 @@ void GameScene::DrawOwnScreen(const double& delta)
 {
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
-
-	//DrawGraph(0, 0, lpImageMng.GetID("ryushen")[0], true);
 
 	for (const auto layer:MAP_LAYER())
 	{

@@ -27,7 +27,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	{
 		return -1;
 	}
-
+	SetAlwaysRunFlag(true);
 	std::array<int, 6> runImage;
 
 	Rect player(100, 100, 200, 200);
@@ -50,7 +50,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	int speed = 5;
 	bool tmp = false;
 	bool isReverse = false;
-	int groundH = LoadGraph("Image/ground.png");
+	int groundH = LoadGraph("Image/Assets/Assets.png");
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
 		ClsDrawScreen();
@@ -84,9 +84,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		for (int i = 0; i < 720 / BlockSize; i++)
 		{
 			int nextX = i * BlockSize;
-			int nextY = 240 + static_cast<int>(100.0f * sin(static_cast<float>(0.5f * nextX) / 180.0f * DX_PI_F));
+			int nextY = 240 + static_cast<int>(100.0f * sin(static_cast<float>(0.5f * nextX + fCnt) / 180.0f * DX_PI_F));
 			//DrawLineAA(x, y, nextX, nextY, 0xffffff,5.0f);
-			DrawModiGraph(x, y, nextX, nextY, nextX, nextY + BlockSize,x, y + BlockSize, groundH, true);
+			DrawRectModiGraph(x, y, nextX, nextY, nextX, nextY + BlockSize,x, y + BlockSize,48,0,16,16, groundH, true);
 			x = nextX;
 			y = nextY;
 		}

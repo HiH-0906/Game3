@@ -42,7 +42,7 @@
     <ClCompile Include="Class\Scene\Transition\FadeInOut.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Class\Map\XML\TmxLoader\TmxLoader.cpp">
+    <ClCompile Include="Class\XML\TmxLoader\TmxLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Class\Map\MapData.cpp">
@@ -70,6 +70,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Class\Input\Pad.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Class\Object\Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,19 +107,19 @@
     <ClInclude Include="Class\Scene\Transition\FadeInOut.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\Map\XML\RapidXml\rapidxml.hpp">
+    <ClInclude Include="Class\XML\RapidXml\rapidxml.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\Map\XML\RapidXml\rapidxml_iterators.hpp">
+    <ClInclude Include="Class\XML\RapidXml\rapidxml_iterators.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\Map\XML\RapidXml\rapidxml_print.hpp">
+    <ClInclude Include="Class\XML\RapidXml\rapidxml_print.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\Map\XML\RapidXml\rapidxml_utils.hpp">
+    <ClInclude Include="Class\XML\RapidXml\rapidxml_utils.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\Map\XML\TmxLoader\TmxLoader.h">
+    <ClInclude Include="Class\XML\TmxLoader\TmxLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Class\Map\MapData.h">
@@ -144,6 +147,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Class\Input\Pad.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Class\Object\Player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

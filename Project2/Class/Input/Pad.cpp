@@ -8,10 +8,11 @@ Pad::Pad()
 
 void Pad::Update(void)
 {
+	auto state = GetJoypadInputState(DX_INPUT_PAD1);
 	for (auto id : INPUT_ID())
 	{
 		trgData_[id][static_cast<unsigned int>(TRG::OLD)] = trgData_[id][static_cast<unsigned int>(TRG::NOW)];
-		trgData_[id][static_cast<unsigned int>(TRG::NOW)] = (GetJoypadInputState(DX_INPUT_PAD1) & config_[id]);
+		trgData_[id][static_cast<unsigned int>(TRG::NOW)] = (state & config_[id]);
 	}
 }
 
@@ -26,6 +27,11 @@ bool Pad::Init(void)
 	config_.try_emplace(INPUT_ID::BTN_1, PAD_INPUT_1);
 	config_.try_emplace(INPUT_ID::BTN_2, PAD_INPUT_2);
 	config_.try_emplace(INPUT_ID::BTN_3, PAD_INPUT_3);
+
+	for (auto id : INPUT_ID())
+	{
+		trgData_.try_emplace(id, TrgBool{ false,false });
+	}
 
 	return true;
 }
