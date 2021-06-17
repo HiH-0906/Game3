@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\Animation\AnimationLoder.cpp" />
     <ClCompile Include="Class\Input\Controller.cpp" />
     <ClCompile Include="Class\Input\INPUT_ID.cpp" />
     <ClCompile Include="Class\Input\KeyBoard.cpp" />
@@ -173,6 +174,8 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\Animation\AnimationLoder.h" />
+    <ClInclude Include="Class\characterID.h" />
     <ClInclude Include="Class\Input\Controller.h" />
     <ClInclude Include="Class\Input\INPUT_ID.h" />
     <ClInclude Include="Class\Input\KeyBoard.h" />

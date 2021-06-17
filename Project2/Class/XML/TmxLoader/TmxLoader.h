@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include "../RapidXml/rapidxml.hpp"
-#include "../../../common/Vector2.h"
+#include "../../common/Vector2.h"
 
 
 // データ格納構造体

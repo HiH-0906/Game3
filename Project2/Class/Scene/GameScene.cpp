@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <string>
 #include "GameScene.h"
 #include "TitleScene.h"
 #include "Transition/CrossOver.h"
@@ -6,10 +7,13 @@
 #include "../Map/MapData.h"
 #include "../Mng/ImageMng.h"
 #include "../Object/Player.h"
+#include "../Animation/AnimationLoder.h"
 
 GameScene::GameScene()
 {
 	Init();
+	AnimationLoder tmp;
+	tmp.LoadAnimTmx("animData/playerAnim.tmx", character_ID::Player);
 }
 
 GameScene::~GameScene()

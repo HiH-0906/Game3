@@ -3,7 +3,7 @@
 #include "TmxLoader.h"
 #include "../RapidXml/rapidxml.hpp"
 #include "../RapidXml/rapidxml_utils.hpp"
-#include "../../../../_debug/_DebugConOut.h"
+#include "../../../_debug/_DebugConOut.h"
 
 Loader::TmxLoader::TmxLoader()
 {

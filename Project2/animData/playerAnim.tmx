@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<anim version="1.0">
  <character characterkey="player"> 
   <animation animkey="player_run" width ="32" height="384" tilecountwidth ="1" tilecountheight="8" loop="-1" source="image/player/Blue_witch/B_witch_run.png">
-   <data encoding="csv">
-   10,10,10,10,10,10,10,10
-   </data>
+   <flamedata encoding="csv">
+10,10,10,10,10,10,10,10
+   </flamedata>
+   <subscriptdata encoding="csv">
+0,1,2,3,4,5,6,7
+   </subscriptdata>
   </animation>
  </character>
+</anim>
   
