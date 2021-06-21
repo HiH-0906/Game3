@@ -80,15 +80,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			tmp = false;
 		}
 		int x = 0;
-		int y = screenSizeY / 2;
+		int y = screenSizeY / 2 + static_cast<int>(100.0f * sin(static_cast<float>(fCnt) / 180.0f * DX_PI_F));
+		Vector2 guroundPos(x, y);
 		for (int i = 0; i < 720 / BlockSize; i++)
 		{
 			int nextX = i * BlockSize;
-			int nextY = 240 + static_cast<int>(100.0f * sin(static_cast<float>(0.5f * nextX + fCnt) / 180.0f * DX_PI_F));
+			int nextY = static_cast<int>(100.0f * sin(static_cast<float>(0.5f * nextX + fCnt) / 180.0f * DX_PI_F));
+
+			Vector2 next = guroundPos + Vector2(BlockSize,nextY).Normalized() * BlockSize;
+
 			//DrawLineAA(x, y, nextX, nextY, 0xffffff,5.0f);
-			DrawRectModiGraph(x, y, nextX, nextY, nextX, nextY + BlockSize,x, y + BlockSize,48,0,16,16, groundH, true);
-			x = nextX;
-			y = nextY;
+			DrawRectModiGraph(guroundPos.x, guroundPos.y, next.x, next.y, next.x, next.y + BlockSize, guroundPos.x, guroundPos.y + BlockSize,48,0,16,16, groundH, true);
+			/*x = nextX;
+			y = nextY;*/
+			guroundPos = next;
 		}
 
 		int centerX = 16;

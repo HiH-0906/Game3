@@ -7,13 +7,12 @@
 #include "../Map/MapData.h"
 #include "../Mng/ImageMng.h"
 #include "../Object/Player.h"
-#include "../Animation/AnimationLoder.h"
+#include "../Mng/AnimationMng.h"
 
 GameScene::GameScene()
 {
 	Init();
-	AnimationLoder tmp;
-	tmp.LoadAnimTmx("animData/playerAnim.tmx", character_ID::Player);
+	lpAnimMng.LoadAnimTmx("animData/playerAnim.tmx", char_ID::Player);
 }
 
 GameScene::~GameScene()

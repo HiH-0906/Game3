@@ -1,6 +1,6 @@
 #pragma once
 
-enum class character_ID
+enum class char_ID
 {
 	Player,
 };

@@ -11,7 +11,7 @@ AnimationLoder::AnimationLoder()
 	tmx_orign_node_ = nullptr;
 }
 
-bool AnimationLoder::LoadAnimTmx(const std::string& filepath, character_ID id)
+bool AnimationLoder::LoadAnimTmx(const std::string& filepath)
 {
 	// Tmxä÷òAèÄîı
 	rapidxml::file<> file(filepath.c_str());
@@ -29,16 +29,15 @@ bool AnimationLoder::LoadAnimTmx(const std::string& filepath, character_ID id)
 		assert(!"AnimVersionñ¢ëŒâû");
 		return false;
 	}
-	charID_[id] = tmx_orign_node_->first_node("character")->first_attribute("characterkey")->value();
-	anim_ID animid = anim_ID::RUN;
-	for (rapidxml::xml_node<>* animNode = tmx_orign_node_->first_node("character")->first_node("animation"); animNode != nullptr; animNode = animNode->next_sibling())
+	Anim_ID animid = begin(Anim_ID());
+	for (rapidxml::xml_node<>* animNode = tmx_orign_node_->first_node("character")->first_node("animation");animNode != nullptr && animid != Anim_ID::MAX; animNode = animNode->next_sibling())
 	{
 		animID_[animid] = animNode->first_attribute("animkey")->value();
-		info_[animID_[animid]].width = std::atoi(animNode->first_attribute("width")->value());
-		info_[animID_[animid]].height = std::atoi(animNode->first_attribute("height")->value());
-		info_[animID_[animid]].widthCnt = std::atoi(animNode->first_attribute("tilecountwidth")->value());
-		info_[animID_[animid]].heightCnt = std::atoi(animNode->first_attribute("tilecountheight")->value());
-		info_[animID_[animid]].loop = std::atoi(animNode->first_attribute("loop")->value());
+		info_[animID_[animid]].width = animNode->first_attribute("width")->value();
+		info_[animID_[animid]].height = animNode->first_attribute("height")->value();
+		info_[animID_[animid]].widthCnt = animNode->first_attribute("tilecountwidth")->value();
+		info_[animID_[animid]].heightCnt = animNode->first_attribute("tilecountheight")->value();
+		info_[animID_[animid]].loop = animNode->first_attribute("loop")->value();
 		info_[animID_[animid]].source = animNode->first_attribute("source")->value();
 		auto flamedata = animNode->first_node("flamedata");
 		if (!flamedata)
@@ -46,16 +45,40 @@ bool AnimationLoder::LoadAnimTmx(const std::string& filepath, character_ID id)
 			assert(!"flamedataNodeÇ™Ç†ÇËÇ‹ÇπÇÒ");
 			return false;
 		}
-		animData_[charID_[id]][animID_[animid]].flameData = flamedata->first_node()->value();
+		animDataS_[animID_[animid]].flameData = flamedata->first_node()->value();
 		auto subscriptdata = animNode->first_node("subscriptdata");
 		if (!subscriptdata)
 		{
 			assert(!"subscriptdataNodeÇ™Ç†ÇËÇ‹ÇπÇÒ");
 			return false;
 		}
-		animData_[charID_[id]][animID_[animid]].subscriptData = subscriptdata->first_node()->value();
+		animDataS_[animID_[animid]].subscriptData = subscriptdata->first_node()->value();
+		++animid;
 	}
 	return true;
+}
+
+const std::map<Anim_ID, std::string>& AnimationLoder::GetAnimID(void)
+{
+	return animID_;
+}
+
+const AnimDataS& AnimationLoder::GetAnimDataS(Anim_ID animID)
+{
+	if (animDataS_.count(animID_[animID]) == 0)
+	{
+		assert(!"ñ¢ìoò^animDataS");
+	}
+	return animDataS_[animID_[animID]];
+}
+
+const AnimInfoS& AnimationLoder::GetAnimInfoS(Anim_ID animID)
+{
+	if (info_.count(animID_[animID]) == 0)
+	{
+		assert(!"ñ¢ìoò^animInfoS");
+	}
+	return info_[animID_[animID]];
 }
 
 void AnimationLoder::VersionMap(void)
@@ -63,7 +86,3 @@ void AnimationLoder::VersionMap(void)
 	version_["1.0"] = 1;
 }
 
-anim_ID operator++(anim_ID& key)
-{
-	return key = static_cast<anim_ID>(std::underlying_type<anim_ID>::type(key) + 1);
-}
