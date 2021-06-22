@@ -2,5 +2,7 @@
 
 enum class char_ID
 {
-	Player,
+	B_Player,
+	W_Player,
+	R_Player,
 };

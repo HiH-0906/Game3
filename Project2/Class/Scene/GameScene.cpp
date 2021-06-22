@@ -30,8 +30,9 @@ bool GameScene::Init(void)
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	objList_.emplace_back(std::make_unique<Player>(Vector2{ 500,300 },120.0,PlayerColor::BLUE));
-	objList_.emplace_back(std::make_unique<Player>(Vector2{ 800,300 }, 120.0, PlayerColor::WHITE, 1));
+	objList_.emplace_back(std::make_unique<Player>(Vector2{ 70,270 },120.0,char_ID::W_Player));
+	objList_.emplace_back(std::make_unique<Player>(Vector2{ 300,300 }, 120.0, char_ID::R_Player, 1));
+	objList_.emplace_back(std::make_unique<Player>(Vector2{ 200,300 }, 120.0, char_ID::B_Player, 1));
 
 	return true;
 }

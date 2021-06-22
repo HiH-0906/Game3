@@ -6,21 +6,11 @@
 #include "../Input/KeyBoard.h"
 #include "../Input/Pad.h"
 
-namespace
-{
-    std::map<PlayerColor, std::string> imageKey_ = {
-            {PlayerColor::BLUE,"B_player_run"},
-            {PlayerColor::RED,"R_player_run"},
-            {PlayerColor::WHITE,"W_player_run"}
-    };
-}
 
 
-Player::Player(const Vector2& pos, const double& speed, PlayerColor col, unsigned int inputType) :
-    Object(pos, speed, inputType), playerColor_(col)
+Player::Player(const Vector2& pos, const double& speed, const char_ID cID, unsigned int inputType) :
+    Object(pos, speed, cID, inputType)
 { 
-    key_ = imageKey_[col];
-    charID_ = char_ID::Player;
     Init(speed, inputType);
 }
 
@@ -30,12 +20,9 @@ Player::~Player()
 
 bool Player::Init(const double& speed, unsigned int inputType)
 {
-    // @@@ ほんとにここで読み込みをするのか問題 ダブって登録されない仕組みにはなってはいる
-    lpImageMng.GetID(imageKey_[PlayerColor::BLUE], "Image/player/Blue_witch/B_witch_run.png", Vector2{ 64,96 }, Vector2{ 1,8 });
-    lpImageMng.GetID(imageKey_[PlayerColor::RED], "Image/player/Red_witch/R_witch_run.png", Vector2{ 48,64 }, Vector2{ 1,8 });
-    lpImageMng.GetID(imageKey_[PlayerColor::WHITE], "Image/player/White_witch/W_witch_run.png", Vector2{ 64,64 }, Vector2{ 1,6 });
-
-    lpAnimMng.LoadAnimTmx("animData/playerAnim.tmx", char_ID::Player);
+    lpAnimMng.LoadAnimTmx("animData/BluePlayerAnim.tmx", char_ID::B_Player);
+    lpAnimMng.LoadAnimTmx("animData/WhitePlayerAnim.tmx", char_ID::W_Player);
+    lpAnimMng.LoadAnimTmx("animData/RedPlayerAnim.tmx", char_ID::R_Player);
     
     if (inputType == 0)
     {

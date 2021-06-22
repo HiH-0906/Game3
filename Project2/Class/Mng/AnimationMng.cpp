@@ -69,6 +69,11 @@ const Animation AnimationMng::GetAnimationData(char_ID cID, Anim_ID aID)
 	return animData_[cID][aID];
 }
 
+const AnimInfo AnimationMng::GetAnimInfo(char_ID cID, Anim_ID aID)
+{
+	return GetAnimationData(cID,aID).first;
+}
+
 const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& loopNum)
 {
 	if (animData_.count(cID) == 0)

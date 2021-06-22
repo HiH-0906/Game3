@@ -43,6 +43,7 @@ public:
 	/// <param name="aID">獲得したいアニメーション</param>
 	/// <returns>アニメーション関連データ</returns>
 	const Animation GetAnimationData(char_ID cID, Anim_ID aID);
+	const AnimInfo GetAnimInfo(char_ID cID, Anim_ID aID);
 	const int GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed, int& loopNum);
 private:
 	AnimationMng();

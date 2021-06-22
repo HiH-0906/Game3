@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <map>
-#include <string>
 #include "../common/Vector2.h"
 #include "../Input/INPUT_ID.h"
 #include "../Animation/Anim_ID.h"
@@ -13,7 +12,7 @@ class Controller;
 class Object
 {
 public:
-	Object(const Vector2& pos, const double& speed, unsigned int inputType = 0);
+	Object(const Vector2& pos, const double& speed,const char_ID cID, unsigned int inputType = 0);
 	virtual ~Object() = default;
 	virtual bool Init(const double& speed, unsigned int inputType) = 0;
 	virtual void Update(const double& delta) = 0;
@@ -21,7 +20,6 @@ public:
 	void SetAnimID(Anim_ID id);
 private:
 protected:
-	std::string key_;
 	Anim_ID animID_;
 	char_ID charID_;
 	int animCnt_;
