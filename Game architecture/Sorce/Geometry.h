@@ -66,6 +66,11 @@ public:
 		x = -x;
 	}
 
+	inline Vector2D Rotated90()
+	{
+		return { -y,x };
+	}
+
 	void Normalize()
 	{
 		auto len = Magnitude();
@@ -88,6 +93,7 @@ public:
 
 	static const Vector2D<float> ZERO;
 	static const Vector2D<float> NIL;
+
 
 	bool IsNil()const
 	{
