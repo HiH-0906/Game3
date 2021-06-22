@@ -26,7 +26,7 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 	};
 	auto chengeAnimDataS = [chengeCsvToList](AnimData& data, const AnimDataS& dataS) {
 		chengeCsvToList(data.flameData, dataS.flameData);
-		chengeCsvToList(data.subscriptData, dataS.subscriptData);
+		chengeCsvToList(data.subscript, dataS.subscriptData);
 	};
 
 	if (animData_.count(id) != 0)
@@ -46,8 +46,63 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 		chengeInfoS(animData_[id][animid.first].first, infoS);
 		auto dataS = loder->GetAnimDataS(animid.first);
 		chengeAnimDataS(animData_[id][animid.first].second, dataS);
+		animData_[id][animid.first].first.imgKey = infoS.source;
+		const auto& info = animData_[id][animid.first].first;
+		lpImageMng.GetID(info.imgKey, info.source.c_str(), Vector2{ info.width / info.widthCnt,info.height / info.heightCnt }, Vector2{ info.widthCnt, info.heightCnt });
 	}
+	
 	return true;
+}
+
+const Animation AnimationMng::GetAnimationData(char_ID cID, Anim_ID aID)
+{
+	if (animData_.count(cID) == 0)
+	{
+		assert(!"–¢“o˜^ƒLƒƒƒ‰");
+		return Animation{};
+	}
+	if (animData_.count(cID) == 0)
+	{
+		assert(!"–¢“o˜^ƒAƒjƒ[ƒVƒ‡ƒ“");
+		return Animation{};
+	}
+	return animData_[cID][aID];
+}
+
+const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& loopNum)
+{
+	if (animData_.count(cID) == 0)
+	{
+		assert(!"–¢“o˜^ƒLƒƒƒ‰");
+		return  -1;
+	}
+	if (animData_[cID].count(aID) == 0)
+	{
+		assert(!"–¢“o˜^ƒAƒjƒ[ƒVƒ‡ƒ“");
+		return -1;
+	}
+	int elapsedCnt = 0;
+	auto subscriptData = animData_[cID][aID].second.subscript.begin();
+
+	for (const auto& elapsedData : animData_[cID][aID].second.flameData)
+	{
+		elapsedCnt += elapsedData;
+		if (elapsed < elapsedCnt)
+		{
+			return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*subscriptData];
+		}
+		subscriptData++;
+	}
+	if (animData_[cID][aID].first.loop < 0 || animData_[cID][aID].first.loop > loopNum)
+	{
+		elapsed = 0;
+		loopNum++;
+		return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*animData_[cID][aID].second.subscript.begin()];
+	}
+	else
+	{
+		return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*(--animData_[cID][aID].second.subscript.end())];
+	}
 }
 
 AnimationMng::AnimationMng()

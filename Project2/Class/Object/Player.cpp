@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "Player.h"
 #include "../Mng/ImageMng.h"
+#include "../Mng/AnimationMng.h"
 #include "../Input/Controller.h"
 #include "../Input/KeyBoard.h"
 #include "../Input/Pad.h"
@@ -19,6 +20,7 @@ Player::Player(const Vector2& pos, const double& speed, PlayerColor col, unsigne
     Object(pos, speed, inputType), playerColor_(col)
 { 
     key_ = imageKey_[col];
+    charID_ = char_ID::Player;
     Init(speed, inputType);
 }
 
@@ -32,6 +34,9 @@ bool Player::Init(const double& speed, unsigned int inputType)
     lpImageMng.GetID(imageKey_[PlayerColor::BLUE], "Image/player/Blue_witch/B_witch_run.png", Vector2{ 32,48 }, Vector2{ 1,8 });
     lpImageMng.GetID(imageKey_[PlayerColor::RED], "Image/player/Red_witch/R_witch_run.png", Vector2{ 48,64 }, Vector2{ 1,8 });
     lpImageMng.GetID(imageKey_[PlayerColor::WHITE], "Image/player/White_witch/W_witch_run.png", Vector2{ 64,64 }, Vector2{ 1,6 });
+
+    lpAnimMng.LoadAnimTmx("animData/playerAnim.tmx", char_ID::Player);
+    
     if (inputType == 0)
     {
         controller_ = std::make_unique<KeyBoard>();
@@ -60,11 +65,22 @@ bool Player::Init(const double& speed, unsigned int inputType)
 void Player::Update(const double& delta)
 {
     controller_->Update();
+    bool tmp = false;
     for (auto id : INPUT_ID())
     {
         if (controller_->GetNow(id))
         {
+            tmp = true;
             pos_ += static_cast<Vector2>(speed_[id] * delta);
         }
     }
+    if (tmp)
+    {
+        SetAnimID(Anim_ID::RUN);
+    }
+    else
+    {
+        SetAnimID(Anim_ID::IDLE);
+    }
+    animCnt_++;
 }

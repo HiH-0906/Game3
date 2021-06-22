@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anim version="1.0">
  <character characterkey=""> 
-  <animation animkey="" width ="" height="" tilecountwidth ="" tilecountheight="" loop="" source="">
+  <animation animkey="idele" width ="" height="" tilecountwidth ="" tilecountheight="" loop="" source="">
+   <flamedata encoding="csv">
+   </flamedata>
+   <subscriptdata encoding="csv">
+   </subscriptdata>
+  </animation>
+   <animation animkey="run" width ="" height="" tilecountwidth ="" tilecountheight="" loop="" source="">
    <flamedata encoding="csv">
    </flamedata>
    <subscriptdata encoding="csv">
