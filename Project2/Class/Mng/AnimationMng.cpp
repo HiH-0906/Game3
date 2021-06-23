@@ -7,6 +7,7 @@
 
 bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 {
+	// AnimInfoSの中身をintに変換しAnimInfoへ格納する
 	auto chengeInfoS = [](AnimInfo& info,const AnimInfoS& infoS) {
 		info.width = std::atoi(infoS.width.c_str());
 		info.height = std::atoi(infoS.height.c_str());
@@ -15,6 +16,7 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 		info.loop = std::atoi(infoS.loop.c_str());
 		info.source = infoS.source;
 	};
+	// .csv形式のデータを,ごとに取り出しlistへ格納する
 	auto chengeCsvToList = [](std::list<int>& list, const std::string str){
 		// 取り出されるstringの一時保存先
 		std::string dataStr;
@@ -24,6 +26,7 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 			list.push_back(std::atoi(dataStr.c_str()));
 		}
 	};
+	// AnimDataSの中身を変換しAnimDataへ格納する
 	auto chengeAnimDataS = [chengeCsvToList](AnimData& data, const AnimDataS& dataS) {
 		chengeCsvToList(data.flameData, dataS.flameData);
 		chengeCsvToList(data.subscript, dataS.subscriptData);
@@ -31,7 +34,7 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 
 	if (animData_.count(id) != 0)
 	{
-		// assert(!"登録済みID");
+		// 登録済みIDは登録しないが既にデータはあるのでtrue
 		return true;
 	}
 	std::unique_ptr<AnimationLoder> loder = std::make_unique<AnimationLoder>();
@@ -40,14 +43,16 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 		assert(!"AnimTmx読み込み失敗");
 		return false;
 	}
+	// 読み込んできたデータの格納
 	for (const auto& animid : loder->GetAnimID())
 	{
-		auto infoS = loder->GetAnimInfoS(animid.first);
+		const auto& infoS = loder->GetAnimInfoS(animid.first);
 		chengeInfoS(animData_[id][animid.first].first, infoS);
-		auto dataS = loder->GetAnimDataS(animid.first);
+		const auto& dataS = loder->GetAnimDataS(animid.first);
 		chengeAnimDataS(animData_[id][animid.first].second, dataS);
 		animData_[id][animid.first].first.imgKey = infoS.source;
 		const auto& info = animData_[id][animid.first].first;
+		// 読み込んできたAnimationに必要な画像の読み込み
 		lpImageMng.GetID(info.imgKey, info.source.c_str(), Vector2{ info.width / info.widthCnt,info.height / info.heightCnt }, Vector2{ info.widthCnt, info.heightCnt });
 	}
 	
@@ -86,26 +91,33 @@ const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& 
 		assert(!"未登録アニメーション");
 		return -1;
 	}
+	// Animationの経過時間を進める
+	elapsed++;
+	// Animationに設定されている経過時間
 	int elapsedCnt = 0;
 	auto subscriptData = animData_[cID][aID].second.subscript.begin();
-
+	// 現在どの画像を表示するか
 	for (const auto& elapsedData : animData_[cID][aID].second.flameData)
 	{
 		elapsedCnt += elapsedData;
 		if (elapsed < elapsedCnt)
 		{
+			// 現在の経過時間よりAnimationに設定されている経過時間が長いならその時間に対応した位置の画像を返す
 			return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*subscriptData];
 		}
 		subscriptData++;
 	}
+	// for分を抜けてきているのでそのAnimationは1周している
 	if (animData_[cID][aID].first.loop < 0 || animData_[cID][aID].first.loop > loopNum)
 	{
+		// 今再生しているAnimationがloopもしくは設定された繰り返し回数に到達していない場合経過時間をリセットし最初に戻す
 		elapsed = 0;
 		loopNum++;
 		return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*animData_[cID][aID].second.subscript.begin()];
 	}
 	else
 	{
+		// 再生しているAnimationがloop再生されるものでもなく、設定された繰り返し回数に到達していた場合一番最後の画像を返す
 		return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*(--animData_[cID][aID].second.subscript.end())];
 	}
 }

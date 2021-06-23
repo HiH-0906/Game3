@@ -17,15 +17,24 @@ public:
 	virtual bool Init(const double& speed, unsigned int inputType) = 0;
 	virtual void Update(const double& delta) = 0;
 	virtual void Draw(const double& delta);
-	void SetAnimID(Anim_ID id);
+	
 private:
 protected:
+	// アニメーション変更
+	void SetAnimation(Anim_ID id);
+
+	Vector2 pos_;
+	std::map<INPUT_ID, Vector2Dbl> speed_;
+	std::unique_ptr<Controller> controller_;
+
+	// アニメーション関連変数
+	// @@Object側から使うことがもしないのならAnimationMng持ちでもいいかも
 	Anim_ID animID_;
 	char_ID charID_;
 	int animCnt_;
 	int animLoopCnt_;
-	Vector2 pos_;
-	std::map<INPUT_ID, Vector2Dbl> speed_;
-	std::unique_ptr<Controller> controller_;
+
+	double exRate_;
+	double angle_;
 };
 

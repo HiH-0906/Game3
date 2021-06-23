@@ -20,9 +20,10 @@ void Object::Update(const double& delta)
 void Object::Draw(const double& delta)
 {
     DrawGraph(pos_.x, pos_.y, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_), true);
+   // DrawRotaGraph(pos_.x,pos_.y,exRate_,angle_, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_),true);
 }
 
-void Object::SetAnimID(Anim_ID id)
+void Object::SetAnimation(Anim_ID id)
 {
     if (animID_ != id)
     {

@@ -20,6 +20,7 @@ Player::~Player()
 
 bool Player::Init(const double& speed, unsigned int inputType)
 {
+    // @@Œ»İ‚Í‚±‚±‚Å“Ç‚İ‚ñ‚Å‚¢‚é‚ªƒLƒƒƒ‰‚Æ‚©‚ª‘‚¦‚é‚æ‚¤‚È‚çGameScene‚ÌInit‚Æ‚©‚Å‚â‚é‚Ì‚ª‚¢‚¢‚©‚à
     lpAnimMng.LoadAnimTmx("animData/BluePlayerAnim.tmx", char_ID::B_Player);
     lpAnimMng.LoadAnimTmx("animData/WhitePlayerAnim.tmx", char_ID::W_Player);
     lpAnimMng.LoadAnimTmx("animData/RedPlayerAnim.tmx", char_ID::R_Player);
@@ -63,11 +64,10 @@ void Player::Update(const double& delta)
     }
     if (tmp)
     {
-        SetAnimID(Anim_ID::RUN);
+        SetAnimation(Anim_ID::RUN);
     }
     else
     {
-        SetAnimID(Anim_ID::IDLE);
+        SetAnimation(Anim_ID::IDLE);
     }
-    animCnt_++;
 }
