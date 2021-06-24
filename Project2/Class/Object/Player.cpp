@@ -60,6 +60,17 @@ void Player::Update(const double& delta)
         {
             tmp = true;
             pos_ += static_cast<Vector2>(speed_[id] * delta);
+            if (id==INPUT_ID::RIGHT)
+            {
+                reverseXFlag_ = false;
+            }
+            else if (id == INPUT_ID::LEFT)
+            {
+                reverseXFlag_ = true;
+            }
+            else
+            {
+            }
         }
     }
     if (tmp)

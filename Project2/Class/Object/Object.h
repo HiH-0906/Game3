@@ -28,11 +28,13 @@ protected:
 	std::unique_ptr<Controller> controller_;
 
 	// アニメーション関連変数
-	// @@Object側から使うことがもしないのならAnimationMng持ちでもいいかも
+	// @@Object側から使うことがもしないのならAnimationMng持ちでもいいかも別途Object番号いるけど
 	Anim_ID animID_;
 	char_ID charID_;
 	int animCnt_;
 	int animLoopCnt_;
+
+	bool reverseXFlag_;
 
 	double exRate_;
 	double angle_;

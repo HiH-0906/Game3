@@ -13,6 +13,8 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 		info.height = std::atoi(infoS.height.c_str());
 		info.widthCnt = std::atoi(infoS.widthCnt.c_str());
 		info.heightCnt = std::atoi(infoS.heightCnt.c_str());
+		info.widthOffset = std::atoi(infoS.widthOffset.c_str());
+		info.heigthOffset = std::atoi(infoS.heigthOffset.c_str());
 		info.loop = std::atoi(infoS.loop.c_str());
 		info.source = infoS.source;
 	};
@@ -120,6 +122,49 @@ const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& 
 		// 再生しているAnimationがloop再生されるものでもなく、設定された繰り返し回数に到達していた場合一番最後の画像を返す
 		return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*(--animData_[cID][aID].second.subscript.end())];
 	}
+}
+
+const bool AnimationMng::CheckAnimLoopEnd(char_ID cID, Anim_ID aID, const int& elapsed, const int& loopNum)
+{
+	if (animData_.count(cID) == 0)
+	{
+		assert(!"未登録キャラ");
+		return  true;
+	}
+	if (animData_[cID].count(aID) == 0)
+	{
+		assert(!"未登録アニメーション");
+		return true;
+	}
+	// Animationに設定されている経過時間
+	int elapsedCnt = 0;
+	// 現在どの画像を表示するか
+	for (const auto& elapsedData : animData_[cID][aID].second.flameData)
+	{
+		elapsedCnt += elapsedData;
+		if (elapsed < elapsedCnt)
+		{
+			// 現在の経過時間よりAnimationに設定されている経過時間が長いなら再生中
+			return false;
+		}
+	}
+	// for分を抜けてきているのでそのAnimationは1周している
+	if (animData_[cID][aID].first.loop < 0 || animData_[cID][aID].first.loop > loopNum)
+	{
+		// 今再生しているAnimationがloopもしくは設定された繰り返し回数に到達していない場合再生中
+		return false;
+	}
+	else
+	{
+		// 再生しているAnimationがloop再生されるものでもなく、設定された繰り返し回数に到達していた場合一番再生終了
+		return true;
+	}
+}
+
+const Vector2 AnimationMng::GetDrawOffSet(char_ID cID, Anim_ID aID)
+{
+	auto info = GetAnimInfo(cID, aID);
+	return Vector2(info.widthOffset, info.heigthOffset);
 }
 
 AnimationMng::AnimationMng()

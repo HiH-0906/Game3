@@ -21,6 +21,8 @@ struct AnimInfoS
 	std::string widthCnt = "";
 	std::string heightCnt = "";
 	std::string loop = "";
+	std::string widthOffset = "";
+	std::string heigthOffset = "";
 	std::string source = "";
 };
 

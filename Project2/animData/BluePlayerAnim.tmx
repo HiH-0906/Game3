@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anim version="1.0">
 	<character characterkey="B_player">
-		<animation animkey="idel" width ="64" height="576" tilecountwidth ="1" tilecountheight="6" loop="-1" source="image/player/Blue_witch/B_witch_idle.png">
+		<animation animkey="idel" width ="64" height="576" tilecountwidth ="1" tilecountheight="6" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/Blue_witch/B_witch_idle.png">
 			<flamedata encoding="csv">
 				7,7,7,7,7,7
 			</flamedata>
@@ -9,7 +9,7 @@
 				0,1,2,3,4,5
 			</subscriptdata>
 		</animation>
-		<animation animkey="run" width ="64" height="768" tilecountwidth ="1" tilecountheight="8" loop="-1" source="image/player/Blue_witch/B_witch_run.png">
+		<animation animkey="run" width ="64" height="768" tilecountwidth ="1" tilecountheight="8" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/Blue_witch/B_witch_run.png">
 			<flamedata encoding="csv">
 				7,7,7,7,7,7
 			</flamedata>

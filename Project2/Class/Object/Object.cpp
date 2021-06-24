@@ -8,6 +8,9 @@
 Object::Object(const Vector2& pos, const double& speed, const char_ID cID, unsigned int inputType) :
     pos_(pos), animID_(Anim_ID::IDLE), animCnt_(0),charID_(cID), animLoopCnt_(0)
 {
+    exRate_ = 1.0;
+    angle_ = 0.0;
+    reverseXFlag_ = false;
 }
 
 
@@ -19,8 +22,9 @@ void Object::Update(const double& delta)
 
 void Object::Draw(const double& delta)
 {
-    DrawGraph(pos_.x, pos_.y, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_), true);
-   // DrawRotaGraph(pos_.x,pos_.y,exRate_,angle_, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_),true);
+    //DrawGraph(pos_.x, pos_.y, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_), true);
+    auto offset = lpAnimMng.GetDrawOffSet(charID_,animID_);
+    DrawRotaGraph(pos_.x + offset.x, pos_.y + offset.y, exRate_, angle_, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
 }
 
 void Object::SetAnimation(Anim_ID id)

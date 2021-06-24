@@ -37,8 +37,11 @@ bool AnimationLoder::LoadAnimTmx(const std::string& filepath)
 		info_[animID_[animid]].height = animNode->first_attribute("height")->value();
 		info_[animID_[animid]].widthCnt = animNode->first_attribute("tilecountwidth")->value();
 		info_[animID_[animid]].heightCnt = animNode->first_attribute("tilecountheight")->value();
+		info_[animID_[animid]].widthOffset = animNode->first_attribute("widthOffset")->value();
+		info_[animID_[animid]].heigthOffset = animNode->first_attribute("heigthOffset")->value();
 		info_[animID_[animid]].loop = animNode->first_attribute("loop")->value();
 		info_[animID_[animid]].source = animNode->first_attribute("source")->value();
+
 		auto flamedata = animNode->first_node("flamedata");
 		if (!flamedata)
 		{

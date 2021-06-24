@@ -5,6 +5,7 @@
 #include <utility>
 #include "../Object/characterID.h"
 #include "../Animation/Anim_ID.h"
+#include "../common/Vector2.h"
 
 struct AnimData
 {
@@ -21,6 +22,8 @@ struct AnimInfo
 	int widthCnt = 0;
 	int heightCnt = 0;
 	int loop = 0;
+	int widthOffset = 0;
+	int heigthOffset = 0;
 	std::string source = "";
 	std::string imgKey = "";
 };
@@ -69,6 +72,23 @@ public:
 	/// <param name="loopNum">現在アニメーション繰り返し回数</param>
 	/// <returns>データがある場合表示すべき画像 ない場合-1</returns>
 	const int GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed, int& loopNum);
+	/// <summary>
+	/// 引数の情報をもとにloopが終わっているかを取得する
+	/// 登録されていないキャラIDやアニメーションIDが来た場合再生は終わっているものとする
+	/// </summary>
+	/// <param name="cID">キャラID</param>
+	/// <param name="aID">アニメーションID</param>
+	/// <param name="elapsed">経過フレーム数</param>
+	/// <param name="loopNum">現在繰り返し回数</param>
+	/// <returns>true:終わっている又はデータの存在しないID false:ループ中</returns>
+	const bool CheckAnimLoopEnd(char_ID cID, Anim_ID aID,const int& elapsed,const int& loopNum);
+	/// <summary>
+	/// 描画する際のoffSet獲得 データが存在しない場合{0,0}で返ってくる
+	/// </summary>
+	/// <param name="cID">獲得したいキャラのID</param>
+	/// <param name="aID">獲得したいアニメーションのID</param>
+	/// <returns>描画する際のoffset</returns>
+	const Vector2 GetDrawOffSet(char_ID cID, Anim_ID aID);
 private:
 	AnimationMng();
 	~AnimationMng() = default;
