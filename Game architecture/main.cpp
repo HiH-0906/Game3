@@ -51,6 +51,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	bool tmp = false;
 	bool isReverse = false;
 	int groundH = LoadGraph("Image/Assets/Assets.png");
+	int row = LoadGraph("Image/arrow2.png");
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
 		ClsDrawScreen();
@@ -81,42 +82,53 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		}
 		int x = 0;
 		int y = screenSizeY / 2;
-		Vector2f guroundPos(x, y);
+		Vector2f currentPos(x, y);
+		Vector2f lastPos = Vector2f::ZERO;
 		Vector2f lastDeltaVec[2] = { Vector2f::ZERO,Vector2f::ZERO };
-		for (int i = 0; i < 720 / BlockSize; i++)
+		for (int i = 0; i < 1080 / BlockSize; i++)
 		{
 			float nextX = i * BlockSize;
-			float nextY = (BlockSize * 2.0f * sinf(0.5f * static_cast<float>((nextX + fCnt)) * DX_PI_F / 180.0f));
+			float nextY = (BlockSize * 2.0f * sinf(0.5f * static_cast<float>((nextX + fCnt * 3)) * DX_PI_F / 180.0f));
 
 			Vector2f deltaVec =  Vector2f(BlockSize, nextY).Normalized() * BlockSize;
 
-			Vector2f next = guroundPos +deltaVec;
+			Vector2f next = currentPos +deltaVec;
 			
-
-			auto rightPos = next+deltaVec.Rotated90();
-
-			auto leftVec = guroundPos + deltaVec.Rotated90();
-			
+			auto middleVecTmp = deltaVec;
 			auto middleVecR = deltaVec.Rotated90();
+			// ‚Ð‚Æ‚Â‘O
 			if (!(lastDeltaVec[0] == Vector2f::ZERO))
 			{
-				middleVecR = (deltaVec.Rotated90() + lastDeltaVec[0]).Normalized() * BlockSize;
+				middleVecR = (middleVecR + lastDeltaVec[0]).Normalized() * BlockSize;
 			}
 			auto middleVecL = lastDeltaVec[0];
-			lastDeltaVec[0] = deltaVec.Rotated90();
+			// “ñ‚Â‘O
 			if (!(lastDeltaVec[1] == Vector2f::ZERO))
 			{
 				middleVecL = (middleVecL + lastDeltaVec[1]).Normalized() * BlockSize;
 			}
 			lastDeltaVec[1] = lastDeltaVec[0];
-			DrawRectModiGraph(guroundPos.x, guroundPos.y, next.x, next.y, rightPos.x, rightPos.y, leftVec.x, leftVec.y,48,0,16,16, groundH, true);
+			lastDeltaVec[0] = deltaVec.Rotated90();
 
-			DrawLineAA(guroundPos.x, guroundPos.y, next.x, next.y, 0xffffff, 2.0f);
-			DrawLineAA(next.x, next.y, rightPos.x, rightPos.y, 0xffffff, 2.0f);
-			DrawLineAA(guroundPos.x, guroundPos.y, leftVec.x, leftVec.y, 0x8888ff, 2.0f);
-			/*DrawLineAA(next.x, next.y, middleVec.x, middleVec.y, 0xff8888, 2.0f);*/
 
-			guroundPos = next;
+			auto middlePosL = currentPos + middleVecL;
+			auto middlePosR = next + middleVecR;
+
+			
+			if (lastPos != Vector2f::ZERO)
+			{
+				auto rightPos = currentPos + middleVecR;
+				auto leftPos = lastPos + middleVecL;
+				DrawRectModiGraph(lastPos.x, lastPos.y, currentPos.x, currentPos.y, rightPos.x, rightPos.y, leftPos.x, leftPos.y, 48, 0, 16, 16, groundH, true);
+			}
+
+			/*DrawLineAA(lastPos.x, lastPos.y, currentPos.x, currentPos.y, 0xffffff, 2.0f);
+			DrawLineAA(currentPos.x, currentPos.y, rightPos.x, rightPos.y, 0x88ff88, 2.0f);
+			DrawLineAA(lastPos.x, lastPos.y, leftPos.x, leftPos.y, 0x8888ff, 2.0f);
+			DrawCircle(lastPos.x, lastPos.y, 5, 0xff8888);*/
+
+			lastPos = currentPos;
+			currentPos = next;
 		}
 		
 		int centerX = 16;
