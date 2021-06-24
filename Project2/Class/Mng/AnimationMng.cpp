@@ -68,7 +68,7 @@ const Animation AnimationMng::GetAnimationData(char_ID cID, Anim_ID aID)
 		assert(!"–¢“o˜^ƒLƒƒƒ‰");
 		return Animation{};
 	}
-	if (animData_.count(cID) == 0)
+	if (animData_[cID].count(aID) == 0)
 	{
 		assert(!"–¢“o˜^ƒAƒjƒ[ƒVƒ‡ƒ“");
 		return Animation{};
@@ -124,6 +124,7 @@ const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& 
 	}
 }
 
+// @@GetAnimImag‚Æˆ—‚ª‚Ù‚Ú“¯‚¶‚È‚Ì‚Å‚Ç‚¤‚É‚©‚È‚ç‚ñ‚©‚ÈŠ´
 const bool AnimationMng::CheckAnimLoopEnd(char_ID cID, Anim_ID aID, const int& elapsed, const int& loopNum)
 {
 	if (animData_.count(cID) == 0)

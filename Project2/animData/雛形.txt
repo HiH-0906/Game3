@@ -13,6 +13,18 @@
    <subscriptdata encoding="csv">
    </subscriptdata>
   </animation>
+  <animation animkey="charge" width ="" height="" tilecountwidth ="" tilecountheight="" widthOffset = "" heigthOffset ="" loop="" source="">
+   <flamedata encoding="csv">
+   </flamedata>
+   <subscriptdata encoding="csv">
+   </subscriptdata>
+  </animation>
+  <animation animkey="charge_max" width ="" height="" tilecountwidth ="" tilecountheight="" widthOffset = "" heigthOffset ="" loop="" source="">
+   <flamedata encoding="csv">
+   </flamedata>
+   <subscriptdata encoding="csv">
+   </subscriptdata>
+  </animation>
  </character>
 </anim>
   

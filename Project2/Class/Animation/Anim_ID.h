@@ -4,6 +4,8 @@ enum class Anim_ID
 {
 	IDLE,
 	RUN,
+	CHARGE,
+	CHARGE_MAX,
 	MAX,
 };
 

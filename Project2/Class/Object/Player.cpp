@@ -70,12 +70,13 @@ void Player::Update(const double& delta)
             }
             else
             {
+                // ‰½‚à‚µ‚È‚¢
             }
         }
     }
     if (tmp)
     {
-        SetAnimation(Anim_ID::RUN);
+        SetAnimation(Anim_ID::CHARGE);
     }
     else
     {

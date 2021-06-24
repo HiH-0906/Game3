@@ -17,6 +17,22 @@
 				0,1,2,3,4,5
 			</subscriptdata>
 		</animation>
+		<animation animkey="charge" width ="136" height="1024" tilecountwidth ="1" tilecountheight="8" widthOffset = "0" heigthOffset ="0" loop="0" source="image/player/White_witch/W_witch_charge.png">
+			<flamedata encoding="csv">
+				7,7,7,7,7,7,7,7
+			</flamedata>
+			<subscriptdata encoding="csv">
+				0,1,2,3,4,5,6,7
+			</subscriptdata>
+		</animation>
+		<animation animkey="charge_max" width ="136" height="1024" tilecountwidth ="1" tilecountheight="8" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/White_witch/W_witch_charge.png">
+			<flamedata encoding="csv">
+				7,7
+			</flamedata>
+			<subscriptdata encoding="csv">
+				6,7
+			</subscriptdata>
+		</animation>
 	</character>
 </anim>
   
