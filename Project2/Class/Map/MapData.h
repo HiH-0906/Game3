@@ -32,6 +32,7 @@ public:
 	const int GetMapChipData(MAP_LAYER layer,const int& x, const int& y);
 	const int GetMapChipData(MAP_LAYER layer, const Vector2& pos);
 	const int GetMapChipData(MAP_LAYER layer, const Vector2Flt& pos);
+	bool CheckMapChip(const Vector2& pos);
 
 	const mapInfo& GetMapInfo(MAP_LAYER layer);
 private:

@@ -6,6 +6,7 @@
 #include "Transition/FadeInOut.h"
 #include "../Map/MapData.h"
 #include "../Mng/ImageMng.h"
+#include "../Mng/AnimationMng.h"
 #include "../Object/Player.h"
 
 GameScene::GameScene()
@@ -24,17 +25,25 @@ const SceneID GameScene::GetSceneID(void) const
 
 bool GameScene::Init(void)
 {
+	AnimInit();
 	mapData_ = std::make_unique<MapData>("mapData/map.tmx");
 	
 	const auto& info = mapData_->GetMapInfo(MAP_LAYER::BLOCK);
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	objList_.emplace_back(std::make_unique<Player>(Vector2{ 70,270 },120.0,char_ID::W_Player));
-	objList_.emplace_back(std::make_unique<Player>(Vector2{ 300,300 }, 120.0, char_ID::R_Player));
-	objList_.emplace_back(std::make_unique<Player>(Vector2{ 200,300 }, 120.0, char_ID::B_Player));
+	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 70,270 }, Vector2{},120.0, char_ID::W_Player));
+	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 300,300 }, Vector2{}, 120.0, char_ID::R_Player));
+	objList_.emplace_back(std::make_unique<Player>(Vector2{ 200,300 }, Vector2{}, 120.0, char_ID::B_Player));
 
 	return true;
+}
+
+void GameScene::AnimInit(void)
+{
+	lpAnimMng.LoadAnimTmx("animData/BluePlayerAnim.tmx", char_ID::B_Player);
+	lpAnimMng.LoadAnimTmx("animData/WhitePlayerAnim.tmx", char_ID::W_Player);
+	lpAnimMng.LoadAnimTmx("animData/RedPlayerAnim.tmx", char_ID::R_Player);
 }
 
 std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_ptr<BaseScene> ownScene)
@@ -45,7 +54,7 @@ std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_pt
 	}
 	for (const auto& obj : objList_)
 	{
-		obj->Update(delta);
+		obj->Update(delta,mapData_);
 	}
 	return std::move(ownScene);
 }

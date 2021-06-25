@@ -44,6 +44,20 @@ const int MapData::GetMapChipData(MAP_LAYER layer, const Vector2Flt& pos)
 	return GetMapChipData(layer, static_cast<Vector2>(tmp));
 }
 
+bool MapData::CheckMapChip(const Vector2& pos)
+{
+	int re = -1;
+	for (auto layer : MAP_LAYER())
+	{
+		re = GetMapChipData(layer, pos);
+		if (re != -1)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 const mapInfo& MapData::GetMapInfo(MAP_LAYER layer)
 {
 	return mapData_[mapKey_[layer]].second;

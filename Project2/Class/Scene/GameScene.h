@@ -13,6 +13,7 @@ public:
     ~GameScene();   
 private:
     bool Init(void)override final;
+    void AnimInit(void);
 
     const SceneID GetSceneID(void)const override final;
 
@@ -20,7 +21,7 @@ private:
 
     void DrawOwnScreen(const double& delta)override final;
 
-    std::unique_ptr<MapData> mapData_;
+    std::shared_ptr<MapData> mapData_;
     std::list<std::unique_ptr<Object>> objList_;
 };
 

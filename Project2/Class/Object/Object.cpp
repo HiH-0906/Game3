@@ -5,26 +5,37 @@
 #include "../Input/KeyBoard.h"
 #include "../Input/Pad.h"
 
-Object::Object(const Vector2& pos, const double& speed, const char_ID cID, unsigned int inputType) :
-    pos_(pos), animID_(Anim_ID::IDLE), animCnt_(0),charID_(cID), animLoopCnt_(0)
+std::map<INPUT_ID, DIR> Object::ChengeDIR_ = {
+    {INPUT_ID::UP,DIR::UP},
+    {INPUT_ID::DOWN,DIR::DOWN},
+    {INPUT_ID::LEFT,DIR::LEFT},
+    {INPUT_ID::RIGHT,DIR::RIGHT},
+    {INPUT_ID::BTN_1,DIR::MAX},
+    {INPUT_ID::BTN_2,DIR::MAX},
+    {INPUT_ID::BTN_3,DIR::MAX},
+    {INPUT_ID::MAX,DIR::MAX},
+};
+
+Object::Object(const Vector2& pos,const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
+    pos_(pos),size_(size), animID_(Anim_ID::IDLE), animCnt_(0),charID_(cID), animLoopCnt_(0)
 {
+    dir_ = DIR::LEFT;
     exRate_ = 1.0;
     angle_ = 0.0;
     reverseXFlag_ = false;
 }
 
 
-
-void Object::Update(const double& delta)
-{
-    
-}
-
 void Object::Draw(const double& delta)
 {
     auto offset = lpAnimMng.GetDrawOffSet(charID_,animID_);
+    if (reverseXFlag_)
+    {
+        offset = -offset;
+    }
     DrawRotaGraph(pos_.x + offset.x, pos_.y + offset.y, exRate_, angle_, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
 }
+
 
 void Object::SetAnimation(Anim_ID id)
 {

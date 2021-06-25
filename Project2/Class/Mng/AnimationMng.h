@@ -63,6 +63,13 @@ public:
 	/// <returns>アニメーションの画像関連データ</returns>
 	const AnimInfo GetAnimInfo(char_ID cID, Anim_ID aID);
 	/// <summary>
+	/// 引数で指定されたIDのInfoが存在するかどうか
+	/// </summary>
+	/// <param name="cID">キャラのID</param>
+	/// <param name="aID">アニメーションのID</param>
+	/// <returns>true:存在する false:存在しない</returns>
+	bool CheckAnimInfo(char_ID cID, Anim_ID aID);
+	/// <summary>
 	/// 引数の情報をもとに現在表示するべき画像を返す
 	/// キャラIDやアニメーションIDに対応したデータ登録されていない場合-1が返ってくる
 	/// </summary>
@@ -89,6 +96,14 @@ public:
 	/// <param name="aID">獲得したいアニメーションのID</param>
 	/// <returns>描画する際のoffset</returns>
 	const Vector2 GetDrawOffSet(char_ID cID, Anim_ID aID);
+	/// <summary>
+	/// 指定されたIDの時の分割後画像サイズを獲得する
+	/// 登録されていないデータの場合{0,0}で返ってくる
+	/// </summary>
+	/// <param name="cID">獲得したいキャラのID</param>
+	/// <param name="aID">獲得したいアニメーションのID </param>
+	/// <returns>分割後画像サイズ</returns>
+	Vector2 GetDivImageSize(char_ID cID, Anim_ID aID);
 private:
 	AnimationMng();
 	~AnimationMng() = default;

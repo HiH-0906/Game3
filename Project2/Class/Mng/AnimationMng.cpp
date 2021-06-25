@@ -81,6 +81,19 @@ const AnimInfo AnimationMng::GetAnimInfo(char_ID cID, Anim_ID aID)
 	return GetAnimationData(cID,aID).first;
 }
 
+bool AnimationMng::CheckAnimInfo(char_ID cID, Anim_ID aID)
+{
+	if (animData_.count(cID) == 0)
+	{
+		return  false;
+	}
+	if (animData_[cID].count(aID) == 0)
+	{
+		return false;
+	}
+	return true;
+}
+
 const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& loopNum)
 {
 	if (animData_.count(cID) == 0)
@@ -119,12 +132,13 @@ const int AnimationMng::GetAnimImag(char_ID cID, Anim_ID aID, int& elapsed,int& 
 	}
 	else
 	{
+		// ループ終了してるし最大値入れとく
+		loopNum = INT_MAX;
 		// 再生しているAnimationがloop再生されるものでもなく、設定された繰り返し回数に到達していた場合一番最後の画像を返す
 		return lpImageMng.GetID(animData_[cID][aID].first.imgKey)[*(--animData_[cID][aID].second.subscript.end())];
 	}
 }
 
-// @@GetAnimImagと処理がほぼ同じなのでどうにかならんかな感
 const bool AnimationMng::CheckAnimLoopEnd(char_ID cID, Anim_ID aID, const int& elapsed, const int& loopNum)
 {
 	if (animData_.count(cID) == 0)
@@ -137,20 +151,8 @@ const bool AnimationMng::CheckAnimLoopEnd(char_ID cID, Anim_ID aID, const int& e
 		assert(!"未登録アニメーション");
 		return true;
 	}
-	// Animationに設定されている経過時間
-	int elapsedCnt = 0;
-	// 現在どの画像を表示するか
-	for (const auto& elapsedData : animData_[cID][aID].second.flameData)
-	{
-		elapsedCnt += elapsedData;
-		if (elapsed < elapsedCnt)
-		{
-			// 現在の経過時間よりAnimationに設定されている経過時間が長いなら再生中
-			return false;
-		}
-	}
-	// for分を抜けてきているのでそのAnimationは1周している
-	if (animData_[cID][aID].first.loop < 0 || animData_[cID][aID].first.loop > loopNum)
+	// ワンショットアニメはloop回数が0なので0でも再生中かもしれない、Animationが終わっている場合loopNumの中身はINT_MAXになっている
+	if (animData_[cID][aID].first.loop <= 0 || animData_[cID][aID].first.loop > loopNum)
 	{
 		// 今再生しているAnimationがloopもしくは設定された繰り返し回数に到達していない場合再生中
 		return false;
@@ -166,6 +168,17 @@ const Vector2 AnimationMng::GetDrawOffSet(char_ID cID, Anim_ID aID)
 {
 	auto info = GetAnimInfo(cID, aID);
 	return Vector2(info.widthOffset, info.heigthOffset);
+}
+
+Vector2 AnimationMng::GetDivImageSize(char_ID cID, Anim_ID aID)
+{
+	// Checkしないと0除算する可能性があるため
+	if (!CheckAnimInfo(cID,aID))
+	{
+		return Vector2();
+	}
+	const auto info = GetAnimInfo(cID, aID);
+	return Vector2(info.width / info.widthCnt, info.height / info.heightCnt);
 }
 
 AnimationMng::AnimationMng()

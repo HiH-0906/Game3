@@ -10,4 +10,6 @@ enum class Anim_ID
 };
 
 Anim_ID begin(Anim_ID);
+Anim_ID end(Anim_ID);
+Anim_ID operator*(Anim_ID id);
 Anim_ID operator++(Anim_ID& key);
