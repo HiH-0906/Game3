@@ -7,7 +7,7 @@ namespace
 {
 	constexpr int screenSizeX = 640;
 	constexpr int screenSizeY = 480;
-	constexpr float BlockSize = 32.0f;
+	constexpr float BlockSize = 40.0f;
 }
 
 Position2 GetMousePosition()
@@ -85,10 +85,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		Vector2f currentPos(x, y);
 		Vector2f lastPos = Vector2f::ZERO;
 		Vector2f lastDeltaVec[2] = { Vector2f::ZERO,Vector2f::ZERO };
-		for (int i = 0; i < 1080 / BlockSize; i++)
+		for (int i = 0; i < 800 / BlockSize; i++)
 		{
 			float nextX = i * BlockSize;
-			float nextY = (BlockSize * 2.0f * sinf(0.5f * static_cast<float>((nextX + fCnt * 3)) * DX_PI_F / 180.0f));
+			float nextY = (BlockSize * 1.5f * sinf(0.5f * static_cast<float>((nextX + fCnt * 3)) * DX_PI_F / 180.0f));
 
 			Vector2f deltaVec =  Vector2f(BlockSize, nextY).Normalized() * BlockSize;
 
@@ -119,7 +119,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			{
 				auto rightPos = currentPos + middleVecR;
 				auto leftPos = lastPos + middleVecL;
-				DrawRectModiGraph(lastPos.x, lastPos.y, currentPos.x, currentPos.y, rightPos.x, rightPos.y, leftPos.x, leftPos.y, 48, 0, 16, 16, groundH, true);
+				DrawRectModiGraph(lastPos.x, lastPos.y, currentPos.x, currentPos.y, rightPos.x, rightPos.y, leftPos.x, leftPos.y, BlockSize * i, 0, 64, 64, row, true);
 			}
 
 			/*DrawLineAA(lastPos.x, lastPos.y, currentPos.x, currentPos.y, 0xffffff, 2.0f);

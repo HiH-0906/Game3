@@ -6,6 +6,8 @@
 #include "../Input/KeyBoard.h"
 #include "../Input/Pad.h"
 #include "../Map/MapData.h"
+#include "../common/Raycast.h"
+#include "../../_debug/_DebugDispOut.h"
 
 
 
@@ -31,68 +33,69 @@ bool Player::Init(const double& speed, unsigned int inputType)
     }
     else
     {
-        // @@enumclassにしたほうがわかりやすいのでは疑惑
+        // @@enumclassにしたほうがわかりやすいのでは疑惑現状２つしかないので放置
         assert(!"存在しないInputType");
     }
 
-    speed_.try_emplace(INPUT_ID::LEFT, Vector2Dbl{ -speed,0.0 });
-    speed_.try_emplace(INPUT_ID::RIGHT, Vector2Dbl{ speed,0.0 });
-    speed_.try_emplace(INPUT_ID::UP, Vector2Dbl{ 0.0,-speed });
-    speed_.try_emplace(INPUT_ID::DOWN, Vector2Dbl{ 0.0,speed });
-    speed_.try_emplace(INPUT_ID::BTN_1, Vector2Dbl{ 0.0,0.0 });
-    speed_.try_emplace(INPUT_ID::BTN_2, Vector2Dbl{ 0.0,0.0 });
-    speed_.try_emplace(INPUT_ID::BTN_3, Vector2Dbl{ 0.0,0.0 });
-    speed_.try_emplace(INPUT_ID::MAX, Vector2Dbl{ 0.0,0.0 });
+    size_ = lpAnimMng.GetDivImageSize(charID_, animID_);
 
-    SetCollisionPos();
+    raycast_ = std::make_unique<Raycast>();
 
     return true;
 }
 
 void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
 {
-    auto CheckMoveDir = [&](const Vector2& pos)
+    auto CheckMove = [&](Vector2 moveVec)
     {
-        for (const auto& col:collisionPos_[dir_])
+        Raycast::Ray ray = { pos_ ,moveVec };
+        _dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
+        _dbgDrawBox(pos_.x - size_.x / 2, pos_.y - size_.y / 2, pos_.x + size_.x / 2, pos_.y + size_.y / 2, 0xff0000, false);
+        for (auto colData : mapData.lock()->GetColData())
         {
-            auto tmp = pos + col;
-            if ((mapData.lock())->CheckMapChip(tmp))
+            if (raycast_->CheckCollision(ray,colData))
             {
-                return true;
+                _dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xffffff, true);
+                return false;
             }
         }
-        return false;
+        return true;
+    };
+    auto MoveFunc = [&](INPUT_ID id, const Vector2& speed, const Vector2& offset) {
+        if (!controller_->GetNow(id))
+        {
+            return false;
+        }
+        // @@ただの反転できるかのテストコード
+        if (id == INPUT_ID::RIGHT)
+        {
+            reverseXFlag_ = false;
+        }
+        else if (id == INPUT_ID::LEFT)
+        {
+            reverseXFlag_ = true;
+        }
+        else
+        {
+            // 何もしない
+        }
+        if (CheckMove(speed + offset))
+        {
+            pos_ += speed;
+        }
+        return true;
+    };
+    for (auto colData : mapData.lock()->GetColData())
+    {
+        _dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
     };
     controller_->Update();
     bool tmp = false;
-    for (auto id : INPUT_ID())
-    {
-        if (controller_->GetNow(id))
-        {
-            if (ChengeDIR_[id] != DIR::MAX)
-            {
-                dir_ = ChengeDIR_[id];
-            }
-            tmp = true;
-            auto tmpPos= pos_ + static_cast<Vector2>(speed_[id] * delta);
-            if (CheckMoveDir(tmpPos))
-            {
-                pos_ = tmpPos;
-            }
-            if (id==INPUT_ID::RIGHT)
-            {
-                reverseXFlag_ = false;
-            }
-            else if (id == INPUT_ID::LEFT)
-            {
-                reverseXFlag_ = true;
-            }
-            else
-            {
-                // 何もしない
-            }
-        }
-    }
+    tmp |= MoveFunc(INPUT_ID::LEFT, Vector2{ -static_cast<int>(speed_ * delta),0 }, -(Vector2{ size_.x / 2 ,0 }));
+    tmp |= MoveFunc(INPUT_ID::RIGHT, Vector2{ static_cast<int>(speed_ * delta),0 }, (Vector2{ size_.x / 2 ,0 }));
+    tmp |= MoveFunc(INPUT_ID::UP, Vector2{ 0,-static_cast<int>(speed_ * delta) }, -(Vector2{ 0,size_.y / 2 }));
+    tmp |= MoveFunc(INPUT_ID::DOWN, Vector2{ 0,static_cast<int>(speed_ * delta) }, (Vector2{ 0,size_.y / 2 }));
+    // @@走らせるアニメーション確認のためのテストコード
     if (tmp)
     {
         SetAnimation(Anim_ID::RUN);
@@ -100,22 +103,5 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     else
     {
         SetAnimation(Anim_ID::IDLE);
-    }
-}
-
-void Player::SetCollisionPos(void)
-{
-    for (const auto aID : Anim_ID())
-    {
-        Vector2 imageSize = { lpAnimMng.GetDivImageSize(charID_, aID).x / 2 ,lpAnimMng.GetDivImageSize(charID_, aID).y / 2 };
-        collisionPos_[DIR::UP].emplace_back(Vector2(-imageSize.x,-imageSize.y));
-        collisionPos_[DIR::UP].emplace_back(Vector2(imageSize.x,-imageSize.y));
-        collisionPos_[DIR::DOWN].emplace_back(Vector2(-imageSize.x,imageSize.y));
-        collisionPos_[DIR::DOWN].emplace_back(Vector2(imageSize.x,imageSize.y));
-        collisionPos_[DIR::LEFT].emplace_back(Vector2(-imageSize.x, -imageSize.y));
-        collisionPos_[DIR::LEFT].emplace_back(Vector2(-imageSize.x, imageSize.y));
-        collisionPos_[DIR::RIGHT].emplace_back(Vector2(imageSize.x, -imageSize.y));
-        collisionPos_[DIR::RIGHT].emplace_back(Vector2(imageSize.x, imageSize.y));
-        collisionPos_[DIR::MAX].emplace_back(Vector2());
     }
 }

@@ -27,7 +27,8 @@ public:
 	virtual bool Init(const double& speed, unsigned int inputType) = 0;
 	virtual void Update(const double& delta,std::weak_ptr<MapData> mapData) = 0;
 	virtual void Draw(const double& delta);
-	virtual void SetCollisionPos(void) = 0;
+
+	const Vector2 GetPos(void)const;
 	
 private:
 protected:
@@ -37,7 +38,7 @@ protected:
 	Vector2 pos_;
 	Vector2 size_;
 
-	std::map<INPUT_ID, Vector2Dbl> speed_;
+	double speed_;
 	std::map<DIR, std::vector<Vector2>> collisionPos_;
 
 	std::unique_ptr<Controller> controller_;
@@ -49,8 +50,6 @@ protected:
 	DIR dir_;
 	int animCnt_;
 	int animLoopCnt_;
-
-	static std::map<INPUT_ID, DIR> ChengeDIR_;
 
 	bool reverseXFlag_;
 

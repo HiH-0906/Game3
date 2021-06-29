@@ -63,15 +63,20 @@ const mapInfo& MapData::GetMapInfo(MAP_LAYER layer)
 	return mapData_[mapKey_[layer]].second;
 }
 
+const ColData& MapData::GetColData(void)
+{
+	return collisionvec_;
+}
+
 bool MapData::Init(const std::string& fileName)
 {
 	auto reedTmx = [&](const std::string& fileName)
 	{
-		std::unique_ptr<Loader::TmxLoader> loadr = std::make_unique<Loader::TmxLoader>(fileName.c_str());
+		std::unique_ptr<Loader::TmxLoader> loader = std::make_unique<Loader::TmxLoader>(fileName.c_str());
 		int id = 0;
-		for (const auto& tmp : loadr->GetmapStr())
+		for (const auto& tmp : loader->GetmapStr())
 		{
-			auto info = loadr->GetMapInfo();
+			auto info = loader->GetMapInfo();
 			// Žæ‚èo‚³‚ê‚éstring‚ÌˆêŽž•Û‘¶æ
 			std::string mapStr;
 			// stream‚É•ÏŠ·
@@ -87,6 +92,14 @@ bool MapData::Init(const std::string& fileName)
 				vec.push_back(atoi(mapStr.c_str()) - info.firstGID);
 			}
 			mapData_[tmp.name] = { vec,info };
+		}
+		const auto& dataS=loader->GetColDataS();
+		for (const auto& str : dataS)
+		{
+			collisionvec_.emplace_back(
+				Vector2{ std::atoi(str.x.c_str()),std::atoi(str.y.c_str()) },
+				Vector2{ std::atoi(str.width.c_str()),std::atoi(str.height.c_str()) }
+			);
 		}
 	};
 	reedTmx(fileName);

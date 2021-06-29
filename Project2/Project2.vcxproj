@@ -153,6 +153,9 @@
   <ItemGroup>
     <ClCompile Include="Class\Animation\AnimationLoder.cpp" />
     <ClCompile Include="Class\Animation\Anim_ID.cpp" />
+    <ClCompile Include="Class\collision\Collision.cpp" />
+    <ClCompile Include="Class\collision\SquaerCollision.cpp" />
+    <ClCompile Include="Class\common\Raycast.cpp" />
     <ClCompile Include="Class\Input\Controller.cpp" />
     <ClCompile Include="Class\Input\INPUT_ID.cpp" />
     <ClCompile Include="Class\Input\KeyBoard.cpp" />
@@ -178,6 +181,9 @@
   <ItemGroup>
     <ClInclude Include="Class\Animation\AnimationLoder.h" />
     <ClInclude Include="Class\Animation\Anim_ID.h" />
+    <ClInclude Include="Class\collision\Collision.h" />
+    <ClInclude Include="Class\collision\SquaerCollision.h" />
+    <ClInclude Include="Class\common\Raycast.h" />
     <ClInclude Include="Class\Mng\AnimationMng.h" />
     <ClInclude Include="Class\Object\characterID.h" />
     <ClInclude Include="Class\Input\Controller.h" />

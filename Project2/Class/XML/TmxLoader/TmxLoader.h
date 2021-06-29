@@ -28,6 +28,14 @@ struct mapInfo
 	std::string imageStr = std::string{};
 	Vector2 imageSize = Vector2{};
 };
+
+struct colDataS
+{
+	std::string x;
+	std::string y;
+	std::string width;
+	std::string height;
+};
 // そんな長くないけどusingしとくか感
 using mapStr = std::vector<Layer>;
 
@@ -42,10 +50,12 @@ namespace Loader
 		const mapStr GetmapStr(void);				// ロードしてきたstringを渡す奴
 		const std::string GetMapKey(void);			// Tsxロード時作成されたImageへアクセスするためのキー
 		const mapInfo GetMapInfo(void);				// マップ作成時に必要な情報セット
+		const std::vector <colDataS>& GetColDataS(void);			// ColDataSの獲得
 		~TmxLoader();
 	private:
 		void VersionMap(void);						// 対応バージョン格納するためだけの奴
 		int  GetLayerSize(void);					// レイヤーの最大数獲得するだけの奴
+		bool LoadColData(void);						// colision用のデータの読み込み
 		bool TsxLoad(std::string filename);			// Tsxファイルをロード TmxLoadから呼び出される
 
 		rapidxml::xml_document<> TmxDoc_;
@@ -56,6 +66,7 @@ namespace Loader
 
 		std::map<std::string, int> version_;		// 今後別バージョンに対応した際こいつに対応したバージョンをキーにして適当な値を入れ入れとけば対応してるかどうか確認するときに楽
 		mapStr mapStr_;								// 読み込んだstringの保存場所
+		std::vector<colDataS> colDataSvec_;			// 読み込んだCollision用の情報保存先
 		mapInfo info_;								// 読み込んだマップ作製用情報を使いやすい形に変え格納したもの
 	};
 }

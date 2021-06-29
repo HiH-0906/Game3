@@ -224,7 +224,7 @@ Vector2Template<T> operator*(const Vector2Template<T>& vec, T u)
 	return Vector2Template<T>(vec.x * u, vec.y * u);
 }
 template <class T>
-Vector2Template<T> operator/(const Vector2Template<T>& vec, T u)
+Vector2Template<T> operator/(Vector2Template<T>& vec, T u)
 {
 	if (vec.x == 0 || vec.y == 0)
 	{

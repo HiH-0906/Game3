@@ -59,7 +59,7 @@ bool Loader::TmxLoader::TmxLoad(std::string filename)
 
 	auto itrLayer = mapStr_.begin();
 
-	for (rapidxml::xml_node<>* layer = tmx_orign_node_->first_node("layer"); layer != nullptr; layer = layer->next_sibling())
+	for (rapidxml::xml_node<>* layer = tmx_orign_node_->first_node("layer"); layer != nullptr; layer = layer->next_sibling("layer"))
 	{
 		itrLayer->name = layer->first_attribute("name")->value();
 		auto data = layer->first_node("data")->first_node();
@@ -72,7 +72,7 @@ bool Loader::TmxLoader::TmxLoad(std::string filename)
 	auto source = tmx_orign_node_->first_node("tileset")->first_attribute("source")->value();
 
 	std::string pass = filename.substr(0, filename.find_last_of("/") + 1);
-
+	LoadColData();
 	return TsxLoad(pass + source);
 }
 
@@ -118,6 +118,26 @@ int Loader::TmxLoader::GetLayerSize(void)
 	return (std::atoi(tmx_orign_node_->first_attribute("nextlayerid")->value()) - 1);
 }
 
+bool Loader::TmxLoader::LoadColData(void)
+{
+	auto objectGroup = tmx_orign_node_->first_node("objectgroup");
+	if (!objectGroup)
+	{
+		assert(!"objectGroup‚ª‚È‚¢");
+		return false;
+	}
+	for (rapidxml::xml_node<>* object = objectGroup->first_node("object"); object != nullptr; object = object->next_sibling("object"))
+	{
+		colDataS data;
+		data.x = object->first_attribute("x")->value();
+		data.y = object->first_attribute("y")->value();
+		data.width = object->first_attribute("width")->value();
+		data.height = object->first_attribute("height")->value();
+		colDataSvec_.emplace_back(data);
+	}
+	return true;
+}
+
 const mapStr Loader::TmxLoader::GetmapStr(void)
 {
 	return mapStr_;
@@ -131,6 +151,11 @@ const std::string Loader::TmxLoader::GetMapKey(void)
 const mapInfo Loader::TmxLoader::GetMapInfo(void)
 {
 	return info_;
+}
+
+const std::vector <colDataS>& Loader::TmxLoader::GetColDataS(void)
+{
+	return colDataSvec_;
 }
 
 

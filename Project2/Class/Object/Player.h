@@ -9,6 +9,8 @@ enum class PlayerColor
     WHITE
 };
 
+class Raycast;
+
 class Player :
     public Object
 {
@@ -18,6 +20,7 @@ public:
 private:
     bool Init(const double& speed, unsigned int inputType)override final;
     void Update(const double& delta, std::weak_ptr<MapData> mapData)override final;
-    virtual void SetCollisionPos(void)override final;
+
+    std::unique_ptr<Raycast> raycast_;
 };
 

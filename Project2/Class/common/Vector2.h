@@ -66,7 +66,7 @@ Vector2Template<T> operator - (const Vector2Template<T>& vec, T u);
 template <class T>
 Vector2Template<T> operator * (const Vector2Template<T>& vec, T u);
 template <class T>
-Vector2Template<T> operator / (const Vector2Template<T>& vec, T u);
+Vector2Template<T> operator / (Vector2Template<T>& vec, T u);
 template <class T>
 Vector2Template<T> operator * (T u, const Vector2Template<T>& vec);
 template <class T>

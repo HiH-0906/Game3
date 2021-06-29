@@ -20,6 +20,7 @@ MAP_LAYER operator*(MAP_LAYER layer);
 
 // マップ情報
 using MapDataMap = std::map<std::string, std::pair<std::vector<int>, mapInfo>>;
+using ColData = std::vector<std::pair<Vector2, Vector2>>;
 
 class MapData
 {
@@ -35,9 +36,11 @@ public:
 	bool CheckMapChip(const Vector2& pos);
 
 	const mapInfo& GetMapInfo(MAP_LAYER layer);
+	const ColData& GetColData(void);
 private:
 	bool Init(const std::string& fileName);
-
+	
+	ColData collisionvec_;
 	MapDataMap mapData_;
 	// コンバーター
 	std::map<MAP_LAYER, std::string> mapKey_;
