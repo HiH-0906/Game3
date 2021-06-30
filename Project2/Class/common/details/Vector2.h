@@ -226,7 +226,7 @@ Vector2Template<T> operator*(const Vector2Template<T>& vec, T u)
 template <class T>
 Vector2Template<T> operator/(Vector2Template<T>& vec, T u)
 {
-	if (vec.x == 0 || vec.y == 0)
+	if (u == 0)
 	{
 		assert(!"0œZ Œ^‚ÌÅ‘å’l‚ğ•Ô‚µ‚Ü‚·FVector2Temple");
 		vec.x = std::numeric_limits<T>::max();

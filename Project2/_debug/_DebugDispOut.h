@@ -83,7 +83,9 @@ private:
 #define _dbgSetAlpha(A)
 #define _dbgStartDraw()
 #define _dbgAddDraw()
+#define _dbgDraw()
 #define _dbgDrawGraph(fmt, ...)
 #define _dbgDrawBox(fmt, ...)
+#define _dbgDrawLine(fmt, ...)
 
 #endif	// _DEBUG

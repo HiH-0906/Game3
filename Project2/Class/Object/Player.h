@@ -21,6 +21,8 @@ private:
     bool Init(const double& speed, unsigned int inputType)override final;
     void Update(const double& delta, std::weak_ptr<MapData> mapData)override final;
 
+    bool isJunp_;
+
     std::unique_ptr<Raycast> raycast_;
 };
 
