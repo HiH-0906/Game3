@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <DxLib.h>
 #include "Player.h"
 #include "../Mng/ImageMng.h"
@@ -52,7 +53,7 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     auto CheckMove = [&](Vector2 moveVec,Vector2 offset)
     {
         Vector2 tmpPos = pos_ - offset;
-       
+
         for (int i = 0; i < 9; i++)
         {
             Raycast::Ray ray = { tmpPos ,moveVec };
@@ -60,6 +61,7 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
             _dbgDrawBox(pos_.x - size_.x / 2, pos_.y - size_.y / 2, pos_.x + size_.x / 2, pos_.y + size_.y / 2, 0xff0000, false);
             for (auto colData : mapData.lock()->GetColData())
             {
+                _dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
                 if (raycast_->CheckCollision(ray, colData))
                 {
                     _dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xffffff, true);
@@ -106,15 +108,11 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
         }
         return true;
     };
-    for (auto colData : mapData.lock()->GetColData())
-    {
-        _dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
-    };
     controller_->Update();
     bool tmp = false;
     tmp |= MoveFunc(INPUT_ID::LEFT, Vector2{ -static_cast<int>(speed_ * delta),0 }, -(Vector2{ size_.x / 2 ,0 }));
     tmp |= MoveFunc(INPUT_ID::RIGHT, Vector2{ static_cast<int>(speed_ * delta),0 }, (Vector2{ size_.x / 2 ,0 }));
-    //tmp |= MoveFunc(INPUT_ID::UP, Vector2{ 0,-static_cast<int>(speed_ * delta) }, -(Vector2{ 0,size_.y / 2 }));
+    tmp |= MoveFunc(INPUT_ID::UP, Vector2{ 0,-static_cast<int>(speed_ * delta) }, -(Vector2{ 0,size_.y / 2 }));
     tmp |= MoveFunc(INPUT_ID::DOWN, Vector2{ 0,static_cast<int>(speed_ * delta) }, (Vector2{ 0,size_.y / 2 }));
     // @@走らせるアニメーション確認のためのテストコード
     if (tmp)
@@ -128,29 +126,4 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     // 画面端処理
     pos_.x = std::min(std::max(pos_.x, size_.x / 2), lpSceneMng.GetScreenSize().x - (size_.x / 2));
     pos_.y = std::min(std::max(pos_.y, size_.y / 2 - 10), lpSceneMng.GetScreenSize().y - (size_.y / 2));
-    // @@雑ジャンプ 雑すぎてジャンプに見えない
-    int g = 5;
-    if (!isJunp_)
-    {
-        if (controller_->GetTrg(INPUT_ID::UP))
-        {
-            isJunp_ = true;
-        }
-        if (CheckMove(Vector2{ 0,size_.y / 2 + g }, Vector2{ size_.x / 2,0 }))
-        {
-            pos_.y += g;
-        }
-    }
-    else
-    {
-        if (CheckMove(Vector2{ 0,-size_.y / 2 }, Vector2{ size_.x / 2,0 }))
-        {
-            pos_.y -= 10;
-        }
-        if (junpCnt++ > 30)
-        {
-            junpCnt = 0;
-            isJunp_ = false;
-        }
-    }
 }

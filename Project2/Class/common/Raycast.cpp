@@ -13,7 +13,7 @@ bool Raycast::CheckCollision(const Ray& ray, const std::pair<Vector2, Vector2>& 
 
 bool Raycast::CheckLine(Ray ray, Line line)
 {
-	Vector2 v = line.point - ray.point;
+	const Vector2 v = line.point - ray.point;
 	float crsA = static_cast<float>(Cross(ray.vec, line.vec()));
 	// ïΩçsÇ©Ç«Ç§Ç©
 	if (crsA == 0.0f)

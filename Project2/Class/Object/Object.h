@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <functional>
 #include "../common/Vector2.h"
 #include "../Input/INPUT_ID.h"
 #include "../Animation/Anim_ID.h"
@@ -42,6 +43,8 @@ protected:
 	std::map<DIR, std::vector<Vector2>> collisionPos_;
 
 	std::unique_ptr<Controller> controller_;
+
+	std::map<Anim_ID, std::function<bool(Object& obj)>> update_;
 
 	// アニメーション関連変数
 	// @@Object側から使うことがもしないのならAnimationMng持ちでもいいかも別途Object番号いるけど
