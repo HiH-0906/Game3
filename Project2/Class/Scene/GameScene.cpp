@@ -34,7 +34,7 @@ bool GameScene::Init(void)
 
 	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 70,270 }, Vector2{},120.0, char_ID::W_Player));
 	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 300,300 }, Vector2{}, 120.0, char_ID::R_Player));
-	objList_.emplace_back(std::make_unique<Player>(Vector2{ 500,100 }, Vector2{0,0}, 120.0, char_ID::B_Player));
+	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0}, 120.0, char_ID::B_Player));
 
 	return true;
 }

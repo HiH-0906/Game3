@@ -162,6 +162,7 @@
     <ClCompile Include="Class\Mng\AnimationMng.cpp" />
     <ClCompile Include="Class\Mng\ImageMng.cpp" />
     <ClCompile Include="Class\Object\Object.cpp" />
+    <ClCompile Include="Class\Object\Pawn.cpp" />
     <ClCompile Include="Class\Object\Player.cpp" />
     <ClCompile Include="Class\Scene\GameScene.cpp" />
     <ClCompile Include="Class\Scene\Transition\CrossOver.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Class\Map\MapData.h" />
     <ClInclude Include="Class\Mng\ImageMng.h" />
     <ClInclude Include="Class\Object\Object.h" />
+    <ClInclude Include="Class\Object\Pawn.h" />
     <ClInclude Include="Class\Object\Player.h" />
     <ClInclude Include="Class\Scene\Transition\CrossOver.h" />
     <ClInclude Include="Class\Scene\Transition\FadeInOut.h" />

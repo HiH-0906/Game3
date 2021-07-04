@@ -23,24 +23,23 @@ enum class DIR
 class Object
 {
 public:
-	Object(const Vector2& pos,const Vector2& size, const double& speed,const char_ID cID, unsigned int inputType = 0);
+	Object(const Vector2Flt& pos,const Vector2& size, const double& speed,const char_ID cID, unsigned int inputType = 0);
 	virtual ~Object() = default;
 	virtual bool Init(const double& speed, unsigned int inputType) = 0;
 	virtual void Update(const double& delta,std::weak_ptr<MapData> mapData) = 0;
 	virtual void Draw(const double& delta);
 
-	const Vector2 GetPos(void)const;
+	const Vector2Flt GetPos(void)const;
 	
 private:
 protected:
 	// アニメーション変更
 	void SetAnimation(Anim_ID id);
 
-	Vector2 pos_;
+	Vector2Flt pos_;
 	Vector2 size_;
 
 	double speed_;
-	std::map<DIR, std::vector<Vector2>> collisionPos_;
 
 	std::unique_ptr<Controller> controller_;
 

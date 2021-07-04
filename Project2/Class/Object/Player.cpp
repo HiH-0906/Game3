@@ -15,7 +15,7 @@ namespace {
     int junpCnt = 0;
 }
 
-Player::Player(const Vector2& pos, const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
+Player::Player(const Vector2Flt& pos, const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
     Object(pos,size, speed, cID, inputType)
 { 
     Init(speed, inputType);
@@ -44,15 +44,16 @@ bool Player::Init(const double& speed, unsigned int inputType)
     size_ = lpAnimMng.GetDivImageSize(charID_, animID_);
 
     raycast_ = std::make_unique<Raycast>();
-    isJunp_ = false;
+    defJunpPower_ = -8;
+    yaddPower_ = 0;
     return true;
 }
 
 void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
 {
-    auto CheckMove = [&](Vector2 moveVec,Vector2 offset)
+    auto CheckMove = [&](Vector2Flt moveVec, Vector2Flt offset)
     {
-        Vector2 tmpPos = pos_ - offset;
+        Vector2Flt tmpPos = pos_ - offset;
 
         for (int i = 0; i < 9; i++)
         {
@@ -68,35 +69,35 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
                     return false;
                 }
             }
-            tmpPos += offset / 4;
+            tmpPos += offset / 4.0f;
         }
 
         return true;
     };
-    auto MoveFunc = [&](INPUT_ID id, const Vector2& speed, const Vector2& offset) {
+    auto MoveFunc = [&](INPUT_ID id, const Vector2Flt& speed, const Vector2Flt& offset) {
         if (!controller_->GetNow(id))
         {
             return false;
         }
-        Vector2 rayoffset = {};
+        Vector2Flt rayoffset = {};
         // @@ただの反転できるかのテストコード
         if (id == INPUT_ID::RIGHT)
         {
             reverseXFlag_ = false;
-            rayoffset.y = size_.y / 2;
+            rayoffset.y = size_.y / 2.0f;
         }
         else if (id == INPUT_ID::LEFT)
         {
             reverseXFlag_ = true;
-            rayoffset.y = size_.y / 2;
+            rayoffset.y = size_.y / 2.0f;
         }
         else if (id == INPUT_ID::UP)
         {
-            rayoffset.x = size_.x / 2;
+            rayoffset.x = size_.x / 2.0f;
         }
         else if (id == INPUT_ID::DOWN)
         {
-            rayoffset.x = size_.x / 2;
+            rayoffset.x = size_.x / 2.0f;
         }
         else
         {
@@ -110,10 +111,10 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     };
     controller_->Update();
     bool tmp = false;
-    tmp |= MoveFunc(INPUT_ID::LEFT, Vector2{ -static_cast<int>(speed_ * delta),0 }, -(Vector2{ size_.x / 2 ,0 }));
-    tmp |= MoveFunc(INPUT_ID::RIGHT, Vector2{ static_cast<int>(speed_ * delta),0 }, (Vector2{ size_.x / 2 ,0 }));
-    tmp |= MoveFunc(INPUT_ID::UP, Vector2{ 0,-static_cast<int>(speed_ * delta) }, -(Vector2{ 0,size_.y / 2 }));
-    tmp |= MoveFunc(INPUT_ID::DOWN, Vector2{ 0,static_cast<int>(speed_ * delta) }, (Vector2{ 0,size_.y / 2 }));
+    tmp |= MoveFunc(INPUT_ID::LEFT, Vector2Flt{ -static_cast<float>(speed_ * delta),0.0f }, -(Vector2Flt{ size_.x / 2.0f ,0.0f }));
+    tmp |= MoveFunc(INPUT_ID::RIGHT, Vector2Flt{ static_cast<float>(speed_ * delta),0.0f }, (Vector2Flt{ size_.x / 2.0f ,0.0f }));
+    //tmp |= MoveFunc(INPUT_ID::UP, Vector2Flt{ 0.0f,-static_cast<float>(speed_ * delta) }, -(Vector2Flt{ 0.0f,size_.y / 2.0f }));
+    //tmp |= MoveFunc(INPUT_ID::DOWN, Vector2Flt{ 0.0f,static_cast<float>(speed_ * delta) }, (Vector2Flt{ 0.0f,size_.y / 2.0f }));
     // @@走らせるアニメーション確認のためのテストコード
     if (tmp)
     {
@@ -123,7 +124,34 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     {
         SetAnimation(Anim_ID::IDLE);
     }
+
+    if (controller_->GetNow(INPUT_ID::BTN_1))
+    {
+        yaddPower_ = defJunpPower_;
+    }
+    Vector2Flt moveVec = {};
+    Vector2Flt offset = {};
+    if (yaddPower_ < 0)
+    {
+        moveVec = { 0.0f,yaddPower_ - size_.y / 2.0f };
+        offset = { size_.x / 2.0f,0.0f };
+    }
+    else
+    {
+        moveVec = { 0.0f,yaddPower_ + size_.y / 2.0f };
+        offset = { size_.x / 2.0f,0.0f };
+    }
+    if (CheckMove(moveVec, offset))
+    {
+        pos_.y += yaddPower_;
+        yaddPower_ += 0.2f;
+    }
+    else
+    {
+        yaddPower_ = 0.2f;
+    }
+
     // 画面端処理
-    pos_.x = std::min(std::max(pos_.x, size_.x / 2), lpSceneMng.GetScreenSize().x - (size_.x / 2));
-    pos_.y = std::min(std::max(pos_.y, size_.y / 2 - 10), lpSceneMng.GetScreenSize().y - (size_.y / 2));
+    pos_.x = std::min(std::max(pos_.x, size_.x / 2.0f), lpSceneMng.GetScreenSize().x - (size_.x / 2.0f));
+    pos_.y = std::min(std::max(pos_.y, size_.y / 2.0f - 10.0f), lpSceneMng.GetScreenSize().y - (size_.y / 2.0f));
 }

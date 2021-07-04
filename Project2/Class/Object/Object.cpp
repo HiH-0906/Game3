@@ -5,7 +5,7 @@
 #include "../Input/KeyBoard.h"
 #include "../Input/Pad.h"
 
-Object::Object(const Vector2& pos,const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
+Object::Object(const Vector2Flt& pos,const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
     pos_(pos),size_(size), animID_(Anim_ID::IDLE), animCnt_(0),charID_(cID), animLoopCnt_(0),speed_(speed)
 {
     dir_ = DIR::LEFT;
@@ -22,14 +22,10 @@ void Object::Draw(const double& delta)
     {
         offset = -offset;
     }
-    for (auto col : collisionPos_)
-    {
-        DrawLine(pos_.x+col.second[0].x, pos_.y + col.second[0].y, pos_.x + col.second[1].x, pos_.y + col.second[1].y, 0xffffff);
-    }
     DrawRotaGraph(pos_.x + offset.x, pos_.y + offset.y, exRate_, angle_, lpAnimMng.GetAnimImag(charID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
 }
 
-const Vector2 Object::GetPos(void) const
+const Vector2Flt Object::GetPos(void) const
 {
     return pos_;
 }

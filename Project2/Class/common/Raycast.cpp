@@ -1,19 +1,21 @@
 #include "Raycast.h"
 #include "../../_debug/_DebugDispOut.h"
 
-bool Raycast::CheckCollision(const Ray& ray, const std::pair<Vector2, Vector2>& col)
+bool Raycast::CheckCollision(const Ray& ray, std::pair<Vector2, Vector2> col)
 {
 	bool reFlag = false;
-	reFlag |= CheckLine(ray, Line(col.first, Vector2{ col.first.x + col.second.x,col.first.y }));
-	reFlag |= CheckLine(ray, Line(Vector2{ col.first.x + col.second.x,col.first.y }, col.first + col.second));
-	reFlag |= CheckLine(ray, Line(col.first + col.second, Vector2{ col.first.x,col.first.y + col.second.y }));
-	reFlag |= CheckLine(ray, Line(Vector2{ col.first.x,col.first.y + col.second.y }, col.first));
+	Vector2Flt colF = static_cast<Vector2Flt>(col.first);
+	Vector2Flt colS = static_cast<Vector2Flt>(col.second);
+	reFlag |= CheckLine(ray, Line(colF, Vector2Flt{ colF.x + colS.x,colF.y }));
+	reFlag |= CheckLine(ray, Line(Vector2Flt{ colF.x + colS.x,colF.y }, static_cast<Vector2Flt>(colF + colS)));
+	reFlag |= CheckLine(ray, Line(colF + colS, Vector2Flt{ colF.x,colF.y + colS.y }));
+	reFlag |= CheckLine(ray, Line(Vector2Flt{ colF.x,colF.y + colS.y }, colF));
 	return reFlag;
 }
 
 bool Raycast::CheckLine(Ray ray, Line line)
 {
-	const Vector2 v = line.point - ray.point;
+	const Vector2Flt v = line.point - ray.point;
 	float crsA = static_cast<float>(Cross(ray.vec, line.vec()));
 	// ïΩçsÇ©Ç«Ç§Ç©
 	if (crsA == 0.0f)
