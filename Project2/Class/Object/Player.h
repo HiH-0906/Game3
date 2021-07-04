@@ -1,5 +1,5 @@
 #pragma once
-#include "Object.h"
+#include "Pawn.h"
 #include "characterID.h"
 
 enum class PlayerColor
@@ -12,7 +12,7 @@ enum class PlayerColor
 class Raycast;
 
 class Player :
-    public Object
+    public Pawn
 {
 public:
     Player(const Vector2Flt& pos,const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType = 0);

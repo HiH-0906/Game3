@@ -16,7 +16,7 @@ namespace {
 }
 
 Player::Player(const Vector2Flt& pos, const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
-    Object(pos,size, speed, cID, inputType)
+    Pawn(pos,size, speed, cID, inputType)
 { 
     Init(speed, inputType);
 }
@@ -118,11 +118,11 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     // @@走らせるアニメーション確認のためのテストコード
     if (tmp)
     {
-        SetAnimation(Anim_ID::RUN);
+        SetAnimation(Char_Anim_ID::RUN);
     }
     else
     {
-        SetAnimation(Anim_ID::IDLE);
+        SetAnimation(Char_Anim_ID::IDLE);
     }
 
     if (controller_->GetNow(INPUT_ID::BTN_1))

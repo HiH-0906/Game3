@@ -38,9 +38,9 @@ public:
 	bool LoadAnimTmx(const std::string& filepath);
 
 
-	const std::map<Anim_ID, std::string>& GetAnimID(void);
-	const AnimInfoS& GetAnimInfoS(Anim_ID animID);
-	const AnimDataS& GetAnimDataS(Anim_ID animid);
+	const std::map<Char_Anim_ID, std::string>& GetAnimID(void);
+	const AnimInfoS& GetAnimInfoS(Char_Anim_ID animID);
+	const AnimDataS& GetAnimDataS(Char_Anim_ID animid);
 private:
 	void VersionMap(void);
 
@@ -50,7 +50,7 @@ private:
 
 	std::map<std::string, int> version_;
 
-	std::map<Anim_ID, std::string> animID_;
+	std::map<Char_Anim_ID, std::string> animID_;
 	// animation‚²‚Æ‚Ì‰æ‘œŠÖŒWƒf[ƒ^
 	std::map<std::string, AnimInfoS> info_;
 	// std::map<animID,AnimInfo>>

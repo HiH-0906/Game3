@@ -1,6 +1,6 @@
 #pragma once
 
-enum class Anim_ID
+enum class Char_Anim_ID
 {
 	IDLE,
 	RUN,
@@ -9,7 +9,7 @@ enum class Anim_ID
 	MAX,
 };
 
-Anim_ID begin(Anim_ID);
-Anim_ID end(Anim_ID);
-Anim_ID operator*(Anim_ID id);
-Anim_ID operator++(Anim_ID& key);
+Char_Anim_ID begin(Char_Anim_ID);
+Char_Anim_ID end(Char_Anim_ID);
+Char_Anim_ID operator*(Char_Anim_ID id);
+Char_Anim_ID operator++(Char_Anim_ID& key);

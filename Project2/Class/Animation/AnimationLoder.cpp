@@ -29,8 +29,8 @@ bool AnimationLoder::LoadAnimTmx(const std::string& filepath)
 		assert(!"AnimVersion–¢‘Î‰ž");
 		return false;
 	}
-	Anim_ID animid = begin(Anim_ID());
-	for (rapidxml::xml_node<>* animNode = tmx_orign_node_->first_node("character")->first_node("animation");animNode != nullptr && animid != Anim_ID::MAX; animNode = animNode->next_sibling())
+	Char_Anim_ID animid = begin(Char_Anim_ID());
+	for (rapidxml::xml_node<>* animNode = tmx_orign_node_->first_node("character")->first_node("animation");animNode != nullptr && animid != Char_Anim_ID::MAX; animNode = animNode->next_sibling())
 	{
 		animID_[animid] = animNode->first_attribute("animkey")->value();
 		info_[animID_[animid]].width = animNode->first_attribute("width")->value();
@@ -61,12 +61,12 @@ bool AnimationLoder::LoadAnimTmx(const std::string& filepath)
 	return true;
 }
 
-const std::map<Anim_ID, std::string>& AnimationLoder::GetAnimID(void)
+const std::map<Char_Anim_ID, std::string>& AnimationLoder::GetAnimID(void)
 {
 	return animID_;
 }
 
-const AnimDataS& AnimationLoder::GetAnimDataS(Anim_ID animID)
+const AnimDataS& AnimationLoder::GetAnimDataS(Char_Anim_ID animID)
 {
 	if (animDataS_.count(animID_[animID]) == 0)
 	{
@@ -75,7 +75,7 @@ const AnimDataS& AnimationLoder::GetAnimDataS(Anim_ID animID)
 	return animDataS_[animID_[animID]];
 }
 
-const AnimInfoS& AnimationLoder::GetAnimInfoS(Anim_ID animID)
+const AnimInfoS& AnimationLoder::GetAnimInfoS(Char_Anim_ID animID)
 {
 	if (info_.count(animID_[animID]) == 0)
 	{

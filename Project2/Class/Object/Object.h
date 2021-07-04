@@ -8,7 +8,6 @@
 #include "../Animation/Anim_ID.h"
 #include "characterID.h"
 
-class Controller;
 class MapData;
 
 enum class DIR
@@ -27,31 +26,19 @@ public:
 	virtual ~Object() = default;
 	virtual bool Init(const double& speed, unsigned int inputType) = 0;
 	virtual void Update(const double& delta,std::weak_ptr<MapData> mapData) = 0;
-	virtual void Draw(const double& delta);
+	virtual void Draw(const double& delta) = 0;
 
 	const Vector2Flt GetPos(void)const;
 	
 private:
 protected:
-	// アニメーション変更
-	void SetAnimation(Anim_ID id);
 
 	Vector2Flt pos_;
 	Vector2 size_;
 
 	double speed_;
 
-	std::unique_ptr<Controller> controller_;
-
-	std::map<Anim_ID, std::function<bool(Object& obj)>> update_;
-
-	// アニメーション関連変数
-	// @@Object側から使うことがもしないのならAnimationMng持ちでもいいかも別途Object番号いるけど
-	Anim_ID animID_;
 	char_ID charID_;
-	DIR dir_;
-	int animCnt_;
-	int animLoopCnt_;
 
 	bool reverseXFlag_;
 
