@@ -19,6 +19,7 @@ enum class DIR
 	MAX,
 };
 
+
 class Object
 {
 public:
@@ -44,5 +45,6 @@ protected:
 
 	double exRate_;
 	double angle_;
+
 };
 

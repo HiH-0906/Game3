@@ -74,6 +74,12 @@ namespace rapidxml
             return &m_data.front();
         }
 
+        // fileŠÛ‚²‚Æ‚ÌcharŒ^vector‚ÌŠl“¾
+        std::vector<Ch> vecData() const
+        {
+            return m_data;
+        }
+
         //! Gets file data size.
         //! \return Size of file data, in characters.
         std::size_t size() const

@@ -193,6 +193,7 @@
     <ClInclude Include="Class\Object\Object.h" />
     <ClInclude Include="Class\Object\Pawn.h" />
     <ClInclude Include="Class\Object\Player.h" />
+    <ClInclude Include="Class\Object\state\state.h" />
     <ClInclude Include="Class\Scene\Transition\CrossOver.h" />
     <ClInclude Include="Class\Scene\Transition\FadeInOut.h" />
     <ClInclude Include="Class\Scene\Transition\Slide.h" />

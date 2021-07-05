@@ -1,6 +1,7 @@
 #pragma once
 #include "Pawn.h"
 #include "characterID.h"
+#include "state/state.h"
 
 enum class PlayerColor
 {
@@ -9,7 +10,13 @@ enum class PlayerColor
     WHITE
 };
 
-class Raycast;
+
+namespace rapidxml
+{
+    template<class Ch = char>
+    class xml_node;
+}
+
 
 class Player :
     public Pawn
@@ -24,6 +31,10 @@ private:
     float defJunpPower_;
     float yaddPower_;
 
-    std::unique_ptr<Raycast> raycast_;
+    std::vector<char> stateVec_;
+    rapidxml::xml_node<>* stateNode_;
+    rapidxml::xml_document<> stateDoc_;
+
+    state::ModuleNode moduleNode_;
 };
 

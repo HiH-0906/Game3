@@ -188,5 +188,8 @@
     <ClInclude Include="Class\Object\Pawn.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Class\Object\state\state.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
