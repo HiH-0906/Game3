@@ -10,8 +10,7 @@
 #include "../Map/MapData.h"
 #include "../common/Raycast.h"
 #include "../../_debug/_DebugDispOut.h"
-#include "../XML/RapidXml/rapidxml.hpp"
-#include "../XML/RapidXml/rapidxml_utils.hpp"
+#include "state/state.h"
 
 namespace {
     int junpCnt = 0;
@@ -63,7 +62,7 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
 
     for (auto node = stateNode_->first_node(); node != nullptr; node = node->next_sibling())
     {
-        moduleNode_(this, node);
+        (*moduleNode_)(this, node);
     }
     //tmp |= MoveFunc(INPUT_ID::LEFT, Vector2Flt{ -static_cast<float>(speed_ * delta),0.0f }, -(Vector2Flt{ size_.x / 2.0f ,0.0f }));
     //tmp |= MoveFunc(INPUT_ID::RIGHT, Vector2Flt{ static_cast<float>(speed_ * delta),0.0f }, (Vector2Flt{ size_.x / 2.0f ,0.0f }));

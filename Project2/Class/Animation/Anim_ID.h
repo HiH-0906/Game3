@@ -4,8 +4,8 @@ enum class Char_Anim_ID
 {
 	IDLE,
 	RUN,
-	CHARGE,
-	CHARGE_MAX,
+	JUMP,
+	FALL,
 	MAX,
 };
 

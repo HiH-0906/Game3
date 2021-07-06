@@ -3,7 +3,7 @@
 #include <map>
 #include <functional>
 #include <cassert>
-#include "../Player.h"
+#include "../Pawn.h"
 #include "../../Map/MapData.h"
 #include "../../common/Raycast.h"
 #include "../../Input/Controller.h"
@@ -12,13 +12,32 @@
 #include "../../../_debug/_DebugConOut.h"
 #include "../../../_debug/_DebugDispOut.h"
 
+
+namespace
+{
+	std::map<std::string, INPUT_ID>  input_IDkey_ = {
+		{"LEFT",INPUT_ID::LEFT},
+		{"RIGHT",INPUT_ID::RIGHT},
+		{"UP",INPUT_ID::UP},
+		{"DOWN",INPUT_ID::DOWN},
+		{"BTN_1",INPUT_ID::BTN_1},
+		{"BTN_2",INPUT_ID::BTN_2},
+		{"BTN_3",INPUT_ID::BTN_3}
+	};
+	std::map<std::string, Char_Anim_ID>  Anim_IDkey_ = {
+		{"IDLE",Char_Anim_ID::IDLE},
+		{"RUN",Char_Anim_ID::RUN},
+		{"JUMP",Char_Anim_ID::JUMP},
+		{"FALL",Char_Anim_ID::FALL}
+	};
+}
 namespace state
 {
 	struct CheckMoveRay
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
-			Vector2Flt moveVec = {0.0f,0.0f};
+			Vector2Flt moveVec = { 0.0f,0.0f };
 			Vector2Flt offset = { 0.0f,0.0f };
 			for (auto atr = node->first_attribute(); atr != nullptr; atr = atr->next_attribute())
 			{
@@ -56,7 +75,7 @@ namespace state
 					{
 						moveVec.y += -(pawn->size_.y / 2.0f);
 					}
-					offset = { pawn->size_.y / 2.0f ,0.0f };
+					offset = { pawn->size_.x / 2.0f ,0.0f };
 				}
 
 			}
@@ -87,9 +106,68 @@ namespace state
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
-			return true;
+			std::string atr = node->first_attribute("isGuround")->value();
+			bool reFlag = false;
+			if (atr=="true")
+			{
+				reFlag = true;
+			}
+			Vector2Flt moveVec = { 0.0f,(pawn->size_.y / 2.0f) + pawn->yaddPower_ };
+			Vector2Flt offset = { pawn->size_.x / 2.0f ,0.0f };
+			if (pawn->yaddPower_ <= 0)
+			{
+				moveVec = { 0.0f,-(pawn->size_.y / 2.0f) - pawn->yaddPower_ };
+			}
+
+			Vector2Flt tmpPos = pawn->pos_ - offset;
+
+			for (int i = 0; i < 9; i++)
+			{
+				Raycast::Ray ray = { tmpPos ,moveVec };
+				_dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
+				_dbgDrawBox(pawn->pos_.x - pawn->size_.x / 2, pawn->pos_.y - pawn->size_.y / 2, pawn->pos_.x + pawn->size_.x / 2, pawn->pos_.y + pawn->size_.y / 2, 0xff0000, false);
+				for (auto colData : pawn->mapData_.lock()->GetColData())
+				{
+					_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
+					if (pawn->raycast_->CheckCollision(ray, colData))
+					{
+						_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xffffff, true);
+						pawn->yaddPower_ = 0.2f;
+						return reFlag;
+					}
+				}
+				tmpPos += offset / 4.0f;
+			}
+			return !reFlag;
 		}
 	};
+
+	struct CheckAnim
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			std::string flag = node->first_attribute("flag")->value();
+			bool reFlag = false;
+			if (flag == "true")
+			{
+				reFlag = true;
+			}
+			for (auto atr = node->first_attribute(); atr != nullptr; atr = atr->next_attribute())
+			{
+				std::string name = atr->name();
+				if (name == "id")
+				{
+					std::string val = atr->value();
+					if (pawn->animID_ == Anim_IDkey_[val])
+					{
+						return reFlag;
+					}
+				}
+			}
+			return !reFlag;
+		}
+	};
+
 	struct Move
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
@@ -119,6 +197,34 @@ namespace state
 		}
 	};
 
+	struct Fall
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			pawn->pos_.y += pawn->yaddPower_;
+			pawn->yaddPower_ += 0.2f;
+			if (pawn->yaddPower_ < 0)
+			{
+				pawn->SetAnimation(Char_Anim_ID::JUMP);
+			}
+			else
+			{
+				pawn->SetAnimation(Char_Anim_ID::FALL);
+			}
+			return true;
+		}
+	};
+
+	struct Jump
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			pawn->yaddPower_ = pawn->defJunpPower_;
+			pawn->pos_.y += pawn->yaddPower_;
+			return true;
+		}
+	};
+
 	struct CheckKeyTrg
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
@@ -130,12 +236,12 @@ namespace state
 				return false;
 			}
 			std::string id = atr->value();
-			if (pawn->input_IDkey_.count(id) <= 0)
+			if (input_IDkey_.count(id) <= 0)
 			{
 				assert(!"strngÇ…ëŒâûÇµÇΩInputIDñ¢ìoò^");
 				return false;
 			}
-			if (pawn->controller_->GetTrg(pawn->input_IDkey_[id]))
+			if (pawn->controller_->GetTrg(input_IDkey_[id]))
 			{
 				return true;
 			}
@@ -154,12 +260,12 @@ namespace state
 				return false;
 			}
 			std::string id = atr->value();
-			if (pawn->input_IDkey_.count(id) <= 0)
+			if (input_IDkey_.count(id) <= 0)
 			{
 				assert(!"strngÇ…ëŒâûÇµÇΩInputIDñ¢ìoò^");
 				return false;
 			}
-			if (pawn->controller_->GetNow(pawn->input_IDkey_[id]))
+			if (pawn->controller_->GetNow(input_IDkey_[id]))
 			{
 				return true;
 			}
@@ -221,11 +327,6 @@ namespace state
 				{
 					continue;
 				}
-				auto subModule = module->first_node();
-				if (subModule == nullptr)
-				{
-					continue;
-				}
 				// çƒãNåƒÇ—èoÇµ
 				if (!(*this)(pawn, module))
 				{
@@ -241,7 +342,10 @@ namespace state
 			{"SetAnimation",SetAnimation()},
 			{"CheckStopPos",CheckStopPos()},
 			{"CheckMoveRay",CheckMoveRay()},
-			{"CheckGuround",CheckGuround()}
+			{"CheckGuround",CheckGuround()},
+			{"Fall",Fall()},
+			{"Jump",Jump()},
+			{"CheckAnim",CheckAnim()}
 		};
 	};
 }

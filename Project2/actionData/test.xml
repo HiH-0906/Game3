@@ -2,25 +2,52 @@
 <moduleList name="Player" version ="1.0">
 	<actNode name="MoveLR">
 		<module name="CheckKeyNow" key = "LEFT">
-			<module name="SetAnimation" id="Run">
-				<module name ="CheckMoveRay" movex="-2.0" offSetx="-">
-					<module name="Move" x = "-2.0"/>
+			<module name ="CheckMoveRay" movex="-2.0" offSetx="-">
+				<module name="Move" x = "-2.0">
+					<mogule name="CheckAnim" flag="false" id="FALL">
+						<mogule name="CheckAnim" flag="false" id="JUMP">
+							<module name="SetAnimation" id="Run"/>
+						</mogule>
+					</mogule>
 				</module>
 			</module>
 		</module>
 	</actNode>
 	<actNode name="MoveLR">
 		<module name="CheckKeyNow" key = "RIGHT">
-			<module name="SetAnimation" id="Run">
-				<module name ="CheckMoveRay" movex="2.0" offSetx="+">
-					<module name="Move" x = "2.0"/>
+			<module name ="CheckMoveRay" movex="2.0" offSetx="+">
+				<module name="Move" x = "2.0">
+					<mogule name="CheckAnim" flag="false" id="FALL">
+						<mogule name="CheckAnim" flag="false" id="JUMP">
+							<module name="SetAnimation" id="Run"/>
+						</mogule>
+					</mogule>
 				</module>
+			</module>
+		</module>
+	</actNode>
+	<actNode name="Fall">
+		<module name="CheckGuround" isGuround ="false">
+			<module name="Fall"/>
+		</module>
+	</actNode>
+	<actNode name="Jump">
+		<module name="CheckGuround" isGuround ="true">
+			<module name="CheckKeyTrg" key = "BTN_1">
+				<module name="Jump"/>
 			</module>
 		</module>
 	</actNode>
 	<actNode name="IdleCheck">
 		<module name ="CheckStopPos">
 			<module name="SetAnimation" id="Idle"/>
+		</module>
+		<module name="CheckGuround" isGuround="true">
+			<mogule name="CheckAnim" flag="true" id="FALL">
+				<mogule name="CheckAnim" flag="false" id="RUN">
+					<module name="SetAnimation" id="Idle"/>
+				</mogule>
+			</mogule>
 		</module>
 	</actNode>
 </moduleList>

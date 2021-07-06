@@ -34,16 +34,14 @@ bool GameScene::Init(void)
 
 	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 70,270 }, Vector2{},120.0, char_ID::W_Player));
 	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 300,300 }, Vector2{}, 120.0, char_ID::R_Player));
-	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0}, 120.0, char_ID::B_Player));
+	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0}, 120.0, char_ID::Player));
 
 	return true;
 }
 
 void GameScene::AnimInit(void)
 {
-	lpAnimMng.LoadAnimTmx("animData/BluePlayerAnim.tmx", char_ID::B_Player);
-	lpAnimMng.LoadAnimTmx("animData/WhitePlayerAnim.tmx", char_ID::W_Player);
-	lpAnimMng.LoadAnimTmx("animData/RedPlayerAnim.tmx", char_ID::R_Player);
+	lpAnimMng.LoadAnimTmx("animData/PlayerAnim.tmx", char_ID::Player);
 }
 
 std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_ptr<BaseScene> ownScene)

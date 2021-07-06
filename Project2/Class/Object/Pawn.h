@@ -10,6 +10,10 @@ namespace state
     struct CheckStopPos;
     struct CheckMoveRay;
     struct CheckGuround;
+    struct ModuleNode;
+    struct Fall;
+    struct Jump;
+    struct CheckAnim;
 }
 class Controller;
 class Raycast;
@@ -35,11 +39,14 @@ protected:
     int animCnt_;
     int animLoopCnt_;
 
+    float defJunpPower_;
+    float yaddPower_;
+
     std::unique_ptr<Controller> controller_;
-    std::map<std::string, INPUT_ID> input_IDkey_;
     std::unique_ptr<Raycast> raycast_;
     std::weak_ptr<MapData> mapData_;
 
+    std::unique_ptr<state::ModuleNode> moduleNode_;
 
     friend state::Move;
     friend state::CheckKeyTrg;
@@ -48,5 +55,8 @@ protected:
     friend state::CheckStopPos;
     friend state::CheckMoveRay;
     friend state::CheckGuround;
+    friend state::Fall;
+    friend state::Jump;
+    friend state::CheckAnim;
 };
 

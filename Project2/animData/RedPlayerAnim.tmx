@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anim version="1.0">
 	<character characterkey="R_player">
-		<animation animkey="idel" width ="64" height="768" tilecountwidth ="1" tilecountheight="6" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/Red_witch/R_witch_idle.png">
+		<animation animkey="idel" width ="64" height="564" tilecountwidth ="1" tilecountheight="6" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/Red_witch/R_Player_Idle.png">
 			<flamedata encoding="csv">
 				7,7,7,7,7,7
 			</flamedata>
@@ -9,28 +9,12 @@
 				0,1,2,3,4,5
 			</subscriptdata>
 		</animation>
-		<animation animkey="run" width ="96" height="1024" tilecountwidth ="1" tilecountheight="8" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/Red_witch/R_witch_run.png">
+		<animation animkey="run" width ="64" height="752" tilecountwidth ="1" tilecountheight="8" widthOffset = "0" heigthOffset ="0" loop="-1" source="image/player/Red_witch/R_Player_Run.png">
 			<flamedata encoding="csv">
-				7,7,7,7,7,7
+				7,7,7,7,7,7,7,7
 			</flamedata>
 			<subscriptdata encoding="csv">
 				0,1,2,3,4,5,6,7
-			</subscriptdata>
-		</animation>
-		<animation animkey="charge" width ="310" height="1300" tilecountwidth ="1" tilecountheight="10" widthOffset = "64" heigthOffset ="0" loop="0" source="image/player/Red_witch/R_witch_charge.png">
-			<flamedata encoding="csv">
-				7,7,7,7,7,7,7,7,7,7
-			</flamedata>
-			<subscriptdata encoding="csv">
-				0,1,2,3,4,5,6,7,8,9
-			</subscriptdata>
-		</animation>
-		<animation animkey="charge_max" width ="310" height="1300" tilecountwidth ="1" tilecountheight="10" widthOffset = "64" heigthOffset ="0" loop="-1" source="image/player/Red_witch/R_witch_charge.png">
-			<flamedata encoding="csv">
-				7,7
-			</flamedata>
-			<subscriptdata encoding="csv">
-				8,9
 			</subscriptdata>
 		</animation>
 	</character>
