@@ -14,9 +14,11 @@ namespace state
     struct Fall;
     struct Jump;
     struct CheckAnim;
+    struct Attack;
 }
 class Controller;
 class Raycast;
+class Bullet;
 
 // コントローラーの入力を受け付け、アニメーションが遷移するクラス
 // @@アイテムとかこの先実装されなかったら何のために生まれたのかわからないクラス
@@ -24,7 +26,7 @@ class Pawn :
     public Object
 {
 public:
-    Pawn(const Vector2Flt& pos, const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType = 0);
+    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID, unsigned int inputType = 0);
     virtual ~Pawn() = default;
     virtual void Draw(const double& delta)override;
 private:
@@ -44,6 +46,7 @@ protected:
 
     std::unique_ptr<Controller> controller_;
     std::unique_ptr<Raycast> raycast_;
+    std::unique_ptr<Bullet> bullet_;
     std::weak_ptr<MapData> mapData_;
 
     std::unique_ptr<state::ModuleNode> moduleNode_;
@@ -58,5 +61,6 @@ protected:
     friend state::Fall;
     friend state::Jump;
     friend state::CheckAnim;
+    friend state::Attack;
 };
 

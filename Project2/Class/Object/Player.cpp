@@ -16,17 +16,17 @@ namespace {
     int junpCnt = 0;
 }
 
-Player::Player(const Vector2Flt& pos, const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType) :
-    Pawn(pos,size, speed, cID, inputType)
+Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsigned int inputType) :
+    Pawn(pos,size, oID, inputType)
 { 
-    Init(speed, inputType);
+    Init(inputType);
 }
 
 Player::~Player()
 {
 }
 
-bool Player::Init(const double& speed, unsigned int inputType)
+bool Player::Init(unsigned int inputType)
 {    
     if (inputType == 0)
     {
@@ -47,11 +47,13 @@ bool Player::Init(const double& speed, unsigned int inputType)
     stateDoc_.parse<0>(stateVec_.data());
     stateNode_ = stateDoc_.first_node("moduleList");
 
-    size_ = lpAnimMng.GetDivImageSize(charID_, animID_);
+    size_ = {32,64}/*lpAnimMng.GetDivImageSize(objectID_, animID_)*/;
 
     raycast_ = std::make_unique<Raycast>();
     defJunpPower_ = -8;
     yaddPower_ = 0;
+    bullet_ = nullptr;
+
     return true;
 }
 
@@ -64,36 +66,16 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     {
         (*moduleNode_)(this, node);
     }
-    //tmp |= MoveFunc(INPUT_ID::LEFT, Vector2Flt{ -static_cast<float>(speed_ * delta),0.0f }, -(Vector2Flt{ size_.x / 2.0f ,0.0f }));
-    //tmp |= MoveFunc(INPUT_ID::RIGHT, Vector2Flt{ static_cast<float>(speed_ * delta),0.0f }, (Vector2Flt{ size_.x / 2.0f ,0.0f }));
-    ////tmp |= MoveFunc(INPUT_ID::UP, Vector2Flt{ 0.0f,-static_cast<float>(speed_ * delta) }, -(Vector2Flt{ 0.0f,size_.y / 2.0f }));
-    ////tmp |= MoveFunc(INPUT_ID::DOWN, Vector2Flt{ 0.0f,static_cast<float>(speed_ * delta) }, (Vector2Flt{ 0.0f,size_.y / 2.0f }));
-    //if (controller_->GetNow(INPUT_ID::BTN_1))
-    //{
-    //    yaddPower_ = defJunpPower_;
-    //}
-    //Vector2Flt moveVec = {};
-    //Vector2Flt offset = {};
-    //if (yaddPower_ < 0)
-    //{
-    //    moveVec = { 0.0f,yaddPower_ - size_.y / 2.0f };
-    //    offset = { size_.x / 2.0f,0.0f };
-    //}
-    //else
-    //{
-    //    moveVec = { 0.0f,yaddPower_ + size_.y / 2.0f };
-    //    offset = { size_.x / 2.0f,0.0f };
-    //}
-    //if (CheckMove(moveVec, offset))
-    //{
-    //    pos_.y += yaddPower_;
-    //    yaddPower_ += 0.2f;
-    //}
-    //else
-    //{
-    //    yaddPower_ = 0.2f;
-    //}
+    if (bullet_)
+    {
+        bullet_->Update(delta, mapData);
+        if (!bullet_->Alive())
+        {
+            bullet_.release();
+            bullet_ = nullptr;
+        }
 
+    }
     // âÊñ í[èàóù
     pos_.x = std::min(std::max(pos_.x, size_.x / 2.0f), lpSceneMng.GetScreenSize().x - (size_.x / 2.0f));
     pos_.y = std::min(std::max(pos_.y, size_.y / 2.0f - 10.0f), lpSceneMng.GetScreenSize().y - (size_.y / 2.0f));

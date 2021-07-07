@@ -4,6 +4,7 @@
 #include <functional>
 #include <cassert>
 #include "../Pawn.h"
+#include "../Bullet.h"
 #include "../../Map/MapData.h"
 #include "../../common/Raycast.h"
 #include "../../Input/Controller.h"
@@ -139,6 +140,28 @@ namespace state
 				tmpPos += offset / 4.0f;
 			}
 			return !reFlag;
+		}
+	};
+
+	struct Attack
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			TRACE("ATTACK!!\n");
+			if (!pawn->bullet_)
+			{
+				Vector2Flt speed = {};
+				if (pawn->reverseXFlag_)
+				{
+					speed = { -10.0f,0.0f };
+				}
+				else
+				{
+					speed = { 10.0f,0.0f };
+				}
+				pawn->bullet_ = std::make_unique<Bullet>(pawn->pos_, Vector2{ 32,32 }, Object_ID::Bullet, speed, pawn->reverseXFlag_);
+			}
+			return true;
 		}
 	};
 
@@ -345,7 +368,8 @@ namespace state
 			{"CheckGuround",CheckGuround()},
 			{"Fall",Fall()},
 			{"Jump",Jump()},
-			{"CheckAnim",CheckAnim()}
+			{"CheckAnim",CheckAnim()},
+			{"Attack",Attack()}
 		};
 	};
 }

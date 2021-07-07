@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\Object\Bullet.cpp" />
     <ClCompile Include="Class\Animation\AnimationLoder.cpp" />
     <ClCompile Include="Class\Animation\Anim_ID.cpp" />
     <ClCompile Include="Class\common\Raycast.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\Object\Bullet.h" />
     <ClInclude Include="Class\Animation\AnimationLoder.h" />
     <ClInclude Include="Class\Animation\Anim_ID.h" />
     <ClInclude Include="Class\common\Raycast.h" />

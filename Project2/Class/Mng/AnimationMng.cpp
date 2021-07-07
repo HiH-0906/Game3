@@ -5,7 +5,7 @@
 #include "../Animation/AnimationLoder.h"
 #include "../Mng/ImageMng.h"
 
-bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
+bool AnimationMng::LoadAnimTmx(const std::string& filepath, Object_ID id)
 {
 	// AnimInfoSÇÃíÜêgÇintÇ…ïœä∑ÇµAnimInfoÇ÷äiî[Ç∑ÇÈ
 	auto chengeInfoS = [](AnimInfo& info,const AnimInfoS& infoS) {
@@ -61,7 +61,7 @@ bool AnimationMng::LoadAnimTmx(const std::string& filepath, char_ID id)
 	return true;
 }
 
-const Animation AnimationMng::GetAnimationData(char_ID cID, Char_Anim_ID aID)
+const Animation AnimationMng::GetAnimationData(Object_ID cID, Char_Anim_ID aID)
 {
 	if (animData_.count(cID) == 0)
 	{
@@ -76,12 +76,12 @@ const Animation AnimationMng::GetAnimationData(char_ID cID, Char_Anim_ID aID)
 	return animData_[cID][aID];
 }
 
-const AnimInfo AnimationMng::GetAnimInfo(char_ID cID, Char_Anim_ID aID)
+const AnimInfo AnimationMng::GetAnimInfo(Object_ID cID, Char_Anim_ID aID)
 {
 	return GetAnimationData(cID,aID).first;
 }
 
-bool AnimationMng::CheckAnimInfo(char_ID cID, Char_Anim_ID aID)
+bool AnimationMng::CheckAnimInfo(Object_ID cID, Char_Anim_ID aID)
 {
 	if (animData_.count(cID) == 0)
 	{
@@ -94,7 +94,7 @@ bool AnimationMng::CheckAnimInfo(char_ID cID, Char_Anim_ID aID)
 	return true;
 }
 
-const int AnimationMng::GetAnimImag(char_ID cID, Char_Anim_ID aID, int& elapsed,int& loopNum)
+const int AnimationMng::GetAnimImag(Object_ID cID, Char_Anim_ID aID, int& elapsed,int& loopNum)
 {
 	if (animData_.count(cID) == 0)
 	{
@@ -139,7 +139,7 @@ const int AnimationMng::GetAnimImag(char_ID cID, Char_Anim_ID aID, int& elapsed,
 	}
 }
 
-const bool AnimationMng::CheckAnimLoopEnd(char_ID cID, Char_Anim_ID aID, const int& elapsed, const int& loopNum)
+const bool AnimationMng::CheckAnimLoopEnd(Object_ID cID, Char_Anim_ID aID, const int& elapsed, const int& loopNum)
 {
 	if (animData_.count(cID) == 0)
 	{
@@ -164,13 +164,13 @@ const bool AnimationMng::CheckAnimLoopEnd(char_ID cID, Char_Anim_ID aID, const i
 	}
 }
 
-const Vector2 AnimationMng::GetDrawOffSet(char_ID cID, Char_Anim_ID aID)
+const Vector2 AnimationMng::GetDrawOffSet(Object_ID cID, Char_Anim_ID aID)
 {
 	auto info = GetAnimInfo(cID, aID);
 	return Vector2(info.widthOffset, info.heigthOffset);
 }
 
-Vector2 AnimationMng::GetDivImageSize(char_ID cID, Char_Anim_ID aID)
+Vector2 AnimationMng::GetDivImageSize(Object_ID cID, Char_Anim_ID aID)
 {
 	// CheckÇµÇ»Ç¢Ç∆0èúéZÇ∑ÇÈâ¬î\ê´Ç™Ç†ÇÈÇΩÇﬂ
 	if (!CheckAnimInfo(cID,aID))

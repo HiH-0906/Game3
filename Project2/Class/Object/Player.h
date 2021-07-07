@@ -10,10 +10,10 @@ class Player :
     public Pawn
 {
 public:
-    Player(const Vector2Flt& pos,const Vector2& size, const double& speed, const char_ID cID, unsigned int inputType = 0);
+    Player(const Vector2Flt& pos,const Vector2& size,const Object_ID oID, unsigned int inputType = 0);
     ~Player();
 private:
-    bool Init(const double& speed, unsigned int inputType)override final;
+    bool Init(unsigned int inputType);
     void Update(const double& delta, std::weak_ptr<MapData> mapData)override final;
 
     std::vector<char> stateVec_;

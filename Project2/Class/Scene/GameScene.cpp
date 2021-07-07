@@ -32,16 +32,14 @@ bool GameScene::Init(void)
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 70,270 }, Vector2{},120.0, char_ID::W_Player));
-	//objList_.emplace_back(std::make_unique<Player>(Vector2{ 300,300 }, Vector2{}, 120.0, char_ID::R_Player));
-	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0}, 120.0, char_ID::Player));
+	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Player));
 
 	return true;
 }
 
 void GameScene::AnimInit(void)
 {
-	lpAnimMng.LoadAnimTmx("animData/PlayerAnim.tmx", char_ID::Player);
+	lpAnimMng.LoadAnimTmx("animData/PlayerAnim.tmx", Object_ID::Player);
 }
 
 std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_ptr<BaseScene> ownScene)
