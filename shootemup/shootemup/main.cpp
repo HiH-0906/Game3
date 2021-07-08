@@ -130,7 +130,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 				DrawLine(hshot.pos.x, hshot.pos.y, tailPos.x, tailPos.y, 0xff4444, thickness * 4.0f);
 			}
 
-			//hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
 			hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
 			DrawCircleAA(hshot.pos.x, hshot.pos.y, 8.0f, 16, 0xff4444);
 			// 敵との当たり判定
@@ -140,7 +139,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			}
 			// 画面外判定
 			if (hshot.pos.x + 16 < 0 || hshot.pos.x - 16 > 640 ||
-				hshot.pos.y + 24 < 0 || hshot.pos.y - 24 > 480) {
+				hshot.pos.y + 24 < 0 || hshot.pos.y - 24 > 480) 
+			{
 				hshot.isActive = false;
 			}
 		}
@@ -206,6 +206,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			DrawCircle(enemypos.x, enemypos.y, 5, 0xffffff, false, 3);
 		}
 		++frame;
+		//パフォーマンス計測
+		auto dCoolCount = GetDrawCallCount();
+		auto fps = GetFPS();
+		DrawBox(5, 50, 150, 100, 0xffffff, true);
+		DrawFormatString(10, 50, 0x000000, "DrawColl=%d", dCoolCount);
+		DrawFormatString(10, 80, 0x000000, "fps=%lf", fps);
+
 		ScreenFlip();
 		std::copy(std::begin(keystate), std::end(keystate), std::begin(lastkeystate));
 	}
