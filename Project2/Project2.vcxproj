@@ -211,6 +211,7 @@
     <ClInclude Include="Class\Scene\TitleScene.h" />
     <ClInclude Include="Class\Scene\GameScene.h" />
     <ClInclude Include="Class\Scene\Transition\TransitionScene.h" />
+    <ClInclude Include="commandData\LoadCommand.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>

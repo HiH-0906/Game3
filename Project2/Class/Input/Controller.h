@@ -3,12 +3,6 @@
 #include <map>
 #include "INPUT_ID.h"
 
-enum class TRG
-{
-	NOW,
-	OLD,
-	MAX
-};
 
 enum class InputType
 {

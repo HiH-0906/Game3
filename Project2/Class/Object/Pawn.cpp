@@ -16,6 +16,7 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsi
     animID_=Char_Anim_ID::IDLE;
     animCnt_ = 0;
     animLoopCnt_ = 0;
+    nowBufCnt_ = 0;
     moduleNode_ = std::make_unique<state::ModuleNode>();
 }
 
@@ -37,4 +38,13 @@ void Pawn::SetAnimation(Char_Anim_ID id)
         animCnt_ = 0;
         animLoopCnt_ = 0;
     }
+}
+
+void Pawn::UpdateInputBuf(void)
+{
+    for (auto id:INPUT_ID())
+    {
+        inputBuf_[nowBufCnt_ % BUF_NUM_MAX][id] = controller_->GetNow(id);
+    }
+    nowBufCnt_++;
 }
