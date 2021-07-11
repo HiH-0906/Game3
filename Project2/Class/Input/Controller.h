@@ -19,7 +19,6 @@ class Controller
 public:
 	Controller();
 	virtual ~Controller() = default;
-
 	
 	virtual bool Init(void) = 0;
 

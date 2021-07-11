@@ -78,5 +78,4 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     // âÊñ í[èàóù
     pos_.x = std::min(std::max(pos_.x, size_.x / 2.0f), lpSceneMng.GetScreenSize().x - (size_.x / 2.0f));
     pos_.y = std::min(std::max(pos_.y, size_.y / 2.0f - 10.0f), lpSceneMng.GetScreenSize().y - (size_.y / 2.0f));
-    UpdateInputBuf();
 }
