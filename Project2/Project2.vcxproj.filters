@@ -185,9 +185,6 @@
     <ClInclude Include="Class\common\Raycast.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\Func\IdelFunc.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Class\Object\Pawn.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

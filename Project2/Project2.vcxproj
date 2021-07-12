@@ -183,7 +183,6 @@
     <ClInclude Include="Class\Animation\AnimationLoder.h" />
     <ClInclude Include="Class\Animation\Anim_ID.h" />
     <ClInclude Include="Class\common\Raycast.h" />
-    <ClInclude Include="Class\Func\IdelFunc.h" />
     <ClInclude Include="Class\Mng\AnimationMng.h" />
     <ClInclude Include="Class\Object\characterID.h" />
     <ClInclude Include="Class\Input\Controller.h" />

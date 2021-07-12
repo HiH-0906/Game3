@@ -61,6 +61,8 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
 {
     mapData_ = mapData;
     controller_->Update();
+    controller_->UpdateRingBuf();
+    controller_->DebugRingBuf();
 
     for (auto node = stateNode_->first_node(); node != nullptr; node = node->next_sibling())
     {

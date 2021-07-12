@@ -26,6 +26,7 @@ namespace
 	};
 }
 
+// @@nullptrチェックも何もしてない
 struct LoadCommad
 {
 	std::list<CommandData> operator()(const std::string filepath)

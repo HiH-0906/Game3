@@ -13,7 +13,7 @@ bool SceneMng::SysInit(void)
 {
 	screenSize_ = { 1024,768 };
 	SetOutApplicationLogValidFlag(false);
-	SetAlwaysRunFlag(true);
+	//SetAlwaysRunFlag(true);
 	SetGraphMode(screenSize_.x, screenSize_.y, 32);
 	ChangeWindowMode(true);
 	SetWindowText("1916035_‹´–{‘å‹P");
@@ -40,6 +40,7 @@ void SceneMng::Run(void)
 
 	while (!ProcessMessage() && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
+		ClsDrawScreen();
 		_dbgStartDraw();
 		old_ = now_;
 		now_ = std::chrono::system_clock().now();
@@ -51,7 +52,7 @@ void SceneMng::Run(void)
 		scene_->DrawOwnScreen(delta);
 
 		SetDrawScreen(DX_SCREEN_BACK);
-		ClsDrawScreen();
+		
 
 		scene_->Draw(delta);
 

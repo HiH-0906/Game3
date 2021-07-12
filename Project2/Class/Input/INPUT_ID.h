@@ -2,14 +2,14 @@
 
 enum class INPUT_ID
 {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	BTN_1,
-	BTN_2,
-	BTN_3,
-	MAX
+	UP = 1,
+	DOWN = 2,
+	LEFT = 4,
+	RIGHT = 8,
+	BTN_1 = 16,
+	BTN_2 = 32,
+	BTN_3 = 64,
+	MAX = 128
 };
 
 INPUT_ID begin(INPUT_ID);
@@ -23,4 +23,21 @@ enum class TRG
 	NOW,
 	OLD,
 	MAX
+};
+
+enum class CMD_ID
+{
+	UP = 1,
+	DOWN = 2,
+	LEFT = 4,
+	RIGHT = 8,
+	LEFT_U_D = UP + LEFT,
+	LEFT_D_D = DOWN + LEFT,
+	RIGHT_U_D = UP + RIGHT,
+	RIGHT_D_D = DOWN + RIGHT,
+	BTN_1 = 16,
+	BTN_2 = 32,
+	BTN_3 = 64,
+	MAX,
+	NEUTRAL = 0,
 };
