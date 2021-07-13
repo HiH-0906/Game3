@@ -165,6 +165,50 @@ namespace state
 		}
 	};
 
+	struct CheckCmmand
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			auto CheckCommand = [&](CommandData data)
+			{
+				auto input = pawn->controller_->GetRingBuf();
+				int timeCnt_ = 0;
+				for (auto cmd = data.command_.rbegin(); cmd != data.command_.rend(); cmd++)
+				{
+					int cnt = 0;
+					unsigned int checkID = static_cast<unsigned int>(cmd->first);
+					while ((input->id_ & checkID) && (cnt < cmd->second))
+					{
+						input = input->befor_;
+						cnt++;
+					};
+					if ((cnt > cmd->second || cnt == 0))
+					{
+						TRACE(("COMMANDŽ¸”sI"+ data.name_+ ": % d\n").c_str(), cmd->first);
+						return false;
+					}
+					timeCnt_ += cnt;
+				}
+				if (timeCnt_ >= data.allTime_)
+				{
+					TRACE(("COMMANDŽ¸”sI" + data.name_ + ":‘S‘Ì“ü—ÍŽžŠÔ‚ª’·‚·‚¬:%d/%d\n").c_str(), timeCnt_, data.allTime_);
+					return false;
+				}
+				TRACE(("COMMAND¬Œ÷I" + data.name_ + "\n").c_str());
+				return true;
+			};
+			
+			for (const auto& data:pawn->commandList_)
+			{
+				if (CheckCommand(data))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	};
+
 	struct CheckAnim
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
@@ -369,7 +413,8 @@ namespace state
 			{"Fall",Fall()},
 			{"Jump",Jump()},
 			{"CheckAnim",CheckAnim()},
-			{"Attack",Attack()}
+			{"Attack",Attack()},
+			{"CheckCmmand",CheckCmmand()}
 		};
 	};
 }

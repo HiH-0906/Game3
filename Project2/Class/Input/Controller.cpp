@@ -18,6 +18,7 @@ Controller::Controller()
 		ringBuf->next_ = firstRingBuf;
 		return firstRingBuf;
 	};
+
 	ringBuf_ = CreatRingBuf(30);
 
 
@@ -53,6 +54,7 @@ Controller::~Controller()
 
 void Controller::UpdateRingBuf(void)
 {
+	ringBuf_ = ringBuf_->next_;
 	unsigned int check = 0;
 	for (const auto& id :INPUT_ID())
 	{
@@ -62,21 +64,20 @@ void Controller::UpdateRingBuf(void)
 		}
 	}
 	ringBuf_->id_ = check;
-	ringBuf_ = ringBuf_->next_;
+	ringBuf_->num = chengCMDtoINPUTMap_[static_cast<CMD_ID>(check)];
 	return;
 }
 
 void Controller::DebugRingBuf(void)
 {
-	int cnt = 1;
-	DrawFormatString(16, 600, 0xffffff, "%d", cnt-1);
-	DrawFormatString(16, 632, 0xffffff, "%d", ringBuf_->id_);
-
-	for (auto buf = ringBuf_->next_; buf != ringBuf_; buf = buf->next_)
+	int cnt = 0;
+	for (auto buf = ringBuf_->befor_; buf != ringBuf_; buf = buf->befor_)
 	{
 		DrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
-		DrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", buf->id_);
+		DrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", buf->num);
 	}
+	DrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
+	DrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", ringBuf_->num);
 }
 
 const TrgData& Controller::GetCntData(void)
@@ -92,4 +93,9 @@ const bool Controller::GetTrg(INPUT_ID id)
 const bool Controller::GetNow(INPUT_ID id)
 {
 	return trgData_[id][static_cast<unsigned int>(TRG::NOW)];
+}
+
+const Controller::RingBuf* Controller::GetRingBuf(void)
+{
+	return ringBuf_;
 }

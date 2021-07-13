@@ -38,13 +38,16 @@
 			</module>
 		</module>
 	</actNode>
-  <actNode name="Attack">
-    <module name="CheckGuround" isGuround ="true">
-      <module name="CheckKeyTrg" key = "BTN_3">
-        <module name="Attack"/>
-      </module>
-    </module>
-  </actNode>
+	<actNode name="Attack">
+		<module name="CheckGuround" isGuround ="true">
+			<module name="CheckKeyTrg" key = "BTN_3">
+				<module name="CheckCmmand">
+					<module name="Attack"/>
+				</module>
+
+			</module>
+		</module>
+	</actNode>
 	<actNode name="IdleCheck">
 		<module name ="CheckStopPos">
 			<module name="SetAnimation" id="Idle"/>

@@ -26,28 +26,41 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsi
         TRACE((data.name_ + "\n").c_str());
         for (const auto& com:data.command_)
         {
-            for (const auto& tmp : com.first)
+            if (com.first==CMD_ID::LEFT)
             {
-                if (tmp==INPUT_ID::LEFT)
-                {
-                    TRACE("LEFT:");
-                }
-                if (tmp == INPUT_ID::RIGHT)
-                {
-                    TRACE("RIGHT:");
-                }
-                if (tmp == INPUT_ID::UP)
-                {
-                    TRACE("UP:");
-                }
-                if (tmp == INPUT_ID::DOWN)
-                {
-                    TRACE("DOWN:");
-                }
-                if (tmp == INPUT_ID::BTN_3)
-                {
-                    TRACE("BTN_3:");
-                }
+                TRACE("LEFT:");
+            }
+            if (com.first == CMD_ID::RIGHT)
+            {
+                TRACE("RIGHT:");
+            }
+            if (com.first == CMD_ID::UP)
+            {
+                TRACE("UP:");
+            }
+            if (com.first == CMD_ID::DOWN)
+            {
+                TRACE("DOWN:");
+            }
+            if (com.first == CMD_ID::LEFT_U_D)
+            {
+                TRACE("LEFT_U_D:");
+            }
+            if (com.first == CMD_ID::LEFT_D_D)
+            {
+                TRACE("LEFT_D_D:");
+            }
+            if (com.first == CMD_ID::RIGHT_U_D)
+            {
+                TRACE("RIGHT_U_D:");
+            }
+            if (com.first == CMD_ID::RIGHT_D_D)
+            {
+                TRACE("RIGHT_D_D:");
+            }
+            if (com.first == CMD_ID::BTN_3)
+            {
+                TRACE("BTN_3:");
             }
             TRACE("%d", com.second);
             TRACE("\n");

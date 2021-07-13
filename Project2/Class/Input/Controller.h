@@ -46,12 +46,13 @@ public:
 	const bool GetTrg(INPUT_ID id);
 	const bool GetNow(INPUT_ID id);
 
+	const RingBuf* GetRingBuf(void);
+
 private:
 protected:
 	TrgData trgData_;
 	KeyConfig config_;
 	RingBuf* ringBuf_;
-
 	std::map<CMD_ID,unsigned int> chengCMDtoINPUTMap_;
 };
 

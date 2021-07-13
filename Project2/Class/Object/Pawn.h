@@ -18,6 +18,7 @@ namespace state
     struct Jump;
     struct CheckAnim;
     struct Attack;
+    struct CheckCmmand;
 }
 
 class Controller;
@@ -27,7 +28,7 @@ class Bullet;
 struct CommandData
 {
     std::string name_;
-    std::list<std::pair<std::list<INPUT_ID>, unsigned int>> command_;
+    std::list<std::pair<CMD_ID, int>> command_;
     unsigned int allTime_ = 0;
 };
 
@@ -76,5 +77,6 @@ protected:
     friend state::Jump;
     friend state::CheckAnim;
     friend state::Attack;
+    friend state::CheckCmmand;
 };
 

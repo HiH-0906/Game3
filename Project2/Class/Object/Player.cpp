@@ -47,7 +47,7 @@ bool Player::Init(unsigned int inputType)
     stateDoc_.parse<0>(stateVec_.data());
     stateNode_ = stateDoc_.first_node("moduleList");
 
-    size_ = {32,64}/*lpAnimMng.GetDivImageSize(objectID_, animID_)*/;
+    size_ = {32,64};
 
     raycast_ = std::make_unique<Raycast>();
     defJunpPower_ = -8;

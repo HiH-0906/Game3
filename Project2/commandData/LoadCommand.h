@@ -10,19 +10,20 @@
 
 namespace
 {
-	std::map<std::string, std::list<INPUT_ID>> chengeData
+	std::map<std::string, CMD_ID> chengeData
 	{
-		{"1",{INPUT_ID::LEFT,INPUT_ID::DOWN}},
-		{"2",{INPUT_ID::DOWN}},
-		{"3",{INPUT_ID::RIGHT,INPUT_ID::DOWN}},
-		{"4",{INPUT_ID::LEFT}},
-		{"5",{}},
-		{"6",{INPUT_ID::RIGHT}},
-		{"7",{INPUT_ID::LEFT,INPUT_ID::UP}},
-		{"8",{INPUT_ID::UP}},
-		{"9",{INPUT_ID::RIGHT,INPUT_ID::UP}},
-		{"BTN_2",{INPUT_ID::BTN_2}},
-		{"BTN_3",{INPUT_ID::BTN_3}},
+		{"1",CMD_ID::LEFT_D_D},
+		{"2",CMD_ID::DOWN},
+		{"3",CMD_ID::RIGHT_D_D},
+		{"4",CMD_ID::LEFT},
+		{"5",CMD_ID::NEUTRAL},
+		{"6",CMD_ID::RIGHT},
+		{"7",CMD_ID::LEFT_U_D},
+		{"8",CMD_ID::UP},
+		{"9",CMD_ID::RIGHT_U_D},
+		{"BTN_1",CMD_ID::BTN_1},
+		{"BTN_2",CMD_ID::BTN_2},
+		{"BTN_3",CMD_ID::BTN_3},
 	};
 }
 

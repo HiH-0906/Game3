@@ -32,7 +32,7 @@ bool GameScene::Init(void)
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Player));
+	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Player,1));
 
 	return true;
 }
