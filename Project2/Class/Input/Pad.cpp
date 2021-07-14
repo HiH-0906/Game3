@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "Pad.h"
+#include "../../_debug/_DebugConOut.h"
 
 Pad::Pad()
 {
@@ -18,7 +19,7 @@ void Pad::Update(void)
 
 bool Pad::Init(void)
 {
-	SetJoypadDeadZone(DX_INPUT_PAD1, 0.8);
+	//SetJoypadDeadZone(DX_INPUT_PAD1, 0.0);
 
 	config_.try_emplace(INPUT_ID::LEFT, PAD_INPUT_LEFT);
 	config_.try_emplace(INPUT_ID::RIGHT, PAD_INPUT_RIGHT);

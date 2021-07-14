@@ -169,6 +169,7 @@ namespace state
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
+			
 			auto CheckCommand = [&](CommandData data)
 			{
 				auto input = pawn->controller_->GetRingBuf();
@@ -177,14 +178,23 @@ namespace state
 				{
 					int cnt = 0;
 					unsigned int checkID = static_cast<unsigned int>(cmd->first);
-					while ((input->id_ & checkID) && (cnt < cmd->second))
+					unsigned int mask = 0xffffffff;
+					if (input->id_ >= static_cast<unsigned int>(CMD_ID::BTN_1))
+					{
+						mask -= 0x0000000f;
+					}
+					if (pawn->reverseXFlag_&& ((cmd->first>=CMD_ID::LEFT)&& cmd->first <= CMD_ID::RIGHT_D_D))
+					{
+						checkID ^= 0x0000000c;
+					}
+					while (((input->id_ & mask)) == checkID && (cnt < cmd->second))
 					{
 						input = input->befor_;
 						cnt++;
 					};
-					if ((cnt > cmd->second || cnt == 0))
+					if (cnt == 0)
 					{
-						TRACE(("COMMANDé∏îsÅI"+ data.name_+ ": % d\n").c_str(), cmd->first);
+						TRACE(("COMMANDé∏îsÅI"+ data.name_+ ": % d\n").c_str(), checkID);
 						return false;
 					}
 					timeCnt_ += cnt;

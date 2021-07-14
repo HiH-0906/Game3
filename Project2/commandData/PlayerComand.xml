@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <character character="player">
-	<command name="Hadoken" allTime="30">
+	<command name="Hadoken" allTime="15">
 		<data key="2" time="1"/>
 		<data key="3" time="20"/>
 		<data key="6" time="20"/>
+		<data key="BTN_3" time="1"/>
+	</command>
+	<command name="Syoryuken" allTime="15">
+		<data key="6" time="1"/>
+		<data key="2" time="20"/>
+		<data key="3" time="20"/>
 		<data key="BTN_3" time="1"/>
 	</command>
 </character>
