@@ -183,6 +183,7 @@ namespace state
 					{
 						mask -= 0x0000000f;
 					}
+					// ”½“]ˆ—
 					if (pawn->reverseXFlag_&& ((cmd->first>=CMD_ID::LEFT)&& cmd->first <= CMD_ID::RIGHT_D_D))
 					{
 						checkID ^= 0x0000000c;
