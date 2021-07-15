@@ -28,7 +28,13 @@ class Bullet;
 struct CommandData
 {
     std::string name_;
-    std::list<std::pair<CMD_ID, int>> command_;
+    struct command
+    {
+        CMD_ID id;
+        int time;
+        bool required_;
+    };
+    std::list<command> command_;
     unsigned int allTime_ = 0;
 };
 

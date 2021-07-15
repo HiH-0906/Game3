@@ -169,38 +169,44 @@ namespace state
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
-			
 			auto CheckCommand = [&](CommandData data)
 			{
 				auto input = pawn->controller_->GetRingBuf();
-				int timeCnt_ = 0;
+				unsigned int timeCnt_ = 0;
 				for (auto cmd = data.command_.rbegin(); cmd != data.command_.rend(); cmd++)
 				{
 					int cnt = 0;
-					unsigned int checkID = static_cast<unsigned int>(cmd->first);
+					unsigned int checkID = static_cast<unsigned int>(cmd->id);
 					unsigned int mask = 0xffffffff;
+					// ƒ{ƒ^ƒ““ü—Í‚Í•ûŒü“ü—Í‚ğ–³‹‚·‚é
 					if (input->id_ >= static_cast<unsigned int>(CMD_ID::BTN_1))
 					{
 						mask -= 0x0000000f;
 					}
-					// ”½“]ˆ—
-					if (pawn->reverseXFlag_&& ((cmd->first>=CMD_ID::LEFT)&& cmd->first <= CMD_ID::RIGHT_D_D))
+					// ¶‰E”½“]ˆ—
+					if (pawn->reverseXFlag_ && ((cmd->id >= CMD_ID::LEFT) && cmd->id <= CMD_ID::RIGHT_D_D))
 					{
 						checkID ^= 0x0000000c;
 					}
-					while (((input->id_ & mask)) == checkID && (cnt < cmd->second))
+					// ”»’è İ’è‚³‚ê‚½Time•ª‚Ü‚Å‘k‚é
+					while (((input->id_ & mask)) == checkID && (cnt < cmd->time))
 					{
 						input = input->befor_;
 						cnt++;
 					};
+					// “ü—Í‚ª‚ ‚Á‚½‚©
 					if (cnt == 0)
 					{
-						TRACE(("COMMAND¸”sI"+ data.name_+ ": % d\n").c_str(), checkID);
-						return false;
+						// ‚»‚ê‚Í•K{‚È‚Ì‚©
+						if (cmd->required_)
+						{
+							TRACE(("COMMAND¸”sI" + data.name_ + ": % d\n").c_str(), checkID);
+							return false;
+						}
 					}
 					timeCnt_ += cnt;
 				}
-				if (timeCnt_ >= data.allTime_)
+				if (timeCnt_ > data.allTime_)
 				{
 					TRACE(("COMMAND¸”sI" + data.name_ + ":‘S‘Ì“ü—ÍŠÔ‚ª’·‚·‚¬:%d/%d\n").c_str(), timeCnt_, data.allTime_);
 					return false;
@@ -280,7 +286,7 @@ namespace state
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
 			pawn->pos_.y += pawn->yaddPower_;
-			pawn->yaddPower_ += 0.2f;
+			pawn->yaddPower_ += 0.4f;
 			if (pawn->yaddPower_ < 0)
 			{
 				pawn->SetAnimation(Char_Anim_ID::JUMP);

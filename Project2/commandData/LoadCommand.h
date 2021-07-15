@@ -38,14 +38,20 @@ struct LoadCommad
 		tmx_orign_node_ = TmxDoc_.first_node("character");
 		for (auto comNode = tmx_orign_node_->first_node("command"); comNode != nullptr; comNode = comNode->next_sibling("command"))
 		{
-			CommandData commndData;
-			commndData.name_ = comNode->first_attribute("name")->value();
-			commndData.allTime_ = std::atoi(comNode->first_attribute("allTime")->value());
+			CommandData commandData;
+			commandData.name_ = comNode->first_attribute("name")->value();
+			commandData.allTime_ = std::atoi(comNode->first_attribute("allTime")->value());
 			for (auto node = comNode->first_node("data"); node != nullptr; node = node->next_sibling("data"))
 			{
-				commndData.command_.push_back({ chengeData[node->first_attribute("key")->value()],std::atoi(node->first_attribute("time")->value()) });
+				std::string check = node->first_attribute("Required")->value();
+				auto required = check == "true" ? true : false;
+				CommandData::command tmp = {};
+				tmp.id = chengeData[node->first_attribute("key")->value()];
+				tmp.time = std::atoi(node->first_attribute("time")->value());
+				tmp.required_ = required;
+				commandData.command_.push_back(tmp);
 			}
-			reComList.push_back(commndData);
+			reComList.push_back(commandData);
 		}
 		return reComList;
 	}

@@ -49,7 +49,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 
 	//適当に256個くらい作っとく
 	Bullet bullets[256];
-	Bullet homingShots[2] = {};//playerhoming弾
+	Bullet homingShots[8] = {};//playerhoming弾
 
 	Position2f enemypos(320,25);//敵座標
 	Position2f playerpos(320, 400);//自機座標
@@ -122,15 +122,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 				continue;
 			}
 			hshot.pos += hshot.vel;
-			for (int i = 0; i < 5; i++)
+			// テキトーな尾
+			/*for (int i = 0; i < 5; i++)
 			{
 
 				auto tailPos = hshot.pos - hshot.vel * 2.0f * static_cast<float>(i);
 				auto thickness = static_cast<float>(6 - i);
 				DrawLine(hshot.pos.x, hshot.pos.y, tailPos.x, tailPos.y, 0xff4444, thickness * 4.0f);
-			}
+			}*/
 
-			hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
+			// 思ったより出来が良かった版sin,cos版と遜色ないならこっちでいい疑惑
+			//hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
+
+			// sin,cos版
+			auto nVelocity = hshot.vel.Normalized();
+			auto nToEnemy = (enemypos - playerpos).Normalized();
+			auto dot = Dot(nVelocity, nToEnemy);
+
+
+
 			DrawCircleAA(hshot.pos.x, hshot.pos.y, 8.0f, 16, 0xff4444);
 			// 敵との当たり判定
 			if ((enemypos - hshot.pos).SQMagnitude() < 900.0f)

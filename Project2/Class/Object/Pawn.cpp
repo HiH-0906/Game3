@@ -1,4 +1,4 @@
-#include <DxLib.h>
+﻿#include <DxLib.h>
 #include "Pawn.h"
 #include "Bullet.h"
 #include "../Mng/AnimationMng.h"
@@ -26,43 +26,51 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsi
         TRACE((data.name_ + "\n").c_str());
         for (const auto& com:data.command_)
         {
-            if (com.first==CMD_ID::LEFT)
+            if (!com.required_)
+            {
+                continue;
+            }
+            if (com.id == CMD_ID::LEFT)
             {
                 TRACE("LEFT:");
             }
-            if (com.first == CMD_ID::RIGHT)
+            if (com.id == CMD_ID::RIGHT)
             {
                 TRACE("RIGHT:");
             }
-            if (com.first == CMD_ID::UP)
+            if (com.id == CMD_ID::UP)
             {
                 TRACE("UP:");
             }
-            if (com.first == CMD_ID::DOWN)
+            if (com.id == CMD_ID::DOWN)
             {
                 TRACE("DOWN:");
             }
-            if (com.first == CMD_ID::LEFT_U_D)
+            if (com.id == CMD_ID::LEFT_U_D)
             {
                 TRACE("LEFT_U_D:");
             }
-            if (com.first == CMD_ID::LEFT_D_D)
+            if (com.id == CMD_ID::LEFT_D_D)
             {
                 TRACE("LEFT_D_D:");
             }
-            if (com.first == CMD_ID::RIGHT_U_D)
+            if (com.id == CMD_ID::RIGHT_U_D)
             {
                 TRACE("RIGHT_U_D:");
             }
-            if (com.first == CMD_ID::RIGHT_D_D)
+            if (com.id == CMD_ID::RIGHT_D_D)
             {
                 TRACE("RIGHT_D_D:");
             }
-            if (com.first == CMD_ID::BTN_3)
+            if (com.id == CMD_ID::BTN_3)
             {
                 TRACE("BTN_3:");
             }
-            TRACE("%d", com.second);
+            if (com.id == CMD_ID::NEUTRAL)
+            {
+                TRACE("NEUTRAL:");
+            }
+            TRACE("%d", com.time);
             TRACE("\n");
         }
     }

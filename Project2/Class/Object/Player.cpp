@@ -50,7 +50,7 @@ bool Player::Init(unsigned int inputType)
     size_ = {32,64};
 
     raycast_ = std::make_unique<Raycast>();
-    defJunpPower_ = -8;
+    defJunpPower_ = -12;
     yaddPower_ = 0;
     bullet_ = nullptr;
 

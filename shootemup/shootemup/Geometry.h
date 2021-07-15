@@ -123,12 +123,14 @@ T operator * (const Vector2D<T>& lval, const Vector2D<T>& rval)
 	return lval.x * rval.x + lval.y * rval.y;
 }
 
+// 内積(cos 0を中心に線対称)
 template <class T>
 T Dot(const Vector2D<T>& lval, const Vector2D<T>& rval)
 {
 	return lval.x * rval.x + lval.y * rval.y;
 }
 
+// 外積(sin 0を中心に点対称)
 template <class T>
 T Cross(const Vector2D<T>& lval, const Vector2D<T>& rval)
 {
