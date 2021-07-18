@@ -8,6 +8,7 @@ Object::Object(const Vector2Flt& pos, const Vector2& size, const Object_ID oID) 
 {
     exRate_ = 1.0;
     angle_ = 0.0;
+    delta_ = 0.0;
     reverseXFlag_ = false;
     isAlive_ = true;
     animCnt_ = 0;

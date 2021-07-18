@@ -45,11 +45,11 @@ namespace state
 				std::string name = atr->name();
 				if (name == "movex")
 				{
-					moveVec.x = static_cast<float>(std::atof(atr->value()));
+					moveVec.x = static_cast<float>(std::atof(atr->value()))*pawn->delta_;
 				}
 				if (name == "movey")
 				{
-					moveVec.y = static_cast<float>(std::atof(atr->value()));
+					moveVec.y = static_cast<float>(std::atof(atr->value())) * pawn->delta_;
 				}
 				if (name == "offSetx")
 				{
@@ -262,7 +262,7 @@ namespace state
 				if (name == "x")
 				{
 					float movePow = static_cast<float>(std::atof(atr->value()));
-					pawn->pos_.x += movePow;
+					pawn->pos_.x += movePow*pawn->delta_;
 					if (movePow < 0)
 					{
 						pawn->reverseXFlag_ = true;
@@ -274,7 +274,7 @@ namespace state
 				}
 				if (name == "y")
 				{
-					pawn->pos_.y += static_cast<float>(std::atof(atr->value()));
+					pawn->pos_.y += static_cast<float>(std::atof(atr->value())) * pawn->delta_;
 				}
 			}
 			return true;

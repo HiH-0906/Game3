@@ -39,6 +39,8 @@ protected:
 	Vector2Flt pos_;
 	Vector2 size_;
 
+	double delta_;
+
 	Object_ID objectID_;
 
 	std::string imageKey_;

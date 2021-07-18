@@ -2,8 +2,8 @@
 <moduleList name="Player" version ="1.0">
 	<actNode name="MoveLR">
 		<module name="CheckKeyNow" key = "LEFT">
-			<module name ="CheckMoveRay" movex="-2.0" offSetx="-">
-				<module name="Move" x = "-2.0">
+			<module name ="CheckMoveRay" movex="-120.0" offSetx="-">
+				<module name="Move" x = "-120.0">
 					<mogule name="CheckAnim" flag="false" id="FALL">
 						<mogule name="CheckAnim" flag="false" id="JUMP">
 							<module name="SetAnimation" id="Run"/>
@@ -15,8 +15,8 @@
 	</actNode>
 	<actNode name="MoveLR">
 		<module name="CheckKeyNow" key = "RIGHT">
-			<module name ="CheckMoveRay" movex="2.0" offSetx="+">
-				<module name="Move" x = "2.0">
+			<module name ="CheckMoveRay" movex="120.0" offSetx="+">
+				<module name="Move" x = "120.0">
 					<mogule name="CheckAnim" flag="false" id="FALL">
 						<mogule name="CheckAnim" flag="false" id="JUMP">
 							<module name="SetAnimation" id="Run"/>

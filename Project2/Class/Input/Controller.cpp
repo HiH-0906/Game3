@@ -52,7 +52,7 @@ Controller::~Controller()
 	ringBuf_ = nullptr;
 }
 
-void Controller::UpdateRingBuf(void)
+void Controller::UpdateRingBuf(const double& delta)
 {
 	ringBuf_ = ringBuf_->next_;
 	unsigned int check = 0;
@@ -65,6 +65,7 @@ void Controller::UpdateRingBuf(void)
 	}
 	ringBuf_->id_ = check;
 	ringBuf_->num = chengCMDtoINPUTMap_[static_cast<CMD_ID>(check)];
+	ringBuf_->time_ = delta;
 	return;
 }
 

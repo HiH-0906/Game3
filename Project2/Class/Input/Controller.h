@@ -25,8 +25,10 @@ public:
 		{
 			id_ = 0;
 			num = 5;
+			time_ = 0.0;
 		};
 		unsigned int id_;
+		double time_;
 		int num;
 		RingBuf* befor_ = nullptr;
 		RingBuf* next_ = nullptr;
@@ -38,7 +40,7 @@ public:
 
 	virtual void Update(void) = 0;
 
-	void UpdateRingBuf(void);
+	void UpdateRingBuf(const double& delta);
 	void DebugRingBuf(void);
 
 	virtual const InputType GetInputType(void) = 0;
