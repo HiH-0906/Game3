@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <moduleList name="Player" version ="1.0">
+	<actNode name="DeathCheck">
+		<module name ="CheckAlive" flag="false">
+			<module name="SetAnimation" id="death">
+				<module name="EndNode"/>
+			</module>
+		</module>
+	</actNode>
 	<actNode name="MoveLR">
 		<module name="CheckKeyNow" key = "LEFT">
 			<module name ="CheckMoveRay" movex="-120.0" offSetx="-">
@@ -49,15 +56,17 @@
 		</module>
 	</actNode>
 	<actNode name="IdleCheck">
-		<module name ="CheckStopPos">
-			<module name="SetAnimation" id="Idle"/>
-		</module>
-		<module name="CheckGuround" isGuround="true">
-			<mogule name="CheckAnim" flag="true" id="FALL">
-				<mogule name="CheckAnim" flag="false" id="RUN">
-					<module name="SetAnimation" id="Idle"/>
+		<module name ="CheckAlive" flag="true">
+			<module name ="CheckStopPos">
+				<module name="SetAnimation" id="Idle"/>
+			</module>
+			<module name="CheckGuround" isGuround="true">
+				<mogule name="CheckAnim" flag="true" id="FALL">
+					<mogule name="CheckAnim" flag="false" id="RUN">
+						<module name="SetAnimation" id="Idle"/>
+					</mogule>
 				</mogule>
-			</mogule>
+			</module>
 		</module>
 	</actNode>
 </moduleList>

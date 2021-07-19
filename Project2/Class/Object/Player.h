@@ -10,11 +10,12 @@ class Player :
     public Pawn
 {
 public:
-    Player(const Vector2Flt& pos,const Vector2& size,const Object_ID oID, unsigned int inputType = 0);
+    Player(const Vector2Flt& pos,const Vector2& size,const Object_ID oID,int hp, TeamTag tag, InputType inputType = InputType::KEYBOARD);
     ~Player();
 private:
-    bool Init(unsigned int inputType);
+    bool Init(InputType inputType);
     void Update(const double& delta, std::weak_ptr<MapData> mapData)override final;
+
 
     std::vector<char> stateVec_;
     rapidxml::xml_node<>* stateNode_;

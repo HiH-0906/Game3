@@ -22,6 +22,6 @@ private:
     void DrawOwnScreen(const double& delta)override final;
 
     std::shared_ptr<MapData> mapData_;
-    std::list<std::unique_ptr<Object>> objList_;
+    std::list<std::shared_ptr<Object>> objList_;
 };
 

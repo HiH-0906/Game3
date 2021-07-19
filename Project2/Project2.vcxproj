@@ -151,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\collision\Collision.cpp" />
+    <ClCompile Include="Class\collision\SquaerCollision.cpp" />
+    <ClCompile Include="Class\Mng\CollisionMng.cpp" />
     <ClCompile Include="Class\Object\Bullet.cpp" />
     <ClCompile Include="Class\Animation\AnimationLoder.cpp" />
     <ClCompile Include="Class\Animation\Anim_ID.cpp" />
@@ -179,6 +182,9 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\collision\Collision.h" />
+    <ClInclude Include="Class\collision\SquaerCollision.h" />
+    <ClInclude Include="Class\Mng\CollisionMng.h" />
     <ClInclude Include="Class\Object\Bullet.h" />
     <ClInclude Include="Class\Animation\AnimationLoder.h" />
     <ClInclude Include="Class\Animation\Anim_ID.h" />
@@ -195,6 +201,7 @@
     <ClInclude Include="Class\Object\Pawn.h" />
     <ClInclude Include="Class\Object\Player.h" />
     <ClInclude Include="Class\Object\state\state.h" />
+    <ClInclude Include="Class\Object\TeamTag.h" />
     <ClInclude Include="Class\Scene\Transition\CrossOver.h" />
     <ClInclude Include="Class\Scene\Transition\FadeInOut.h" />
     <ClInclude Include="Class\Scene\Transition\Slide.h" />

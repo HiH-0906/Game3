@@ -1,4 +1,5 @@
 ﻿#include <DxLib.h>
+#include <cmath>
 #include "Pawn.h"
 #include "Bullet.h"
 #include "../Mng/AnimationMng.h"
@@ -12,8 +13,8 @@
 #include "../../_debug/_DebugConOut.h"
 
 
-Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsigned int inputType) :
-	Object(pos, size, oID)
+Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, InputType inputType) :
+	Object(pos, size, oID,hp,tag)
 {
     animID_=Char_Anim_ID::IDLE;
     animCnt_ = 0;
@@ -78,10 +79,34 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsi
 
 void Pawn::Draw(const double& delta)
 {
-    DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), exRate_, angle_, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
+    if (invincibleCnt_ > 0.0 && isAlive_)
+    {
+        if (static_cast<int>(std::floor(invincibleCnt_ * 10.0)) % 2 == 0)
+        {
+            DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), exRate_, angle_, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
+        }
+    }
+    else
+    {
+        DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), exRate_, angle_, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
+    }
+    invincibleCnt_ -= delta;
     if (bullet_)
     {
         bullet_->Draw(delta);
+    }
+}
+
+void Pawn::AddDamage(int damage)
+{
+    if (invincibleCnt_ < 0.0)
+    {
+        invincibleCnt_ = 2.0;
+        hp_ -= damage;
+        if (hp_ <= 0)
+        {
+            isAlive_ = false;
+        }
     }
 }
 

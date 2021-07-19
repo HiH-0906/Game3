@@ -16,8 +16,8 @@ namespace {
     int junpCnt = 0;
 }
 
-Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, unsigned int inputType) :
-    Pawn(pos,size, oID, inputType)
+Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, InputType inputType) :
+    Pawn(pos, size, oID, hp,tag, inputType)
 { 
     Init(inputType);
 }
@@ -26,13 +26,13 @@ Player::~Player()
 {
 }
 
-bool Player::Init(unsigned int inputType)
+bool Player::Init(InputType inputType)
 {    
-    if (inputType == 0)
+    if (inputType == InputType::KEYBOARD)
     {
         controller_ = std::make_unique<KeyBoard>();
     }
-    else if (inputType == 1)
+    else if (inputType == InputType::PAD)
     {
         controller_ = std::make_unique<Pad>();
     }
@@ -65,17 +65,20 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     controller_->UpdateRingBuf(delta);
     controller_->DebugRingBuf();
 
-    for (auto node = stateNode_->first_node(); node != nullptr; node = node->next_sibling())
-    {
-        (*moduleNode_)(this, node);
-    }
     if (bullet_)
     {
         bullet_->Update(delta, mapData);
         if (!bullet_->Alive())
         {
-            bullet_.release();
             bullet_ = nullptr;
+        }
+    }
+
+    for (auto node = stateNode_->first_node(); node != nullptr; node = node->next_sibling())
+    {
+        if (!(*moduleNode_)(this, node))
+        {
+            break;
         }
     }
     // âÊñ í[èàóù

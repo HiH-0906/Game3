@@ -19,6 +19,7 @@ namespace state
     struct CheckAnim;
     struct Attack;
     struct CheckCmmand;
+    struct CheckAlive;
 }
 
 class Controller;
@@ -45,9 +46,10 @@ class Pawn :
     public Object
 {
 public:
-    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID, unsigned int inputType = 0);
+    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID,int hp, TeamTag tag, InputType inputType = InputType::KEYBOARD);
     virtual ~Pawn() = default;
     virtual void Draw(const double& delta)override;
+    virtual void AddDamage(int damage)override;
 private:
   
 protected:
@@ -65,7 +67,7 @@ protected:
 
     std::unique_ptr<Controller> controller_;
     std::unique_ptr<Raycast> raycast_;
-    std::unique_ptr<Bullet> bullet_;
+    std::shared_ptr<Bullet> bullet_;
     std::weak_ptr<MapData> mapData_;
 
     std::list<CommandData> commandList_;
@@ -84,5 +86,6 @@ protected:
     friend state::CheckAnim;
     friend state::Attack;
     friend state::CheckCmmand;
+    friend state::CheckAlive;
 };
 

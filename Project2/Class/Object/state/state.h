@@ -5,6 +5,9 @@
 #include <cassert>
 #include "../Pawn.h"
 #include "../Bullet.h"
+#include "../../collision/Collision.h"
+#include "../../collision/SquaerCollision.h"
+#include "../../Mng/CollisionMng.h"
 #include "../../Map/MapData.h"
 #include "../../common/Raycast.h"
 #include "../../Input/Controller.h"
@@ -86,10 +89,8 @@ namespace state
 			{
 				Raycast::Ray ray = { tmpPos ,moveVec };
 				_dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
-				_dbgDrawBox(pawn->pos_.x - pawn->size_.x / 2, pawn->pos_.y - pawn->size_.y / 2, pawn->pos_.x + pawn->size_.x / 2, pawn->pos_.y + pawn->size_.y / 2, 0xff0000, false);
 				for (auto colData : pawn->mapData_.lock()->GetColData())
 				{
-					_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
 					if (pawn->raycast_->CheckCollision(ray, colData))
 					{
 						_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xffffff, true);
@@ -107,6 +108,10 @@ namespace state
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
+			for (auto colData : pawn->mapData_.lock()->GetColData())
+			{
+				_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
+			}
 			std::string atr = node->first_attribute("isGuround")->value();
 			bool reFlag = false;
 			if (atr=="true")
@@ -126,13 +131,11 @@ namespace state
 			{
 				Raycast::Ray ray = { tmpPos ,moveVec };
 				_dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
-				_dbgDrawBox(pawn->pos_.x - pawn->size_.x / 2, pawn->pos_.y - pawn->size_.y / 2, pawn->pos_.x + pawn->size_.x / 2, pawn->pos_.y + pawn->size_.y / 2, 0xff0000, false);
 				for (auto colData : pawn->mapData_.lock()->GetColData())
 				{
 					_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
 					if (pawn->raycast_->CheckCollision(ray, colData))
 					{
-						_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xffffff, true);
 						pawn->yaddPower_ = 0.2f;
 						return reFlag;
 					}
@@ -159,7 +162,11 @@ namespace state
 				{
 					speed = { 10.0f,0.0f };
 				}
-				pawn->bullet_ = std::make_unique<Bullet>(pawn->pos_, Vector2{ 32,32 }, Object_ID::Bullet, speed, pawn->reverseXFlag_);
+				pawn->bullet_ = std::make_shared<Bullet>(pawn->pos_, Vector2{ 32,32 }, Object_ID::Bullet, speed, pawn->reverseXFlag_, pawn->teamTag_);
+				Vector2Flt size = static_cast<Vector2Flt>(pawn->bullet_->GetSize());
+				auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
+				col->SetOwner(pawn->bullet_);
+				lpCollisionMng.RegistrationCol(col);
 			}
 			return true;
 		}
@@ -249,6 +256,24 @@ namespace state
 				}
 			}
 			return !reFlag;
+		}
+	};
+
+	struct CheckAlive
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			std::string check = node->first_attribute("flag")->value();
+			bool reflag = true;
+			if (check == "false")
+			{
+				reflag = false;
+			}
+			if (pawn->isAlive_)
+			{
+				return reflag;
+			}
+			return !reflag;
 		}
 	};
 
@@ -391,7 +416,19 @@ namespace state
 			{
 				pawn->SetAnimation(Char_Anim_ID::IDLE);
 			}
+			if (id == "death")
+			{
+				pawn->SetAnimation(Char_Anim_ID::DEATH);
+			}
 			return true;
+		}
+	};
+
+	struct EndNode
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			return false;
 		}
 	};
 
@@ -431,7 +468,9 @@ namespace state
 			{"Jump",Jump()},
 			{"CheckAnim",CheckAnim()},
 			{"Attack",Attack()},
-			{"CheckCmmand",CheckCmmand()}
+			{"CheckCmmand",CheckCmmand()},
+			{"CheckAlive",CheckAlive()},
+			{"EndNode",EndNode()}
 		};
 	};
 }

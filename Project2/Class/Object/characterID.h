@@ -2,6 +2,6 @@
 
 enum class Object_ID
 {
-	Player,
+	Pawn,
 	Bullet,
 };

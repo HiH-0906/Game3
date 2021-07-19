@@ -41,3 +41,9 @@ enum class CMD_ID
 	MAX,
 	NEUTRAL = 0,
 };
+
+enum class InputType
+{
+	KEYBOARD,
+	PAD,
+};

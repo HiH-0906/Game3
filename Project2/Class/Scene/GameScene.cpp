@@ -7,7 +7,10 @@
 #include "../Map/MapData.h"
 #include "../Mng/ImageMng.h"
 #include "../Mng/AnimationMng.h"
+#include "../Mng/CollisionMng.h"
 #include "../Object/Player.h"
+#include "../collision/Collision.h"
+#include "../collision/SquaerCollision.h"
 
 GameScene::GameScene()
 {
@@ -32,14 +35,23 @@ bool GameScene::Init(void)
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	objList_.emplace_back(std::make_unique<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Player,1));
+	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Pawn,10,TeamTag::RED,InputType::KEYBOARD));
+	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 }, Object_ID::Pawn, 10, TeamTag::BLUE, InputType::PAD));
+
+	for (const auto& obj : objList_)
+	{
+		Vector2Flt size = static_cast<Vector2Flt>(obj->GetSize());
+		auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
+		col->SetOwner(obj);
+		lpCollisionMng.RegistrationCol(col);
+	}
 
 	return true;
 }
 
 void GameScene::AnimInit(void)
 {
-	lpAnimMng.LoadAnimTmx("animData/PlayerAnim.tmx", Object_ID::Player);
+	lpAnimMng.LoadAnimTmx("animData/PlayerAnim.tmx", Object_ID::Pawn);
 }
 
 std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_ptr<BaseScene> ownScene)
@@ -52,6 +64,7 @@ std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_pt
 	{
 		obj->Update(delta,mapData_);
 	}
+	lpCollisionMng.Update();
 	return std::move(ownScene);
 }
 

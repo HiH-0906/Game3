@@ -6,12 +6,6 @@
 #include "INPUT_ID.h"
 
 
-enum class InputType
-{
-	KEYBOARD,
-	PAD,
-};
-
 using TrgBool = std::array<bool, static_cast<unsigned int>(TRG::MAX)>;
 using TrgData = std::map<INPUT_ID, TrgBool>;
 using KeyConfig = std::map<INPUT_ID, unsigned int>;
