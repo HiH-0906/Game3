@@ -16,7 +16,7 @@
 #include "../../../_debug/_DebugConOut.h"
 #include "../../../_debug/_DebugDispOut.h"
 
-
+// コンバーター系
 namespace
 {
 	std::map<std::string, INPUT_ID>  input_IDkey_ = {
@@ -33,6 +33,16 @@ namespace
 		{"RUN",Char_Anim_ID::RUN},
 		{"JUMP",Char_Anim_ID::JUMP},
 		{"FALL",Char_Anim_ID::FALL}
+	};
+	std::array<CMD_ID, 8> cmdExtension = {
+			CMD_ID::LEFT_D_D,
+			CMD_ID::DOWN,
+			CMD_ID::RIGHT_D_D,
+			CMD_ID::RIGHT,
+			CMD_ID::RIGHT_U_D,
+			CMD_ID::UP,
+			CMD_ID::LEFT_U_D,
+			CMD_ID::LEFT
 	};
 }
 namespace state
@@ -178,15 +188,15 @@ namespace state
 		{
 			auto CheckCommand = [&](CommandData data)
 			{
-				auto input = pawn->controller_->GetRingBuf();
+				const Controller::RingBuf* buf = pawn->controller_->GetRingBuf();
 				unsigned int timeCnt_ = 0;
-				for (auto cmd = data.command_.rbegin(); cmd != data.command_.rend(); cmd++)
+				for (std::reverse_iterator<std::list<CommandData::command>::iterator> cmd = data.command_.rbegin(); cmd != data.command_.rend(); cmd++)
 				{
 					int cnt = 0;
 					unsigned int checkID = static_cast<unsigned int>(cmd->id);
 					unsigned int mask = 0xffffffff;
 					// ボタン入力時は方向入力を無視する
-					if (input->id_ >= static_cast<unsigned int>(CMD_ID::BTN_1))
+					if (buf->id_ >= static_cast<unsigned int>(CMD_ID::BTN_1))
 					{
 						mask -= 0x0000000f;
 					}
@@ -195,23 +205,16 @@ namespace state
 					{
 						checkID ^= 0x0000000c;
 					}
-					// 判定 設定されたTime分まで遡る
-					while (((input->id_ & mask)) == checkID && (cnt < cmd->time))
+					auto check = CheckInput(&buf, mask, checkID, *cmd);
+					if (check.first)
 					{
-						input = input->befor_;
-						cnt++;
-					};
-					// 入力があったか
-					if (cnt == 0)
-					{
-						// それは必須なのか
-						if (cmd->required_)
-						{
-							TRACE(("COMMAND失敗！" + data.name_ + ": % d\n").c_str(), checkID);
-							return false;
-						}
+						timeCnt_ += check.second;
 					}
-					timeCnt_ += cnt;
+					else
+					{
+						TRACE(("COMMAND失敗"+data.name_+"\n").c_str());
+						return false;
+					}
 				}
 				if (timeCnt_ > data.allTime_)
 				{
@@ -231,6 +234,62 @@ namespace state
 			}
 			return false;
 		}
+	private:
+		// 入力されたコマンドとコマンドデータを比較する。隣に入力がずれても許容するニュートラルも許容する
+		std::pair<bool, int> CheckInput(const Controller::RingBuf** buf, const unsigned int mask, const unsigned int& check,
+			CommandData::command cmd, int nCnt = 0)
+		{
+			// 5フレーム分しか許容しません
+			if (nCnt > 5)
+			{
+				TRACE("許容over\n");
+				return { false,0 };
+			}
+			int cnt = 0;
+			// 判定 設定されたTime分まで遡る
+			while ((((*buf)->id_ & mask)) == check && (cnt < cmd.time))
+			{
+				(*buf) = (*buf)->befor_;
+				cnt++;
+			};
+			// 入力があったか
+			if (cnt == 0)
+			{
+				unsigned int befor = -1;
+				unsigned int next = -1;
+				// 許容位置探し
+				for (int i = 0; i < cmdExtension.size(); i++)
+				{
+					// 方向だけ取り出す
+					unsigned int id = (*buf)->id_ & 0x0000000f;
+					// ニュートラルも許容
+					if (id == 0)
+					{
+						TRACE("N許容\n");
+						(*buf) = (*buf)->befor_;
+						auto tmp = CheckInput(buf, mask, check, cmd, ++nCnt);
+						return { tmp.first,tmp.second + cnt };
+					}
+					if (cmdExtension[i] == static_cast<CMD_ID>(cmd.id))
+					{
+						befor = i - 1 < 0 ? cmdExtension.size() - 1 : i - 1;
+						next = i + 1 > cmdExtension.size() ? 0 : i + 1;
+						if (cmdExtension[befor] == static_cast<CMD_ID>(id) || cmdExtension[next] == static_cast<CMD_ID>(id))
+						{
+							TRACE("許容\n");
+							(*buf) = (*buf)->befor_;
+							auto tmp = CheckInput(buf, mask, check, cmd,++nCnt);
+							return { tmp.first,tmp.second + cnt };
+						}
+						break;
+					}
+				}
+				// 許容できる入力ではなかった
+				TRACE("駄目\n");
+				return { false ,0 };
+			}
+			return { true ,cnt };
+		};
 	};
 
 	struct CheckAnim
@@ -424,14 +483,6 @@ namespace state
 		}
 	};
 
-	struct EndNode
-	{
-		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
-		{
-			return false;
-		}
-	};
-
 	struct ModuleNode
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
@@ -470,7 +521,6 @@ namespace state
 			{"Attack",Attack()},
 			{"CheckCmmand",CheckCmmand()},
 			{"CheckAlive",CheckAlive()},
-			{"EndNode",EndNode()}
 		};
 	};
 }

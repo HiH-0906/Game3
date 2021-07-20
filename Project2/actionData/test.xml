@@ -2,9 +2,7 @@
 <moduleList name="Player" version ="1.0">
 	<actNode name="DeathCheck">
 		<module name ="CheckAlive" flag="false">
-			<module name="SetAnimation" id="death">
-				<module name="EndNode"/>
-			</module>
+			<module name="SetAnimation" id="death"/>
 		</module>
 	</actNode>
 	<actNode name="MoveLR">
@@ -51,7 +49,6 @@
 				<module name="CheckCmmand">
 					<module name="Attack"/>
 				</module>
-
 			</module>
 		</module>
 	</actNode>

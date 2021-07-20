@@ -2,12 +2,8 @@
 <character character="player">
 	<command name="SyoryuKen" allTime="15">
 		<data key="6" time="1" Required="true"/>
-		<data key="5" time="5" Required="false"/>
-		<data key="3" time="5" Required="false"/>
-		<data key="1" time="5" Required="false"/>
 		<data key="2" time="20" Required="true"/>
 		<data key="3" time="20" Required="true"/>
-		<data key="6" time="5" Required="false"/>
 		<data key="BTN_3" time="1" Required="true"/>
 	</command>
 	<command name="HadoKen" allTime="15">
