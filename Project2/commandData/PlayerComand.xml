@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <character character="player">
-	<command name="SyoryuKen" allTime="15">
-		<data key="6" time="1" Required="true"/>
-		<data key="2" time="20" Required="true"/>
-		<data key="3" time="20" Required="true"/>
-		<data key="BTN_3" time="1" Required="true"/>
-	</command>
-	<command name="HadoKen" allTime="15">
-		<data key="2" time="1" Required="true"/>
-		<data key="3" time="20" Required="true"/>
-		<data key="6" time="20" Required="true"/>
-		<data key="BTN_3" time="1" Required="true"/>
-	</command>
+  <command name="SyoryuKen" allTime="15">
+    <data key="6" time="1"/>
+    <data key="2" time="20"/>
+    <data key="3" time="20" />
+    <data key="BTN_3" time="1"/>
+  </command>
+  <command name="HadoKen" allTime="15">
+    <data key="2" time="1"/>
+    <data key="3" time="20"/>
+    <data key="6" time="20"/>
+    <data key="BTN_3" time="1"/>
+  </command>
 </character>

@@ -35,8 +35,8 @@ bool GameScene::Init(void)
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 
-	//objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Pawn,10,TeamTag::RED,InputType::KEYBOARD));
-	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 }, Object_ID::Pawn, 10, TeamTag::BLUE, InputType::PAD));
+	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Pawn,20,TeamTag::RED,InputType::KEYBOARD));
+	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 }, Object_ID::Pawn, 20, TeamTag::BLUE, InputType::PAD));
 
 	for (const auto& obj : objList_)
 	{

@@ -43,12 +43,9 @@ struct LoadCommad
 			commandData.allTime_ = std::atoi(comNode->first_attribute("allTime")->value());
 			for (auto node = comNode->first_node("data"); node != nullptr; node = node->next_sibling("data"))
 			{
-				std::string check = node->first_attribute("Required")->value();
-				auto required = check == "true" ? true : false;
 				CommandData::command tmp = {};
 				tmp.id = chengeData[node->first_attribute("key")->value()];
 				tmp.time = std::atoi(node->first_attribute("time")->value());
-				tmp.required_ = required;
 				commandData.command_.push_back(tmp);
 			}
 			reComList.push_back(commandData);

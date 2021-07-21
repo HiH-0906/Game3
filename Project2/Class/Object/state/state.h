@@ -58,11 +58,11 @@ namespace state
 				std::string name = atr->name();
 				if (name == "movex")
 				{
-					moveVec.x = static_cast<float>(std::atof(atr->value()))*pawn->delta_;
+					moveVec.x = static_cast<float>(std::atof(atr->value())) * static_cast<float>(pawn->delta_);
 				}
 				if (name == "movey")
 				{
-					moveVec.y = static_cast<float>(std::atof(atr->value())) * pawn->delta_;
+					moveVec.y = static_cast<float>(std::atof(atr->value())) * static_cast<float>(pawn->delta_);
 				}
 				if (name == "offSetx")
 				{
@@ -99,7 +99,7 @@ namespace state
 			{
 				Raycast::Ray ray = { tmpPos ,moveVec };
 				_dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
-				for (auto colData : pawn->mapData_.lock()->GetColData())
+				for (const auto& colData : pawn->mapData_.lock()->GetColData())
 				{
 					if (pawn->raycast_->CheckCollision(ray, colData))
 					{
@@ -141,7 +141,7 @@ namespace state
 			{
 				Raycast::Ray ray = { tmpPos ,moveVec };
 				_dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
-				for (auto colData : pawn->mapData_.lock()->GetColData())
+				for (const auto& colData : pawn->mapData_.lock()->GetColData())
 				{
 					_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
 					if (pawn->raycast_->CheckCollision(ray, colData))
@@ -160,23 +160,13 @@ namespace state
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
-			TRACE("ATTACK!!\n");
-			if (!pawn->bullet_)
+			if (pawn->attackFunc_)
 			{
-				Vector2Flt speed = {};
-				if (pawn->reverseXFlag_)
-				{
-					speed = { -10.0f,0.0f };
-				}
-				else
-				{
-					speed = { 10.0f,0.0f };
-				}
-				pawn->bullet_ = std::make_shared<Bullet>(pawn->pos_, Vector2{ 32,32 }, Object_ID::Bullet, speed, pawn->reverseXFlag_, pawn->teamTag_);
-				Vector2Flt size = static_cast<Vector2Flt>(pawn->bullet_->GetSize());
-				auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
-				col->SetOwner(pawn->bullet_);
-				lpCollisionMng.RegistrationCol(col);
+				pawn->attackFunc_();
+			}
+			else
+			{
+				assert(!"pawnのattackFunc_がempty");
 			}
 			return true;
 		}
@@ -220,8 +210,9 @@ namespace state
 				{
 					TRACE(("COMMAND失敗！" + data.name_ + ":全体入力時間が長すぎ:%d/%d\n").c_str(), timeCnt_, data.allTime_);
 					return false;
-				}
+				}    
 				TRACE(("COMMAND成功！" + data.name_ + "\n").c_str());
+				pawn->attackFunc_ = pawn->attackFuncMap_[data.name_];
 				return true;
 			};
 			
@@ -270,10 +261,10 @@ namespace state
 						auto tmp = CheckInput(buf, mask, check, cmd, ++nCnt);
 						return { tmp.first,tmp.second + cnt };
 					}
-					if (cmdExtension[i] == static_cast<CMD_ID>(cmd.id))
+					if (cmdExtension[i] == static_cast<CMD_ID>(check))
 					{
-						befor = i - 1 < 0 ? cmdExtension.size() - 1 : i - 1;
-						next = i + 1 > cmdExtension.size() ? 0 : i + 1;
+						befor = i - 1 <= 0 ? static_cast<unsigned int>(cmdExtension.size()) - 1 : i - 1;
+						next = i + 1 >= static_cast<int>(cmdExtension.size()) ? 0 : i + 1;
 						if (cmdExtension[befor] == static_cast<CMD_ID>(id) || cmdExtension[next] == static_cast<CMD_ID>(id))
 						{
 							TRACE("許容\n");
@@ -346,7 +337,7 @@ namespace state
 				if (name == "x")
 				{
 					float movePow = static_cast<float>(std::atof(atr->value()));
-					pawn->pos_.x += movePow*pawn->delta_;
+					pawn->pos_.x += movePow * static_cast<float>(pawn->delta_);
 					if (movePow < 0)
 					{
 						pawn->reverseXFlag_ = true;
@@ -358,7 +349,7 @@ namespace state
 				}
 				if (name == "y")
 				{
-					pawn->pos_.y += static_cast<float>(std::atof(atr->value())) * pawn->delta_;
+					pawn->pos_.y += static_cast<float>(std::atof(atr->value())) * static_cast<float>(pawn->delta_);
 				}
 			}
 			return true;

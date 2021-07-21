@@ -27,10 +27,6 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int 
         TRACE((data.name_ + "\n").c_str());
         for (const auto& com:data.command_)
         {
-            if (!com.required_)
-            {
-                continue;
-            }
             if (com.id == CMD_ID::LEFT)
             {
                 TRACE("LEFT:");

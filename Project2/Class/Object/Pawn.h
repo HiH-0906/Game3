@@ -1,6 +1,9 @@
 #pragma once
 #include <array>
 #include <list>
+#include <string>
+#include <map>
+#include <functional>
 #include "../Input/INPUT_ID.h"
 #include "Object.h"
 
@@ -33,7 +36,6 @@ struct CommandData
     {
         CMD_ID id;
         int time;
-        bool required_;
     };
     std::list<command> command_;
     unsigned int allTime_ = 0;
@@ -50,8 +52,9 @@ public:
     virtual ~Pawn() = default;
     virtual void Draw(const double& delta)override;
     virtual void AddDamage(int damage)override;
+
 private:
-  
+    virtual void InitAttackFunc(void) = 0;
 protected:
     // アニメーション変更
     void SetAnimation(Char_Anim_ID id);
@@ -73,6 +76,9 @@ protected:
     std::list<CommandData> commandList_;
 
     std::unique_ptr<state::ModuleNode> moduleNode_;
+
+    std::function<void(void)> attackFunc_;
+    std::map<std::string, std::function<void(void)>> attackFuncMap_;
 
     friend state::Move;
     friend state::CheckKeyTrg;

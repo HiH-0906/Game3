@@ -16,6 +16,7 @@ private:
     bool Init(InputType inputType);
     void Update(const double& delta, std::weak_ptr<MapData> mapData)override final;
 
+    void InitAttackFunc(void)override final;
 
     std::vector<char> stateVec_;
     rapidxml::xml_node<>* stateNode_;

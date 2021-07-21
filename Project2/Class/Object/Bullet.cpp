@@ -3,8 +3,8 @@
 #include "../Mng/ImageMng.h"
 #include "../Mng/SceneMng.h"
 
-Bullet::Bullet(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, const Vector2Flt& speed, bool reverseXFlag,TeamTag tag):
-	Object(pos,size,oID,0,tag), speed_(speed)
+Bullet::Bullet(const Vector2Flt& pos, const Vector2& size,const int& damage, const Object_ID oID, const Vector2Flt& speed, bool reverseXFlag,TeamTag tag):
+	Object(pos,size,oID,0,tag), speed_(speed),damage_(damage)
 {
 	reverseXFlag_ = reverseXFlag;
 	lpImageMng.GetID("Bullet", "Image/player/ChickenBullet.png", Vector2{ 32,32 }, Vector2{ 1,3 });
@@ -32,7 +32,7 @@ void Bullet::HitCollision(std::shared_ptr<Object> otehr)
 {
 	if (otehr->GetTeamTag() != teamTag_)
 	{
-		otehr->AddDamage(200);
+		otehr->AddDamage(damage_);
 		isAlive_ = false;
 	}
 }
