@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "Controller.h"
+#include "../../_debug/_DebugDispOut.h"
 
 Controller::Controller()
 {
@@ -74,11 +75,11 @@ void Controller::DebugRingBuf(void)
 	int cnt = 0;
 	for (auto buf = ringBuf_->befor_; buf != ringBuf_; buf = buf->befor_)
 	{
-		DrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
-		DrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", buf->num);
+		_dbgDrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
+		_dbgDrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", buf->num);
 	}
-	DrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
-	DrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", ringBuf_->num);
+	_dbgDrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
+	_dbgDrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", ringBuf_->num);
 }
 
 const TrgData& Controller::GetCntData(void)

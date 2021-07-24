@@ -34,6 +34,7 @@ bool GameScene::Init(void)
 	const auto& info = mapData_->GetMapInfo(MAP_LAYER::BLOCK);
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
+	lpImageMng.GetID("UITest", "image/UI/EggUIäÆê¨ÉCÉÅÅ[ÉW.png", { 224,128 }, { 1,1 });
 
 	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},Object_ID::Pawn,20,TeamTag::RED,InputType::KEYBOARD));
 	objList_.emplace_back(std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 }, Object_ID::Pawn, 20, TeamTag::BLUE, InputType::PAD));
@@ -72,6 +73,10 @@ void GameScene::DrawOwnScreen(const double& delta)
 {
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
+
+	DrawBox(0, 512, 1024, 768, 0xffffff, true);
+
+	DrawGraph(16, 600, lpImageMng.GetID("UITest")[0],true);
 
 	for (const auto layer:MAP_LAYER())
 	{
