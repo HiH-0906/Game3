@@ -32,18 +32,20 @@ namespace
 		{"IDLE",Char_Anim_ID::IDLE},
 		{"RUN",Char_Anim_ID::RUN},
 		{"JUMP",Char_Anim_ID::JUMP},
-		{"FALL",Char_Anim_ID::FALL}
+		{"FALL",Char_Anim_ID::FALL},
+		{"REVIVE",Char_Anim_ID::REVIVE}
 	};
 	std::array<CMD_ID, 8> cmdExtension = {
-			CMD_ID::LEFT_D_D,
+			CMD_ID::LEFT_D,
 			CMD_ID::DOWN,
-			CMD_ID::RIGHT_D_D,
+			CMD_ID::RIGHT_D,
 			CMD_ID::RIGHT,
-			CMD_ID::RIGHT_U_D,
+			CMD_ID::RIGHT_U,
 			CMD_ID::UP,
-			CMD_ID::LEFT_U_D,
+			CMD_ID::LEFT_U,
 			CMD_ID::LEFT
 	};
+	double reviveTime_ = 0.0;
 }
 namespace state
 {
@@ -95,7 +97,7 @@ namespace state
 			}
 			Vector2Flt tmpPos = pawn->pos_ - offset;
 
-			for (int i = 0; i < 9; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				Raycast::Ray ray = { tmpPos ,moveVec };
 				_dbgDrawLine(ray.point.x, ray.point.y, ray.point.x + ray.vec.x, ray.point.y + ray.vec.y, 0x00ff00);
@@ -124,7 +126,7 @@ namespace state
 			}
 			std::string atr = node->first_attribute("isGuround")->value();
 			bool reFlag = false;
-			if (atr=="true")
+			if (atr == "true")
 			{
 				reFlag = true;
 			}
@@ -132,7 +134,7 @@ namespace state
 			Vector2Flt offset = { pawn->size_.x / 2.0f ,0.0f };
 			if (pawn->yaddPower_ <= 0)
 			{
-				moveVec = { 0.0f,-(pawn->size_.y / 2.0f) - pawn->yaddPower_ };
+				moveVec = { 0.0f,-(pawn->size_.y / 2.0f)};
 			}
 
 			Vector2Flt tmpPos = pawn->pos_ - offset;
@@ -146,7 +148,12 @@ namespace state
 					_dbgDrawBox(colData.first.x, colData.first.y, colData.first.x + colData.second.x, colData.first.y + colData.second.y, 0xff0000, false);
 					if (pawn->raycast_->CheckCollision(ray, colData))
 					{
+						if (pawn->yaddPower_ > 0)
+						{
+							pawn->pos_.y = colData.first.y - pawn->size_.y / 2;
+						}
 						pawn->yaddPower_ = 0.2f;
+						
 						return reFlag;
 					}
 				}
@@ -191,7 +198,7 @@ namespace state
 						mask -= 0x0000000f;
 					}
 					// ç∂âEîΩì]èàóù
-					if (pawn->reverseXFlag_ && ((cmd->id >= CMD_ID::LEFT) && cmd->id <= CMD_ID::RIGHT_D_D))
+					if (pawn->reverseXFlag_ && ((cmd->id >= CMD_ID::LEFT) && cmd->id <= CMD_ID::RIGHT_D))
 					{
 						checkID ^= 0x0000000c;
 					}
@@ -324,6 +331,35 @@ namespace state
 				return reflag;
 			}
 			return !reflag;
+		}
+	};
+
+	struct  Revive
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			reviveTime_ -= pawn->delta_;
+			if ((pawn->reviveCnt_ > 0) && (reviveTime_ <= 0))
+			{
+				pawn->isAlive_ = true;
+				pawn->reviveCnt_--;
+				reviveTime_ = 0;
+				return true;
+			}
+			return false;
+		}
+	};
+
+	struct SetReviveTime
+	{
+		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
+		{
+			if (reviveTime_ <= 0)
+			{
+				std::string Time = node->first_attribute("Time")->value();
+				reviveTime_ = std::atof(Time.c_str());
+			}
+			return true;
 		}
 	};
 
@@ -470,6 +506,10 @@ namespace state
 			{
 				pawn->SetAnimation(Char_Anim_ID::DEATH);
 			}
+			if (id == "revive")
+			{
+				pawn->SetAnimation(Char_Anim_ID::REVIVE);
+			}
 			return true;
 		}
 	};
@@ -488,7 +528,7 @@ namespace state
 				}
 				if (!module_[moduleName](pawn, module))
 				{
-					continue;
+					return false;
 				}
 				// çƒãNåƒÇ—èoÇµ
 				if (!(*this)(pawn, module))
@@ -512,6 +552,8 @@ namespace state
 			{"Attack",Attack()},
 			{"CheckCmmand",CheckCmmand()},
 			{"CheckAlive",CheckAlive()},
+			{"Revive",Revive()},
+			{"SetReviveTime",SetReviveTime()},
 		};
 	};
 }

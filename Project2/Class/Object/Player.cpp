@@ -11,10 +11,9 @@
 #include "../common/Raycast.h"
 #include "../../_debug/_DebugDispOut.h"
 #include "state/state.h"
+#include "../UI/PlayerUI.h"
 
-namespace {
-    int junpCnt = 0;
-}
+
 
 Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, InputType inputType) :
     Pawn(pos, size, oID, hp,tag, inputType)
@@ -79,14 +78,13 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
 
     for (auto node = stateNode_->first_node(); node != nullptr; node = node->next_sibling())
     {
-        if (!(*moduleNode_)(this, node))
-        {
-            break;
-        }
+        (*moduleNode_)(this, node);
     }
     // ‰æ–Ê’[ˆ—
     pos_.x = std::min(std::max(pos_.x, size_.x / 2.0f), lpSceneMng.GetScreenSize().x - (size_.x / 2.0f));
     pos_.y = std::min(std::max(pos_.y, size_.y / 2.0f - 10.0f), lpSceneMng.GetScreenSize().y - (size_.y / 2.0f));
+    ui_->UpDate(delta);
+    ui_->UIDraw();
 }
 
 void Player::InitAttackFunc(void)

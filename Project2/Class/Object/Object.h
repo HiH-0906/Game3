@@ -29,7 +29,7 @@ class SquaerCollision;
 class Object
 {
 public:
-	Object(const Vector2Flt& pos,const Vector2& size,const Object_ID oID,int hp,TeamTag tag);
+	Object(const Vector2Flt& pos,const Vector2& size,const Object_ID oID,TeamTag tag);
 	virtual ~Object() = default;
 	virtual void Update(const double& delta,std::weak_ptr<MapData> mapData) = 0;
 	virtual void Draw(const double& delta);
@@ -50,8 +50,6 @@ public:
 	
 private:
 protected:
-
-	int hp_;
 
 	Vector2Flt pos_;
 	Vector2 size_;

@@ -7,6 +7,7 @@ enum class Char_Anim_ID
 	JUMP,
 	FALL,
 	DEATH,
+	REVIVE,
 	MAX,
 };
 

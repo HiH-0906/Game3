@@ -19,6 +19,7 @@ GameScene::GameScene()
 
 GameScene::~GameScene()
 {
+	DeleteMaskScreen();
 }
 
 const SceneID GameScene::GetSceneID(void) const
@@ -29,8 +30,9 @@ const SceneID GameScene::GetSceneID(void) const
 bool GameScene::Init(void)
 {
 	AnimInit();
+	CreateMaskScreen();
 	mapData_ = std::make_unique<MapData>("mapData/map.tmx");
-	
+
 	const auto& info = mapData_->GetMapInfo(MAP_LAYER::BLOCK);
 
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
@@ -71,12 +73,11 @@ std::unique_ptr<BaseScene> GameScene::Update(const double& delta, std::unique_pt
 
 void GameScene::DrawOwnScreen(const double& delta)
 {
+	SetUseMaskScreenFlag(false);
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 
-	DrawBox(0, 512, 1024, 768, 0xffffff, true);
-
-	DrawGraph(16, 600, lpImageMng.GetID("UITest")[0],true);
+	//DrawGraph(16, 600, lpImageMng.GetID("UITest")[0],true);
 
 	for (const auto layer:MAP_LAYER())
 	{

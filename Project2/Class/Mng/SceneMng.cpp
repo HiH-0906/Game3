@@ -13,7 +13,7 @@ bool SceneMng::SysInit(void)
 {
 	screenSize_ = { 1024,768 };
 	SetOutApplicationLogValidFlag(false);
-	SetAlwaysRunFlag(true);
+	//SetAlwaysRunFlag(true);
 	SetGraphMode(screenSize_.x, screenSize_.y, 32);
 	ChangeWindowMode(true);
 	SetWindowText("1916035_‹´–{‘å‹P");

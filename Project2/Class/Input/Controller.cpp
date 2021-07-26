@@ -25,10 +25,10 @@ Controller::Controller()
 
 	chengCMDtoINPUTMap_ = {
 		{CMD_ID::NEUTRAL,5},
-		{CMD_ID::LEFT_U_D,7},
-		{CMD_ID::LEFT_D_D,1},
-		{CMD_ID::RIGHT_U_D,9},
-		{CMD_ID::RIGHT_D_D,3},
+		{CMD_ID::LEFT_U,7},
+		{CMD_ID::LEFT_D,1},
+		{CMD_ID::RIGHT_U,9},
+		{CMD_ID::RIGHT_D,3},
 		{CMD_ID::LEFT,4},
 		{CMD_ID::RIGHT,6},
 		{CMD_ID::UP,8},
@@ -72,14 +72,18 @@ void Controller::UpdateRingBuf(const double& delta)
 
 void Controller::DebugRingBuf(void)
 {
+#ifdef _DEBUG
+	_dbgDrawBox(0, 580, 1024, 620,0x000000,true);
 	int cnt = 0;
 	for (auto buf = ringBuf_->befor_; buf != ringBuf_; buf = buf->befor_)
 	{
-		_dbgDrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
-		_dbgDrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", buf->num);
+		_dbgDrawFormatString(16 + cnt * 24, 580, 0xffffff, "%d", cnt);
+		_dbgDrawFormatString(16 + cnt++ * 24, 600, 0xffffff, "%d", buf->num);
 	}
-	_dbgDrawFormatString(16 + cnt * 24, 600, 0xffffff, "%d", cnt);
-	_dbgDrawFormatString(16 + cnt++ * 24, 632, 0xffffff, "%d", ringBuf_->num);
+	_dbgDrawFormatString(16 + cnt * 24, 580, 0xffffff, "%d", cnt);
+	_dbgDrawFormatString(16 + cnt++ * 24, 600, 0xffffff, "%d", ringBuf_->num);
+#endif // DEBUG
+	
 }
 
 const TrgData& Controller::GetCntData(void)

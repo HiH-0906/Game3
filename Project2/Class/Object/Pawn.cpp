@@ -11,16 +11,21 @@
 #include "state/state.h"
 #include "../../commandData/LoadCommand.h"
 #include "../../_debug/_DebugConOut.h"
+#include "../UI/PlayerUI.h"
 
+int Pawn::PlayerUICnt_ = 0;
 
 Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, InputType inputType) :
-	Object(pos, size, oID,hp,tag)
+	Object(pos, size, oID,tag),hp_(hp)
 {
     animID_=Char_Anim_ID::IDLE;
     animCnt_ = 0;
     animLoopCnt_ = 0;
     moduleNode_ = std::make_unique<state::ModuleNode>();
     LoadCommad loadCommand;
+
+    ui_ = std::make_shared<PlayerUI>(Vector2{ 16 + 300 * PlayerUICnt_++,600 }, Vector2{ 224,128 }, tag);
+
     commandList_ = loadCommand("commandData/PlayerComand.xml");
     for (const auto& data:commandList_)
     {
@@ -43,19 +48,19 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int 
             {
                 TRACE("DOWN:");
             }
-            if (com.id == CMD_ID::LEFT_U_D)
+            if (com.id == CMD_ID::LEFT_U)
             {
                 TRACE("LEFT_U_D:");
             }
-            if (com.id == CMD_ID::LEFT_D_D)
+            if (com.id == CMD_ID::LEFT_D)
             {
                 TRACE("LEFT_D_D:");
             }
-            if (com.id == CMD_ID::RIGHT_U_D)
+            if (com.id == CMD_ID::RIGHT_U)
             {
                 TRACE("RIGHT_U_D:");
             }
-            if (com.id == CMD_ID::RIGHT_D_D)
+            if (com.id == CMD_ID::RIGHT_D)
             {
                 TRACE("RIGHT_D_D:");
             }
@@ -91,6 +96,7 @@ void Pawn::Draw(const double& delta)
     {
         bullet_->Draw(delta);
     }
+    ui_->Draw();
 }
 
 void Pawn::AddDamage(int damage)

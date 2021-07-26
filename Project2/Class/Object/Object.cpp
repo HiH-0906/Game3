@@ -4,8 +4,8 @@
 #include "../Mng/ImageMng.h"
 #include "../../_debug/_DebugConOut.h"
 
-Object::Object(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag) :
-    pos_(pos), size_(size), objectID_(oID),hp_(hp),teamTag_(tag)
+Object::Object(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, TeamTag tag) :
+    pos_(pos), size_(size), objectID_(oID),teamTag_(tag)
 {
     exRate_ = 1.0;
     angle_ = 0.0;

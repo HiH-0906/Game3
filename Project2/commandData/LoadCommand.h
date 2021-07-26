@@ -12,15 +12,15 @@ namespace
 {
 	std::map<std::string, CMD_ID> chengeData
 	{
-		{"1",CMD_ID::LEFT_D_D},
+		{"1",CMD_ID::LEFT_D},
 		{"2",CMD_ID::DOWN},
-		{"3",CMD_ID::RIGHT_D_D},
+		{"3",CMD_ID::RIGHT_D},
 		{"4",CMD_ID::LEFT},
 		{"5",CMD_ID::NEUTRAL},
 		{"6",CMD_ID::RIGHT},
-		{"7",CMD_ID::LEFT_U_D},
+		{"7",CMD_ID::LEFT_U},
 		{"8",CMD_ID::UP},
-		{"9",CMD_ID::RIGHT_U_D},
+		{"9",CMD_ID::RIGHT_U},
 		{"BTN_1",CMD_ID::BTN_1},
 		{"BTN_2",CMD_ID::BTN_2},
 		{"BTN_3",CMD_ID::BTN_3},

@@ -23,11 +23,14 @@ namespace state
     struct Attack;
     struct CheckCmmand;
     struct CheckAlive;
+    struct Revive;
+    struct SetReviveTime;
 }
 
 class Controller;
 class Raycast;
 class Bullet;
+class UIBase;
 
 struct CommandData
 {
@@ -65,6 +68,9 @@ protected:
     int animCnt_;
     int animLoopCnt_;
 
+    int hp_;
+    int reviveCnt_;
+
     float defJunpPower_;
     float yaddPower_;
 
@@ -72,6 +78,9 @@ protected:
     std::unique_ptr<Raycast> raycast_;
     std::shared_ptr<Bullet> bullet_;
     std::weak_ptr<MapData> mapData_;
+    std::shared_ptr<UIBase> ui_;
+
+ 
 
     std::list<CommandData> commandList_;
 
@@ -79,6 +88,8 @@ protected:
 
     std::function<void(void)> attackFunc_;
     std::map<std::string, std::function<void(void)>> attackFuncMap_;
+
+    static int PlayerUICnt_;
 
     friend state::Move;
     friend state::CheckKeyTrg;
@@ -93,5 +104,7 @@ protected:
     friend state::Attack;
     friend state::CheckCmmand;
     friend state::CheckAlive;
+    friend state::Revive;
+    friend state::SetReviveTime;
 };
 

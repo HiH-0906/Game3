@@ -31,6 +31,10 @@ bool Collision::isActiv(void)
 	{
 		return false;
 	}
+	if (!(owner_.lock()->Alive()))
+	{
+		return false;
+	}
 	return true;
 }
 
