@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include<cmath>
 #include"Geometry.h"
+#include"homingShot.h"
 
 ///当たり判定関数
 ///@param posA Aの座標
@@ -35,11 +36,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	int enemyH[2];
 	LoadDivGraph("img/enemy.png", 2, 2, 1, 32, 32, enemyH);
 
-	struct Bullet {
-		Position2f pos;//座標
-		Vector2f vel;//速度
-		bool isActive = false;//生きてるか～？
-	};
+
 
 	//弾の半径
 	float bulletRadius = 5.0f;
@@ -49,7 +46,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 
 	//適当に256個くらい作っとく
 	Bullet bullets[256];
-	Bullet homingShots[8] = {};//playerhoming弾
+	HomingShot homingShots[8] = {};//playerhoming弾
 
 	Position2f enemypos(320,25);//敵座標
 	Position2f playerpos(320, 400);//自機座標
@@ -121,7 +118,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			{
 				continue;
 			}
+			hshot.trail_.Update();
 			hshot.pos += hshot.vel;
+			hshot.trail_.Draw();
 			// テキトーな尾
 			/*for (int i = 0; i < 5; i++)
 			{
@@ -132,13 +131,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			}*/
 
 			// 思ったより出来が良かった版sin,cos版と遜色ないならこっちでいい疑惑
-			//hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
+			hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
 
-			// sin,cos版
-			auto nVelocity = hshot.vel.Normalized();
-			auto nToEnemy = (enemypos - playerpos).Normalized();
+			// sin,cos版 @@なんかうまくいってない
+			/*auto nVelocity = hshot.vel.Normalized();
+			auto nToEnemy = (enemypos - hshot.pos).Normalized();
 			auto dot = Dot(nVelocity, nToEnemy);
-
+			auto angle = acos(dot);
+			angle = std::fminf(angle, DX_PI_F / 24.0f);
+			float sign = Cross(nVelocity, nToEnemy) > 0.0f ? 1.0f : -1.0f;
+			angle = atan2(hshot.vel.y, hshot.vel.x) + sign * angle;
+			hshot.vel += Vector2f(cos(angle), sin(angle)) * homing_Shot_Speed;*/
 
 
 			DrawCircleAA(hshot.pos.x, hshot.pos.y, 8.0f, 16, 0xff4444);
