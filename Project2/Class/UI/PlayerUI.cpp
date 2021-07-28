@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "PlayerUI.h"
 #include "../Mng/ImageMng.h"
+#include "../Object/Egg.h"
 
 PlayerUI::PlayerUI(const Vector2& pos, const Vector2& scrSize, const TeamTag& tag) :
 	UIBase(pos, scrSize)
@@ -31,17 +32,35 @@ PlayerUI::PlayerUI(const Vector2& pos, const Vector2& scrSize, const TeamTag& ta
 	}
 }
 
+void PlayerUI::SetList(const std::list<std::weak_ptr<Egg>>& eggList)
+{
+	eggList_ = eggList;
+}
+
+void PlayerUI::SetRevive(const double& time)
+{
+	for (const auto& egg : eggList_)
+	{
+		if (egg.expired())
+		{
+			continue;
+		}
+		egg.lock()->SetActive(time);
+		break;
+	}
+}
+
 void PlayerUI::UpDate(const double& delta)
 {
 	
 }
 
-void PlayerUI::UIDraw(void)
+void PlayerUI::UIDraw(const double& delta)
 {
 	SetUseMaskScreenFlag(true);
 	SetDrawScreen(screen_);
 	ClsDrawScreen();
-	DrawMask(0, 0, mask_, DX_MASKTRANS_NONE);
+	DrawMask(0, 0, mask_, DX_MASKTRANS_BLACK);
 	DrawBox(0, 0, scrSize_.x, scrSize_.y, col_, true);
 	SetUseMaskScreenFlag(false);
 	DrawGraph(20, 25, lpImageMng.GetID("PlayerIcon")[0], true);

@@ -7,13 +7,6 @@
 			</module>
 		</module>
 	</actNode>
-	<actNode name ="ReVive">
-		<module name ="CheckAlive" flag="false">
-			<module name="Revive">
-				<module name="SetAnimation" id="Revive"/>
-			</module>
-		</module>
-	</actNode>
 	<actNode name="MoveLR">
 		<module name="CheckKeyNow" key = "LEFT">
 			<module name ="CheckMoveRay" movex="-120.0" offSetx="-">

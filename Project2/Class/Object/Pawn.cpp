@@ -13,9 +13,8 @@
 #include "../../_debug/_DebugConOut.h"
 #include "../UI/PlayerUI.h"
 
-int Pawn::PlayerUICnt_ = 0;
 
-Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, InputType inputType) :
+Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui,InputType inputType) :
 	Object(pos, size, oID,tag),hp_(hp)
 {
     animID_=Char_Anim_ID::IDLE;
@@ -24,7 +23,8 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int 
     moduleNode_ = std::make_unique<state::ModuleNode>();
     LoadCommad loadCommand;
 
-    ui_ = std::make_shared<PlayerUI>(Vector2{ 16 + 300 * PlayerUICnt_++,600 }, Vector2{ 224,128 }, tag);
+    ui_ = ui;
+    isRevive_ = false;
 
     commandList_ = loadCommand("commandData/PlayerComand.xml");
     for (const auto& data:commandList_)

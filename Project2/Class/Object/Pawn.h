@@ -23,14 +23,13 @@ namespace state
     struct Attack;
     struct CheckCmmand;
     struct CheckAlive;
-    struct Revive;
     struct SetReviveTime;
 }
 
 class Controller;
 class Raycast;
 class Bullet;
-class UIBase;
+class PlayerUI;
 
 struct CommandData
 {
@@ -51,7 +50,7 @@ class Pawn :
     public Object
 {
 public:
-    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID,int hp, TeamTag tag, InputType inputType = InputType::KEYBOARD);
+    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID,int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui,InputType inputType = InputType::KEYBOARD);
     virtual ~Pawn() = default;
     virtual void Draw(const double& delta)override;
     virtual void AddDamage(int damage)override;
@@ -71,6 +70,8 @@ protected:
     int hp_;
     int reviveCnt_;
 
+    bool isRevive_;
+
     float defJunpPower_;
     float yaddPower_;
 
@@ -78,7 +79,7 @@ protected:
     std::unique_ptr<Raycast> raycast_;
     std::shared_ptr<Bullet> bullet_;
     std::weak_ptr<MapData> mapData_;
-    std::shared_ptr<UIBase> ui_;
+    std::shared_ptr<PlayerUI> ui_;
 
  
 
@@ -89,7 +90,6 @@ protected:
     std::function<void(void)> attackFunc_;
     std::map<std::string, std::function<void(void)>> attackFuncMap_;
 
-    static int PlayerUICnt_;
 
     friend state::Move;
     friend state::CheckKeyTrg;
@@ -104,7 +104,6 @@ protected:
     friend state::Attack;
     friend state::CheckCmmand;
     friend state::CheckAlive;
-    friend state::Revive;
     friend state::SetReviveTime;
 };
 

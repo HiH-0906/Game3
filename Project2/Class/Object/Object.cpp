@@ -12,6 +12,7 @@ Object::Object(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, 
     delta_ = 0.0;
     reverseXFlag_ = false;
     isAlive_ = true;
+    isDead_ = false;
     animCnt_ = 0;
     animFlam_ = 1;
     animMax_ = 1;
@@ -41,6 +42,11 @@ void Object::AddDamage(int damage)
 
 void Object::HitCollision(std::shared_ptr<Object> otehr)
 {
+}
+
+bool Object::CheckIsDead(void)
+{
+    return isDead_;
 }
 
 Vector2 Object::GetSize(void)

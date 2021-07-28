@@ -41,6 +41,8 @@ public:
 	/// Collisionが当たった時に呼び出される関数 必要なクラスはoverrideして処理を書きましょう
 	/// </summary>
 	virtual void HitCollision(std::shared_ptr<Object> otehr);
+
+	bool CheckIsDead(void);
 	
 	Vector2 GetSize(void);
 
@@ -65,6 +67,7 @@ protected:
 
 	bool reverseXFlag_;
 	bool isAlive_;
+	bool isDead_;
 
 	double exRate_;
 	double angle_;

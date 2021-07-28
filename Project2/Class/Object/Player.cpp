@@ -15,8 +15,8 @@
 
 
 
-Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, InputType inputType) :
-    Pawn(pos, size, oID, hp,tag, inputType)
+Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui, InputType inputType) :
+    Pawn(pos, size, oID, hp, tag, ui, inputType)
 { 
     Init(inputType);
 }
@@ -46,7 +46,7 @@ bool Player::Init(InputType inputType)
     stateDoc_.parse<0>(stateVec_.data());
     stateNode_ = stateDoc_.first_node("moduleList");
 
-    size_ = {32,64};
+    size_ = { 32,64 };
 
     raycast_ = std::make_unique<Raycast>();
     defJunpPower_ = -12;
@@ -84,7 +84,7 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     pos_.x = std::min(std::max(pos_.x, size_.x / 2.0f), lpSceneMng.GetScreenSize().x - (size_.x / 2.0f));
     pos_.y = std::min(std::max(pos_.y, size_.y / 2.0f - 10.0f), lpSceneMng.GetScreenSize().y - (size_.y / 2.0f));
     ui_->UpDate(delta);
-    ui_->UIDraw();
+    ui_->UIDraw(delta);
 }
 
 void Player::InitAttackFunc(void)

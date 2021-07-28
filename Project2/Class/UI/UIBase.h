@@ -10,7 +10,7 @@ public:
 	/// <summary>
 	/// 自身のスクリーンへの描画
 	/// </summary>
-	virtual void UIDraw(void) = 0;
+	virtual void UIDraw(const double& delta) = 0;
 	virtual void Draw(void);
 	bool isAlive(void);
 protected:

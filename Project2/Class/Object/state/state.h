@@ -5,6 +5,7 @@
 #include <cassert>
 #include "../Pawn.h"
 #include "../Bullet.h"
+#include "../../UI/PlayerUI.h"
 #include "../../collision/Collision.h"
 #include "../../collision/SquaerCollision.h"
 #include "../../Mng/CollisionMng.h"
@@ -45,7 +46,6 @@ namespace
 			CMD_ID::LEFT_U,
 			CMD_ID::LEFT
 	};
-	double reviveTime_ = 0.0;
 }
 namespace state
 {
@@ -334,32 +334,19 @@ namespace state
 		}
 	};
 
-	struct  Revive
-	{
-		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
-		{
-			reviveTime_ -= pawn->delta_;
-			if ((pawn->reviveCnt_ > 0) && (reviveTime_ <= 0))
-			{
-				pawn->isAlive_ = true;
-				pawn->reviveCnt_--;
-				reviveTime_ = 0;
-				return true;
-			}
-			return false;
-		}
-	};
 
 	struct SetReviveTime
 	{
 		bool operator()(Pawn* pawn, rapidxml::xml_node<>* node)
 		{
-			if (reviveTime_ <= 0)
+			if (!pawn->isRevive_)
 			{
+				pawn->isRevive_ = true;
 				std::string Time = node->first_attribute("Time")->value();
-				reviveTime_ = std::atof(Time.c_str());
+				pawn->ui_->SetRevive(std::atof(Time.c_str()));
+				return true;
 			}
-			return true;
+			return false;
 		}
 	};
 
@@ -552,7 +539,6 @@ namespace state
 			{"Attack",Attack()},
 			{"CheckCmmand",CheckCmmand()},
 			{"CheckAlive",CheckAlive()},
-			{"Revive",Revive()},
 			{"SetReviveTime",SetReviveTime()},
 		};
 	};

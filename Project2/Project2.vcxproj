@@ -175,6 +175,7 @@
     <ClCompile Include="Class\UI\PlayerUI.cpp" />
     <ClCompile Include="Class\UI\UIBase.cpp" />
     <ClCompile Include="Class\XML\TmxLoader\TmxLoader.cpp" />
+    <ClCompile Include="Class\Object\Egg.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Class\Mng\SceneMng.cpp" />
     <ClCompile Include="Class\Scene\BaseScene.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="Class\Scene\GameScene.h" />
     <ClInclude Include="Class\Scene\Transition\TransitionScene.h" />
     <ClInclude Include="commandData\LoadCommand.h" />
+    <ClInclude Include="Class\Object\Egg.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>
