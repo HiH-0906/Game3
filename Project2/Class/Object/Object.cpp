@@ -64,5 +64,10 @@ bool Object::Alive(void)
     return isAlive_;
 }
 
+const Object_ID& Object::ObjectID(void) const
+{
+    return objectID_;
+}
+
 
 

@@ -112,6 +112,11 @@ void Pawn::AddDamage(int damage)
     }
 }
 
+InputType Pawn::GetInputType(void)
+{
+    return controller_->GetInputType();
+}
+
 
 void Pawn::SetAnimation(Char_Anim_ID id)
 {

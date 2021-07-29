@@ -21,5 +21,7 @@ private:
     std::vector<char> stateVec_;
     rapidxml::xml_node<>* stateNode_;
     rapidxml::xml_document<> stateDoc_;
+    bool isRevive_;
+    double deadTime_;
 };
 

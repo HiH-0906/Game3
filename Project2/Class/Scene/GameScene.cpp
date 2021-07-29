@@ -12,15 +12,9 @@
 #include "../Mng/AnimationMng.h"
 #include "../Mng/CollisionMng.h"
 #include "../Object/Player.h"
-#include "../Object/Egg.h"
 #include "../collision/Collision.h"
 #include "../collision/SquaerCollision.h"
 #include "../UI/PlayerUI.h"
-
-namespace
-{
-	constexpr int PlayerRiviveNum = 4;
-}
 
 GameScene::GameScene()
 {
@@ -48,39 +42,19 @@ bool GameScene::Init(void)
 	lpImageMng.GetID("map", info.imageStr, info.chipSize, info.imageSize / info.chipSize);
 	lpImageMng.GetID("UITest", "image/UI/EggUIäÆê¨ÉCÉÅÅ[ÉW.png", { 224,128 }, { 1,1 });
 
-	std::list<std::weak_ptr<Egg>> list;
 
-	auto p1UI = std::make_shared<PlayerUI>(Vector2{ 16 ,600 }, Vector2{ 224,128 }, TeamTag::RED);
-
-	objList_.emplace_back(
-		std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{0,0},
-		Object_ID::Pawn,20,TeamTag::RED, p1UI,
-			InputType::KEYBOARD)
-	);
-	for (int i = 0; i < PlayerRiviveNum; i++)
-	{
-		auto egg = std::make_shared<Egg>(Vector2Flt{ 112.0f + i * 32.0f,660.0f }, Vector2{ 32,32 }, Object_ID::Egg, TeamTag::RED, InputType::KEYBOARD, p1UI, objList_);
-		objList_.emplace_back(egg);
-		list.emplace_back(egg);
-	}
-	p1UI->SetList(list);
-	list.clear();
-
-	auto p2UI = std::make_shared<PlayerUI>(Vector2{ 316 ,600 }, Vector2{ 224,128 }, TeamTag::BLUE);
-
-	objList_.emplace_back(
-		std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 }, 
-		Object_ID::Pawn, 20, TeamTag::BLUE, 
-			p2UI,InputType::PAD)
-	);
-	for (int i = 0; i < PlayerRiviveNum; i++)
-	{
-		auto egg = std::make_shared<Egg>(Vector2Flt{ 412.0f + i * 32.0f,660.0f }, Vector2{32,32}, Object_ID::Egg, TeamTag::BLUE, InputType::PAD, p2UI, objList_);
-		objList_.emplace_back(egg);
-		list.emplace_back(egg);
-	}
-	p2UI->SetList(list);
-	list.clear();
+	auto p1UI = std::make_shared<PlayerUI>(Vector2{ 16 ,600 }, Vector2{ 224,128 }, TeamTag::RED,objList_);
+	auto p1 = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
+		Object_ID::Pawn, 20, TeamTag::RED, p1UI,
+		InputType::KEYBOARD);
+	p1UI->SetOwner(p1);
+	objList_.emplace_back(p1);
+	auto p2UI = std::make_shared<PlayerUI>(Vector2{ 316 ,600 }, Vector2{ 224,128 }, TeamTag::BLUE, objList_);
+	auto p2 = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
+		Object_ID::Pawn, 20, TeamTag::BLUE,
+		p2UI, InputType::PAD);
+	p2UI->SetOwner(p2);
+	objList_.emplace_back(p2);
 
 
 	for (const auto& obj : objList_)

@@ -55,6 +55,8 @@ public:
     virtual void Draw(const double& delta)override;
     virtual void AddDamage(int damage)override;
 
+    InputType GetInputType(void);
+
 private:
     virtual void InitAttackFunc(void) = 0;
 protected:

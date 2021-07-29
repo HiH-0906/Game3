@@ -49,6 +49,8 @@ public:
 	TeamTag GetTeamTag(void);
 
 	bool Alive(void);
+
+	const Object_ID& ObjectID(void)const;
 	
 private:
 protected:

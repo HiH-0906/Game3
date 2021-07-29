@@ -4,7 +4,7 @@
 UIBase::UIBase(const Vector2& pos, const Vector2& scrSize):
 	pos_(pos),scrSize_(scrSize)
 {
-	screen_ = MakeScreen(scrSize_.x, scrSize_.y);
+	screen_ = MakeScreen(scrSize_.x, scrSize_.y,true);
 	isAlive_ = true;
 }
 

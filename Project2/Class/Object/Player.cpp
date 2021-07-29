@@ -19,6 +19,7 @@ Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, 
     Pawn(pos, size, oID, hp, tag, ui, inputType)
 { 
     Init(inputType);
+    deadTime_ = 3.0;
 }
 
 Player::~Player()
@@ -52,6 +53,7 @@ bool Player::Init(InputType inputType)
     defJunpPower_ = -12;
     yaddPower_ = 0;
     bullet_ = nullptr;
+    isRevive_ = false;
     InitAttackFunc();
     return true;
 }
@@ -60,6 +62,14 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
 {
     delta_ = delta;
     mapData_ = mapData;
+    if (!isAlive_)
+    {
+        deadTime_ -= delta;
+        if (deadTime_ <= 0&&!)
+        {
+            ui_->InstancePlayer();
+        }
+    }
     if (isAlive_)
     {
         controller_->Update();
