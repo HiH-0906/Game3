@@ -36,6 +36,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	int enemyH[2];
 	LoadDivGraph("img/enemy.png", 2, 2, 1, 32, 32, enemyH);
 
+	int arrowH = LoadGraph("image/arrow2.png");
 
 
 	//íeÇÃîºåa
@@ -47,6 +48,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	//ìKìñÇ…256å¬Ç≠ÇÁÇ¢çÏÇ¡Ç∆Ç≠
 	Bullet bullets[256];
 	HomingShot homingShots[8] = {};//playerhomingíe
+
+	for (auto& shot: homingShots)
+	{
+		shot.trail_.SetHandle(arrowH);
+	}
 
 	Position2f enemypos(320,25);//ìGç¿ïW
 	Position2f playerpos(320, 400);//é©ã@ç¿ïW
@@ -106,6 +112,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 					hshot.pos = playerpos;
 					hshot.vel = { isRightHoming ? homing_Shot_Speed : -homing_Shot_Speed,0.0f };
 					isRightHoming = !isRightHoming;
+					hshot.trail_.Reset();
 					break;
 				}
 			}
