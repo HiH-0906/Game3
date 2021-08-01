@@ -50,10 +50,11 @@ class Pawn :
     public Object
 {
 public:
-    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID,int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui,InputType inputType = InputType::KEYBOARD);
+    Pawn(const Vector2Flt& pos, const Vector2& size,const Object_ID oID,int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui,unsigned int reviveCnt, InputType inputType = InputType::KEYBOARD);
     virtual ~Pawn() = default;
     virtual void Draw(const double& delta)override;
     virtual void AddDamage(int damage)override;
+    const unsigned int& GetReviveCnt();
 
     InputType GetInputType(void);
 
@@ -70,7 +71,7 @@ protected:
     int animLoopCnt_;
 
     int hp_;
-    int reviveCnt_;
+    unsigned int reviveCnt_;
 
     bool isRevive_;
 

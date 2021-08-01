@@ -15,8 +15,8 @@
 
 
 
-Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui, InputType inputType) :
-    Pawn(pos, size, oID, hp, tag, ui, inputType)
+Player::Player(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui, unsigned int reviveCnt, InputType inputType) :
+    Pawn(pos, size, oID, hp, tag, ui, reviveCnt, inputType)
 { 
     Init(inputType);
     deadTime_ = 3.0;
@@ -65,9 +65,10 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     if (!isAlive_)
     {
         deadTime_ -= delta;
-        if (deadTime_ <= 0&&!)
+        if (deadTime_ <= 0 && !isRevive_ && reviveCnt_ > 0)
         {
             ui_->InstancePlayer();
+            isRevive_ = true;
         }
     }
     if (isAlive_)

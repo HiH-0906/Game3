@@ -10,7 +10,7 @@ class Player :
     public Pawn
 {
 public:
-    Player(const Vector2Flt& pos,const Vector2& size,const Object_ID oID,int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui, InputType inputType = InputType::KEYBOARD);
+    Player(const Vector2Flt& pos,const Vector2& size,const Object_ID oID,int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui, unsigned int reviveCnt,  InputType inputType = InputType::KEYBOARD);
     ~Player();
 private:
     bool Init(InputType inputType);

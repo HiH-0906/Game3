@@ -16,6 +16,11 @@
 #include "../collision/SquaerCollision.h"
 #include "../UI/PlayerUI.h"
 
+namespace
+{
+	constexpr unsigned int ReviveCnt = 3;
+}
+
 GameScene::GameScene()
 {
 	Init();
@@ -45,14 +50,14 @@ bool GameScene::Init(void)
 
 	auto p1UI = std::make_shared<PlayerUI>(Vector2{ 16 ,600 }, Vector2{ 224,128 }, TeamTag::RED,objList_);
 	auto p1 = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
-		Object_ID::Pawn, 20, TeamTag::RED, p1UI,
+		Object_ID::Pawn, 20, TeamTag::RED, p1UI, ReviveCnt,
 		InputType::KEYBOARD);
 	p1UI->SetOwner(p1);
 	objList_.emplace_back(p1);
 	auto p2UI = std::make_shared<PlayerUI>(Vector2{ 316 ,600 }, Vector2{ 224,128 }, TeamTag::BLUE, objList_);
 	auto p2 = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
-		Object_ID::Pawn, 20, TeamTag::BLUE,
-		p2UI, InputType::PAD);
+		Object_ID::Pawn, 20, TeamTag::BLUE, p2UI, ReviveCnt,
+		InputType::PAD);
 	p2UI->SetOwner(p2);
 	objList_.emplace_back(p2);
 
@@ -94,8 +99,6 @@ void GameScene::DrawOwnScreen(const double& delta)
 	SetUseMaskScreenFlag(false);
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
-
-	//DrawGraph(16, 600, lpImageMng.GetID("UITest")[0],true);
 
 	for (const auto layer:MAP_LAYER())
 	{

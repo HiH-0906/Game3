@@ -14,7 +14,7 @@
 #include "../UI/PlayerUI.h"
 
 
-Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui,InputType inputType) :
+Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int hp, TeamTag tag, std::shared_ptr<PlayerUI> ui, unsigned int reviveCnt, InputType inputType) :
 	Object(pos, size, oID,tag),hp_(hp)
 {
     animID_=Char_Anim_ID::IDLE;
@@ -25,6 +25,7 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int 
 
     ui_ = ui;
     isRevive_ = false;
+    reviveCnt_ = reviveCnt;
 
     commandList_ = loadCommand("commandData/PlayerComand.xml");
     for (const auto& data:commandList_)
@@ -110,6 +111,11 @@ void Pawn::AddDamage(int damage)
             isAlive_ = false;
         }
     }
+}
+
+const unsigned int& Pawn::GetReviveCnt()
+{
+    return reviveCnt_;
 }
 
 InputType Pawn::GetInputType(void)

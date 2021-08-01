@@ -2,7 +2,9 @@
 #include <DxLib.h>
 #include "PlayerUI.h"
 #include "../Mng/ImageMng.h"
+#include "../Mng/CollisionMng.h"
 #include "../Object/Player.h"
+#include "../collision/SquaerCollision.h"
 
 
 PlayerUI::PlayerUI(const Vector2& pos, const Vector2& scrSize, const TeamTag& tag, std::list<std::shared_ptr<Object>>& list) :
@@ -51,9 +53,13 @@ void PlayerUI::UpDate(const double& delta)
 void PlayerUI::InstancePlayer(void)
 {
 	auto obj = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
-		Object_ID::Pawn, 20, owner_.lock()->GetTeamTag(), 
-		shared_from_this(), owner_.lock()->GetInputType());
+		Object_ID::Pawn, 20, owner_.lock()->GetTeamTag(),
+		shared_from_this(), owner_.lock()->GetReviveCnt() - 1, owner_.lock()->GetInputType());
 	objList_.emplace_back(obj);
+	Vector2Flt size = static_cast<Vector2Flt>(obj->GetSize());
+	auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
+	col->SetOwner(obj);
+	lpCollisionMng.RegistrationCol(col);
 	SetOwner(obj);
 }
 
@@ -66,4 +72,8 @@ void PlayerUI::UIDraw(const double& delta)
 	DrawBox(0, 0, scrSize_.x, scrSize_.y, col_, true);
 	SetUseMaskScreenFlag(false);
 	DrawGraph(20, 25, lpImageMng.GetID("PlayerIcon")[0], true);
+	for (int i = 0; i < owner_.lock()->GetReviveCnt(); i++)
+	{
+		DrawGraph(90 + i * 32, 50, lpImageMng.GetID("Egg")[0], true);
+	}
 }
