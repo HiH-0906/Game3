@@ -47,12 +47,10 @@ bool Player::Init(InputType inputType)
     stateDoc_.parse<0>(stateVec_.data());
     stateNode_ = stateDoc_.first_node("moduleList");
 
-    size_ = { 32,64 };
 
     raycast_ = std::make_unique<Raycast>();
     defJunpPower_ = -12;
     yaddPower_ = 0;
-    bullet_ = nullptr;
     isRevive_ = false;
     InitAttackFunc();
     return true;
@@ -78,12 +76,14 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     controller_->UpdateRingBuf(delta);
     controller_->DebugRingBuf();
 
-    if (bullet_)
+    auto itr = std::remove_if(bulletList_.begin(), bulletList_.end(), [](std::shared_ptr<Bullet> bul) {return bul->Alive(); });
+    bulletList_.erase(itr, bulletList_.end());
+
+    for (auto& bullet : bulletList_)
     {
-        bullet_->Update(delta, mapData);
-        if (!bullet_->Alive())
+        if (bullet)
         {
-            bullet_ = nullptr;
+            bullet->Update(delta, mapData);
         }
     }
 
@@ -103,44 +103,40 @@ void Player::InitAttackFunc(void)
     attackFuncMap_["HadoKen"] = [&]()
     {
         TRACE("HadoKen!!\n");
-        if (!bullet_)
+        Vector2Flt speed = {};
+        if (reverseXFlag_)
         {
-            Vector2Flt speed = {};
-            if (reverseXFlag_)
-            {
-                speed = { -5.0f,0.0f };
-            }
-            else
-            {
-                speed = { 5.0f,0.0f };
-            }
-            bullet_ = std::make_shared<Bullet>(pos_, Vector2{ 32,32 }, 10, Object_ID::Bullet, speed, reverseXFlag_, teamTag_);
-            Vector2Flt size = static_cast<Vector2Flt>(bullet_->GetSize());
-            auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
-            col->SetOwner(bullet_);
-            lpCollisionMng.RegistrationCol(col);
+            speed = { -5.0f,0.0f };
         }
+        else
+        {
+            speed = { 5.0f,0.0f };
+        }
+        auto bullet = std::make_shared<Bullet>(pos_, Vector2{ 32,32 }, 10, Object_ID::Bullet, speed, reverseXFlag_, teamTag_);
+        Vector2Flt size = static_cast<Vector2Flt>(bullet->GetSize());
+        auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
+        col->SetOwner(bullet);
+        bulletList_.push_back(bullet);
+        lpCollisionMng.RegistrationCol(col);
     };
     attackFuncMap_["SyoryuKen"] = [&]()
     {
         TRACE("SyoryuKen!!\n");
-        if (!bullet_)
+        Vector2Flt speed = {};
+        if (reverseXFlag_)
         {
-            Vector2Flt speed = {};
-            if (reverseXFlag_)
-            {
-                speed = { -20.0f,0.0f };
-            }
-            else
-            {
-                speed = { 20.0f,0.0f };
-            }
-            bullet_ = std::make_shared<Bullet>(pos_, Vector2{ 32,32 }, 5, Object_ID::Bullet, speed, reverseXFlag_, teamTag_);
-            Vector2Flt size = static_cast<Vector2Flt>(bullet_->GetSize());
-            auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
-            col->SetOwner(bullet_);
-            lpCollisionMng.RegistrationCol(col);
+            speed = { -20.0f,0.0f };
         }
+        else
+        {
+            speed = { 20.0f,0.0f };
+        }
+        auto bullet = std::make_shared<Bullet>(pos_, Vector2{ 32,32 }, 5, Object_ID::Bullet, speed, reverseXFlag_, teamTag_);
+        Vector2Flt size = static_cast<Vector2Flt>(bullet->GetSize());
+        auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
+        col->SetOwner(bullet);
+        lpCollisionMng.RegistrationCol(col);
+        bulletList_.push_back(bullet);
     };
     attackFunc_ = attackFuncMap_["HadoKen"];
 }

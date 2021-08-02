@@ -3,7 +3,7 @@
 enum class TeamTag
 {
 	NON,
-	RED,
-	BLUE,
+	YELLOW,
+	SKYBLUE,
 	MAP,
 };

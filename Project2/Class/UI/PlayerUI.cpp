@@ -19,11 +19,11 @@ PlayerUI::PlayerUI(const Vector2& pos, const Vector2& scrSize, const TeamTag& ta
 	case TeamTag::NON:
 		col_ = 0xffffff;
 		break;
-	case TeamTag::BLUE:
-		col_ = 0x0000ff;
+	case TeamTag::SKYBLUE:
+		col_ = 0x00ffff;
 		break;
-	case TeamTag::RED:
-		col_ = 0xff0000;
+	case TeamTag::YELLOW:
+		col_ = 0xffff00;
 		break;
 	case TeamTag::MAP:
 		col_ = 0xffffff;
@@ -52,15 +52,21 @@ void PlayerUI::UpDate(const double& delta)
 
 void PlayerUI::InstancePlayer(void)
 {
-	auto obj = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
+	auto obj = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 32,64 },
 		Object_ID::Pawn, 20, owner_.lock()->GetTeamTag(),
 		shared_from_this(), owner_.lock()->GetReviveCnt() - 1, owner_.lock()->GetInputType());
+	obj->SetInvincibleCnt(3.0);
 	objList_.emplace_back(obj);
 	Vector2Flt size = static_cast<Vector2Flt>(obj->GetSize());
 	auto col = std::make_shared<SquaerCollision>(size, size / 2.0f);
 	col->SetOwner(obj);
 	lpCollisionMng.RegistrationCol(col);
 	SetOwner(obj);
+}
+
+const int& PlayerUI::GetCol(void) const
+{
+	return col_;
 }
 
 void PlayerUI::UIDraw(const double& delta)
@@ -72,7 +78,7 @@ void PlayerUI::UIDraw(const double& delta)
 	DrawBox(0, 0, scrSize_.x, scrSize_.y, col_, true);
 	SetUseMaskScreenFlag(false);
 	DrawGraph(20, 25, lpImageMng.GetID("PlayerIcon")[0], true);
-	for (int i = 0; i < owner_.lock()->GetReviveCnt(); i++)
+	for (unsigned int i = 0; i < owner_.lock()->GetReviveCnt(); i++)
 	{
 		DrawGraph(90 + i * 32, 50, lpImageMng.GetID("Egg")[0], true);
 	}

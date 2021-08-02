@@ -17,6 +17,8 @@ Object::Object(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, 
     animFlam_ = 1;
     animMax_ = 1;
     invincibleCnt_ = 0.0;
+    ownScreen_ = MakeScreen(64, 64, true);
+    effectScreen_ = MakeScreen(64, 64, true);
 }
 
 void Object::Draw(const double& delta)
@@ -52,6 +54,11 @@ bool Object::CheckIsDead(void)
 Vector2 Object::GetSize(void)
 {
     return size_;
+}
+
+void Object::SetReverse(bool flag)
+{
+    reverseXFlag_ = flag;
 }
 
 TeamTag Object::GetTeamTag(void)

@@ -16,6 +16,7 @@ public:
 	void SetRevive(const double& time);
 	void SetOwner(std::weak_ptr<Pawn> owner);
 	void InstancePlayer(void);
+	const int& GetCol(void)const;
 	virtual void UpDate(const double& delta);
 	/// <summary>
 	/// 自身のスクリーンへの描画

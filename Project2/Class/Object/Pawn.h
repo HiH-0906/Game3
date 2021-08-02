@@ -55,6 +55,7 @@ public:
     virtual void Draw(const double& delta)override;
     virtual void AddDamage(int damage)override;
     const unsigned int& GetReviveCnt();
+    void SetInvincibleCnt(const double& cnt);
 
     InputType GetInputType(void);
 
@@ -80,7 +81,7 @@ protected:
 
     std::unique_ptr<Controller> controller_;
     std::unique_ptr<Raycast> raycast_;
-    std::shared_ptr<Bullet> bullet_;
+    std::list<std::shared_ptr<Bullet>> bulletList_;
     std::weak_ptr<MapData> mapData_;
     std::shared_ptr<PlayerUI> ui_;
 

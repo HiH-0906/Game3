@@ -81,21 +81,39 @@ Pawn::Pawn(const Vector2Flt& pos, const Vector2& size, const Object_ID oID, int 
 
 void Pawn::Draw(const double& delta)
 {
-    if (invincibleCnt_ > 0.0 && isAlive_)
+    if (isAlive_)
     {
-        if (static_cast<int>(std::floor(invincibleCnt_ * 10.0)) % 2 == 0)
+        SetDrawScreen(ownScreen_);
+        ClsDrawScreen();
+        if (invincibleCnt_ > 0.0 && isAlive_)
         {
-            DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), exRate_, angle_, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
+            if (static_cast<int>(std::floor(invincibleCnt_ * 10.0)) % 2 == 0)
+            {
+                DrawGraph(0, 0, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true);
+            }
         }
+        else
+        {
+            DrawGraph(0, 0, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true);
+        }
+        invincibleCnt_ -= delta;
+        SetDrawScreen(effectScreen_);
+        ClsDrawScreen();
+        DrawGraph(0, 0, ownScreen_, true);
+        GraphFilter(effectScreen_, DX_GRAPH_FILTER_GAUSS, 8, 100);
+        int col = ui_->GetCol();
+        GraphFilter(effectScreen_, DX_GRAPH_FILTER_TWO_COLOR, 0, 0x000000, 0, col, 255);
+        SetDrawScreen(DX_SCREEN_BACK);
+        DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), 0.9 * exRate_, angle_, effectScreen_, true, reverseXFlag_);
+        DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), exRate_, angle_, ownScreen_, true, reverseXFlag_);
     }
     else
     {
         DrawRotaGraph(static_cast<int>(pos_.x), static_cast<int>(pos_.y), exRate_, angle_, lpAnimMng.GetAnimImag(objectID_, animID_, animCnt_, animLoopCnt_), true, reverseXFlag_);
     }
-    invincibleCnt_ -= delta;
-    if (bullet_)
+    for (const auto& bullet : bulletList_)
     {
-        bullet_->Draw(delta);
+        bullet->Draw(delta);
     }
     ui_->Draw();
 }
@@ -116,6 +134,11 @@ void Pawn::AddDamage(int damage)
 const unsigned int& Pawn::GetReviveCnt()
 {
     return reviveCnt_;
+}
+
+void Pawn::SetInvincibleCnt(const double& cnt)
+{
+    invincibleCnt_ = cnt;
 }
 
 InputType Pawn::GetInputType(void)

@@ -48,16 +48,17 @@ bool GameScene::Init(void)
 	lpImageMng.GetID("UITest", "image/UI/EggUIäÆê¨ÉCÉÅÅ[ÉW.png", { 224,128 }, { 1,1 });
 
 
-	auto p1UI = std::make_shared<PlayerUI>(Vector2{ 16 ,600 }, Vector2{ 224,128 }, TeamTag::RED,objList_);
-	auto p1 = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
-		Object_ID::Pawn, 20, TeamTag::RED, p1UI, ReviveCnt,
+	auto p1UI = std::make_shared<PlayerUI>(Vector2{ 16 ,600 }, Vector2{ 224,128 }, TeamTag::YELLOW,objList_);
+	auto p1 = std::make_shared<Player>(Vector2Flt{ 300.0f,100.0f }, Vector2{ 32,64 },
+		Object_ID::Pawn, 20, TeamTag::YELLOW, p1UI, ReviveCnt,
 		InputType::KEYBOARD);
 	p1UI->SetOwner(p1);
 	objList_.emplace_back(p1);
-	auto p2UI = std::make_shared<PlayerUI>(Vector2{ 316 ,600 }, Vector2{ 224,128 }, TeamTag::BLUE, objList_);
-	auto p2 = std::make_shared<Player>(Vector2Flt{ 500.0f,100.0f }, Vector2{ 0,0 },
-		Object_ID::Pawn, 20, TeamTag::BLUE, p2UI, ReviveCnt,
+	auto p2UI = std::make_shared<PlayerUI>(Vector2{ 316 ,600 }, Vector2{ 224,128 }, TeamTag::SKYBLUE, objList_);
+	auto p2 = std::make_shared<Player>(Vector2Flt{ 700.0f,100.0f }, Vector2{ 32,64 },
+		Object_ID::Pawn, 20, TeamTag::SKYBLUE, p2UI, ReviveCnt,
 		InputType::PAD);
+	p2->SetReverse(true);
 	p2UI->SetOwner(p2);
 	objList_.emplace_back(p2);
 

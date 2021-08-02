@@ -45,6 +45,7 @@ public:
 	bool CheckIsDead(void);
 	
 	Vector2 GetSize(void);
+	void SetReverse(bool flag);
 
 	TeamTag GetTeamTag(void);
 
@@ -54,6 +55,9 @@ public:
 	
 private:
 protected:
+
+	int ownScreen_;
+	int effectScreen_;
 
 	Vector2Flt pos_;
 	Vector2 size_;
@@ -80,4 +84,3 @@ protected:
 
 	friend class SquaerCollision;
 };
-

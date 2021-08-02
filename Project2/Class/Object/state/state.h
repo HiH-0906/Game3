@@ -150,7 +150,7 @@ namespace state
 					{
 						if (pawn->yaddPower_ > 0)
 						{
-							pawn->pos_.y = colData.first.y - pawn->size_.y / 2;
+							pawn->pos_.y = static_cast<float>(colData.first.y - pawn->size_.y / 2);
 						}
 						pawn->yaddPower_ = 0.2f;
 						
