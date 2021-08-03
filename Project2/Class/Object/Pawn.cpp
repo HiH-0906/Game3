@@ -115,6 +115,8 @@ void Pawn::Draw(const double& delta)
     {
         bullet->Draw(delta);
     }
+    ui_->UpDate(delta);
+    ui_->UIDraw(delta);
     ui_->Draw();
 }
 

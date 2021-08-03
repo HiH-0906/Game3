@@ -57,8 +57,8 @@ void SceneMng::Run(void)
 		scene_->Draw(delta);
 
 		// deltaTime•\Ž¦
-		DrawBox(0, 0, 80, 16, 0x000000, true);
-		DrawFormatString(0, 0, 0xffffff, "%lf\n", delta);
+		/*DrawBox(0, 0, 80, 16, 0x000000, true);
+		DrawFormatString(0, 0, 0xffffff, "%lf\n", delta);*/
 
 		_dbgDraw();
 		ScreenFlip();

@@ -49,13 +49,13 @@ bool GameScene::Init(void)
 
 
 	auto p1UI = std::make_shared<PlayerUI>(Vector2{ 16 ,600 }, Vector2{ 224,128 }, TeamTag::YELLOW,objList_);
-	auto p1 = std::make_shared<Player>(Vector2Flt{ 300.0f,100.0f }, Vector2{ 32,64 },
+	auto p1 = std::make_shared<Player>(Vector2Flt{ 300.0f,68.0f }, Vector2{ 32,64 },
 		Object_ID::Pawn, 20, TeamTag::YELLOW, p1UI, ReviveCnt,
 		InputType::KEYBOARD);
 	p1UI->SetOwner(p1);
 	objList_.emplace_back(p1);
 	auto p2UI = std::make_shared<PlayerUI>(Vector2{ 316 ,600 }, Vector2{ 224,128 }, TeamTag::SKYBLUE, objList_);
-	auto p2 = std::make_shared<Player>(Vector2Flt{ 700.0f,100.0f }, Vector2{ 32,64 },
+	auto p2 = std::make_shared<Player>(Vector2Flt{ 700.0f,68.0f }, Vector2{ 32,64 },
 		Object_ID::Pawn, 20, TeamTag::SKYBLUE, p2UI, ReviveCnt,
 		InputType::PAD);
 	p2->SetReverse(true);

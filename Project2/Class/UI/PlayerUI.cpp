@@ -82,4 +82,5 @@ void PlayerUI::UIDraw(const double& delta)
 	{
 		DrawGraph(90 + i * 32, 50, lpImageMng.GetID("Egg")[0], true);
 	}
+	SetDrawScreen(DX_SCREEN_BACK);
 }

@@ -38,7 +38,6 @@ bool Player::Init(InputType inputType)
     }
     else
     {
-        // @@enumclassÇ…ÇµÇΩÇŸÇ§Ç™ÇÌÇ©ÇËÇ‚Ç∑Ç¢ÇÃÇ≈ÇÕã^òfåªèÛÇQÇ¬ÇµÇ©Ç»Ç¢ÇÃÇ≈ï˙íu
         assert(!"ë∂ç›ÇµÇ»Ç¢InputType");
     }
 
@@ -76,7 +75,7 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     controller_->UpdateRingBuf(delta);
     controller_->DebugRingBuf();
 
-    auto itr = std::remove_if(bulletList_.begin(), bulletList_.end(), [](std::shared_ptr<Bullet> bul) {return bul->Alive(); });
+    auto itr = std::remove_if(bulletList_.begin(), bulletList_.end(), [](std::shared_ptr<Bullet> bul) {return !bul->Alive(); });
     bulletList_.erase(itr, bulletList_.end());
 
     for (auto& bullet : bulletList_)
@@ -94,8 +93,6 @@ void Player::Update(const double& delta, std::weak_ptr<MapData> mapData)
     // âÊñ í[èàóù
     pos_.x = std::min(std::max(pos_.x, size_.x / 2.0f), lpSceneMng.GetScreenSize().x - (size_.x / 2.0f));
     pos_.y = std::min(std::max(pos_.y, size_.y / 2.0f - 10.0f), lpSceneMng.GetScreenSize().y - (size_.y / 2.0f));
-    ui_->UpDate(delta);
-    ui_->UIDraw(delta);
 }
 
 void Player::InitAttackFunc(void)
