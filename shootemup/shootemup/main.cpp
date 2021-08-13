@@ -2,6 +2,8 @@
 #include<cmath>
 #include"Geometry.h"
 #include"homingShot.h"
+#include"HomingShotMng.h"
+#include"HomingLaser.h"
 
 ///当たり判定関数
 ///@param posA Aの座標
@@ -14,8 +16,9 @@ bool IsHit(const Position2f& posA, float radiusA, const Position2f& posB,  float
 }
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
+	DxLib::SetOutApplicationLogValidFlag(false);
 	ChangeWindowMode(true);
-	SetMainWindowText("弾幕だよ～");
+	SetMainWindowText("1916035_橋本大輝");
 	if (DxLib_Init() != 0) {
 		return -1;
 	}
@@ -36,8 +39,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	int enemyH[2];
 	LoadDivGraph("img/enemy.png", 2, 2, 1, 32, 32, enemyH);
 
-	int arrowH = LoadGraph("image/arrow2.png");
-
 
 	//弾の半径
 	float bulletRadius = 5.0f;
@@ -45,17 +46,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 	//自機の半径
 	float playerRadius = 10.0f;
 
-	//適当に256個くらい作っとく
-	Bullet bullets[256];
-	HomingShot homingShots[8] = {};//playerhoming弾
-
-	for (auto& shot: homingShots)
-	{
-		shot.trail_.SetHandle(arrowH);
-	}
-
 	Position2f enemypos(320,25);//敵座標
 	Position2f playerpos(320, 400);//自機座標
+
+	std::unique_ptr<HomingShotMng> homingShotMng_(new HomingShotMng(enemypos));
 
 	unsigned int frame = 0;//フレーム管理用
 
@@ -103,66 +97,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 
 		if (keystate[KEY_INPUT_Z]&&!lastkeystate[KEY_INPUT_Z])
 		{
-			DrawString(100,100,"発射", 0xffffff);
-			for (auto& hshot : homingShots)
-			{
-				if (!hshot.isActive)
-				{
-					hshot.isActive = true;
-					hshot.pos = playerpos;
-					hshot.vel = { isRightHoming ? homing_Shot_Speed : -homing_Shot_Speed,0.0f };
-					isRightHoming = !isRightHoming;
-					hshot.trail_.Reset();
-					break;
-				}
-			}
+			auto shot = std::make_shared<HomingShot>();
+			shot->isActive = true;
+			shot->pos = playerpos;
+			shot->vel = { isRightHoming ? homing_Shot_Speed : -homing_Shot_Speed,0.0f };
+			homingShotMng_->AddHoming(shot);
+			shot->islaser = false;
+			isRightHoming = !isRightHoming;
 		}
-
-		// playerの弾描画
-		for (auto& hshot:homingShots)
+		if (keystate[KEY_INPUT_X] && !lastkeystate[KEY_INPUT_X])
 		{
-			if (!hshot.isActive)
-			{
-				continue;
-			}
-			hshot.trail_.Update();
-			hshot.pos += hshot.vel;
-			hshot.trail_.Draw();
-			// テキトーな尾
-			/*for (int i = 0; i < 5; i++)
-			{
-
-				auto tailPos = hshot.pos - hshot.vel * 2.0f * static_cast<float>(i);
-				auto thickness = static_cast<float>(6 - i);
-				DrawLine(hshot.pos.x, hshot.pos.y, tailPos.x, tailPos.y, 0xff4444, thickness * 4.0f);
-			}*/
-
-			// 思ったより出来が良かった版sin,cos版と遜色ないならこっちでいい疑惑
-			hshot.vel = (hshot.vel + (enemypos - hshot.pos).Normalized()).Normalized() * homing_Shot_Speed;
-
-			// sin,cos版 @@なんかうまくいってない
-			/*auto nVelocity = hshot.vel.Normalized();
-			auto nToEnemy = (enemypos - hshot.pos).Normalized();
-			auto dot = Dot(nVelocity, nToEnemy);
-			auto angle = acos(dot);
-			angle = std::fminf(angle, DX_PI_F / 24.0f);
-			float sign = Cross(nVelocity, nToEnemy) > 0.0f ? 1.0f : -1.0f;
-			angle = atan2(hshot.vel.y, hshot.vel.x) + sign * angle;
-			hshot.vel += Vector2f(cos(angle), sin(angle)) * homing_Shot_Speed;*/
-
-
-			DrawCircleAA(hshot.pos.x, hshot.pos.y, 8.0f, 16, 0xff4444);
-			// 敵との当たり判定
-			if ((enemypos - hshot.pos).SQMagnitude() < 900.0f)
-			{
-				hshot.isActive = false;
-			}
-			// 画面外判定
-			if (hshot.pos.x + 16 < 0 || hshot.pos.x - 16 > 640 ||
-				hshot.pos.y + 24 < 0 || hshot.pos.y - 24 > 480) 
-			{
-				hshot.isActive = false;
-			}
+			auto shot = std::make_shared<HomingLaser>(keystate[KEY_INPUT_X],playerpos);
+			shot->isActive = true;
+			shot->pos = playerpos;
+			shot->islaser = true;
+			shot->vel = { isRightHoming ? homing_Shot_Speed : -homing_Shot_Speed,0.0f };
+			homingShotMng_->AddHoming(shot);
+			isRightHoming = !isRightHoming;
 		}
 
 		DrawCircleAA(enemypos.x, enemypos.y, 30.0f, 16, 0x00ff00, false, 3.0f);
@@ -172,48 +123,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 		if (isDebugMode) {
 			//自機の本体(当たり判定)
 			DrawCircle(playerpos.x, playerpos.y, playerRadius, 0xffaaaa, false, 3);
-		}
-
-		//弾発射
-		if (frame % 12 == 0) {
-			for (auto& b : bullets) {
-				if (!b.isActive) {
-					//b.pos = enemypos;
-					//b.vel = Vector2(0, 5);
-					//b.isActive = true;
-					break;
-				}
-			}
-		}
-
-		//弾の更新および表示
-		for (auto& b : bullets) {
-			if (!b.isActive) {
-				continue;
-			}
-
-			//弾の現在座標に弾の現在速度を加算してください
-			
-			float angle = 0.0f;
-			//弾の角度をatan2で計算してください。angleに値を入れるんだよオゥ
-			
-			DrawRotaGraph(b.pos.x, b.pos.y,1.0f,angle, bulletH, true);
-			
-			if (isDebugMode) {
-				//弾の本体(当たり判定)
-				DrawCircle(b.pos.x, b.pos.y, bulletRadius, 0x0000ff, false, 3);
-			}
-			//弾を殺す
-			if (b.pos.x + 16 < 0 || b.pos.x - 16 > 640 ||
-				b.pos.y + 24 < 0 || b.pos.y - 24 > 480) {
-				b.isActive = false;
-			}
-
-			//あたり！
-			//↓のIsHitは実装を書いてません。自分で書いてください。
-			if (IsHit(b.pos, bulletRadius, playerpos, playerRadius)) {
-				//当たった反応を書いてください。
-			}
 		}
 
 		//敵の表示
@@ -226,14 +135,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrvInstance, _I
 			DrawCircle(enemypos.x, enemypos.y, 5, 0xffffff, false, 3);
 		}
 		++frame;
+		homingShotMng_->Update();
+		homingShotMng_->Draw();
 		//パフォーマンス計測
 		auto dCoolCount = GetDrawCallCount();
 		auto fps = GetFPS();
-		DrawBox(5, 50, 150, 100, 0xffffff, true);
+		DrawBox(5, 40, 190, 170, 0xffffff, true);
 		DrawFormatString(10, 50, 0x000000, "DrawColl=%d", dCoolCount);
 		DrawFormatString(10, 80, 0x000000, "fps=%lf", fps);
-
+		DrawFormatString(10, 110, 0x000000, "Z：HomingShot");
+		DrawFormatString(10, 140, 0x000000, "X長押し：HomingLaser");
 		ScreenFlip();
+
 		std::copy(std::begin(keystate), std::end(keystate), std::begin(lastkeystate));
 	}
 

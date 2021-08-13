@@ -3,12 +3,15 @@
 #include "Geometry.h"
 
 struct HomingShot;
+struct HomingLaser;
+class HomingShotMng;
 
 struct Trail
 {
+	friend HomingShotMng;
+	friend HomingLaser;
 	Trail(HomingShot& owner);
 	void Update();
-	void Draw();
 	void Reset();
 	void SetHandle(int handle);
 private:
