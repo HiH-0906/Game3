@@ -162,6 +162,7 @@
     <ClCompile Include="KeyCheck.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MiniCamera.cpp" />
+    <ClCompile Include="RotateBall.cpp" />
     <ClCompile Include="SceneBase.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Stage.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="KeyCheck.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MiniCamera.h" />
+    <ClInclude Include="RotateBall.h" />
     <ClInclude Include="SceneBase.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Stage.h" />

@@ -16,12 +16,12 @@ void SceneManager::Init()
 	mFader = new Fader();
 	mFader->Init();
 
+	mCamera = new Camera(this);
+	mCamera->Init();
+
 	mScene = new TitleScene(this);
 	mScene->Init();
 
-	mCamera = new Camera(this);
-	mCamera->Init();
-	
 
 	mMiniCamera = new MiniCamera(mCamera);
 	mMiniCamera->Init();
@@ -53,8 +53,6 @@ void SceneManager::Init3D(void)
 
 	// ƒ‰ƒCƒg‚Ìİ’è
 	ChangeLightTypeDir({ 0.3f,-0.7f,0.8f });
-
-	SetUseLighting(false);
 
 	// 3D‚Ì”wŒiF
 	SetBackgroundColor(0,139,139);

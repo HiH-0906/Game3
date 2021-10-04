@@ -3,6 +3,7 @@
 class SceneManager;
 class Stage;
 class Unit;
+class RotateBall;
 
 class TitleScene : public SceneBase
 {
@@ -19,4 +20,5 @@ public:
 private:
 	Stage* stage_;
 	Unit* unit_;
+	RotateBall* ball_;
 };

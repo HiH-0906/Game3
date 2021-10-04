@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "AsoUtility.h"
+#include "Unit.h"
 
 Camera::Camera(SceneManager* manager)
 {
@@ -9,7 +10,7 @@ Camera::Camera(SceneManager* manager)
 
 void Camera::Init(void)
 {
-	pos_ = { 0.0f,200.0,-500.0f };
+	pos_ = { 0.0f,HEIGHT,-DIS_TAGET_TO_CAMERA };
 	angle_= { AsoUtility::Deg2Rad(30.0f),0.0f,0.0f };
 }
 
@@ -64,28 +65,61 @@ void Camera::Update(void)
 	{
 		angle_.y -= AsoUtility::Deg2Rad(rotatePow);;
 	}
-	if (CheckHitKey(KEY_INPUT_UP))
-	{
-		angle_.x -= AsoUtility::Deg2Rad(rotatePow);
-	}
-	if (CheckHitKey(KEY_INPUT_DOWN))
-	{
-		angle_.x += AsoUtility::Deg2Rad(rotatePow);;
-	}
-	if (CheckHitKey(KEY_INPUT_NUMPAD1))
-	{
-		angle_.z -= AsoUtility::Deg2Rad(rotatePow);
-	}
-	if (CheckHitKey(KEY_INPUT_NUMPAD0))
-	{
-		angle_.z += AsoUtility::Deg2Rad(rotatePow);;
-	}
+	//if (CheckHitKey(KEY_INPUT_UP))
+	//{
+	//	angle_.x -= AsoUtility::Deg2Rad(rotatePow);
+	//}
+	//if (CheckHitKey(KEY_INPUT_DOWN))
+	//{
+	//	angle_.x += AsoUtility::Deg2Rad(rotatePow);;
+	//}
+	//if (CheckHitKey(KEY_INPUT_NUMPAD1))
+	//{
+	//	angle_.z -= AsoUtility::Deg2Rad(rotatePow);
+	//}
+	//if (CheckHitKey(KEY_INPUT_NUMPAD0))
+	//{
+	//	angle_.z += AsoUtility::Deg2Rad(rotatePow);;
+	//}
 }
 
 void Camera::SetBeforeDraw(void)
 {
-	// カメラ設定
-	SetCameraPositionAndAngle(pos_, angle_.x, angle_.y, angle_.z);
+	if (target_ == nullptr)
+	{
+		// カメラ設定
+		SetCameraPositionAndAngle(pos_, angle_.x, angle_.y, angle_.z);
+	}
+	else
+	{
+
+		// キャラクターの位置
+		float dirX = sinf(angle_.y);
+		float dirZ = cosf(angle_.y);
+
+		VECTOR nVec = VNorm({ dirX,0.0f,dirZ });
+
+		VECTOR movePow = VScale(nVec, DIS_TAGET_TO_UNIT);
+
+		targetPos_ = VAdd(target_->GetPos(), movePow);
+
+
+		//targetPos_ = target_->GetPos();
+		// カメラの位置
+		float RevRad = AsoUtility::Deg2Rad(180.f);
+		dirX = sinf(angle_.y + RevRad);
+		dirZ = cosf(angle_.y + RevRad);
+
+		nVec = VNorm({ dirX,0.0f,dirZ });
+
+		movePow = VScale(nVec, DIS_TAGET_TO_CAMERA);
+		
+		movePow.y = HEIGHT;
+
+		pos_ = VAdd(targetPos_, movePow);
+
+		SetCameraPositionAndTargetAndUpVec(pos_, targetPos_, { 0.0f,1.0f,0.0f });
+	}
 }
 
 void Camera::Draw(void)
@@ -96,6 +130,11 @@ void Camera::Release(void)
 {
 }
 
+void Camera::SetTarget(Unit* target)
+{
+	target_ = target;
+}
+
 VECTOR Camera::GetPos(void)
 {
 	return pos_;
@@ -104,4 +143,9 @@ VECTOR Camera::GetPos(void)
 VECTOR Camera::GetAngle(void)
 {
 	return angle_;
+}
+
+VECTOR Camera::GetTargetPos(void)
+{
+	return targetPos_;
 }
