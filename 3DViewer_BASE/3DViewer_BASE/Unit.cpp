@@ -98,11 +98,11 @@ void Unit::Update(void)
 		auto radUnitAngleY = AsoUtility::RadIn2PI(angle_.y);
 		auto radMoveAngleY = AsoUtility::RadIn2PI(cAngle + rotRad);
 
-		float aroundDir = AsoUtility::DirNearAroundRad(radUnitAngleY, radMoveAngleY);
+		int aroundDir = AsoUtility::DirNearAroundRad(radUnitAngleY, radMoveAngleY);
 
 		if (abs(radUnitAngleY - radMoveAngleY) >= ROT_SPEED_RAD * 2.0f)
 		{
-			angle_.y += ROT_SPEED_RAD * aroundDir;
+			angle_.y += ROT_SPEED_RAD * static_cast<float>(aroundDir);
 		}
 		else
 		{

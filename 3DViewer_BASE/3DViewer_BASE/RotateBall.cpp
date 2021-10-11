@@ -18,8 +18,8 @@ void RotateBall::Update(void)
 
     VECTOR uPos = unit_->GetPos();
 
-    float dirX = sinf(uPos.y + deltaTime_);
-    float dirZ = cosf(uPos.y + deltaTime_);
+    float dirX = sinf(deltaTime_);
+    float dirZ = cosf(deltaTime_);
 
     VECTOR movePos = VNorm({ dirX ,0.0f,dirZ });
     movePos = VScale(movePos, 100.0f);
@@ -30,6 +30,10 @@ void RotateBall::Update(void)
 void RotateBall::Draw(void)
 {
     DrawSphere3D(pos_, 10.0f, 5, 0xff0000, 0xff0000, true);
+}
+
+void RotateBall::Release(void)
+{
 }
 
 VECTOR RotateBall::GetPos(void)

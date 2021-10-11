@@ -6,6 +6,7 @@
 #include "TitleScene.h"
 #include "Stage.h"
 #include "Unit.h"
+#include "Enemy.h"
 #include "RotateBall.h"
 
 TitleScene::TitleScene(SceneManager* manager) : SceneBase(manager)
@@ -18,6 +19,8 @@ void TitleScene::Init(void)
 	stage_->Init();
 	unit_ = new Unit(mSceneManager);
 	unit_->Init();
+	enemy_ = new Enemy(mSceneManager);
+	enemy_->Init();
 	auto camera = mSceneManager->GetCamera();
 	camera->SetTarget(unit_);
 	ball_ = new RotateBall(mSceneManager, unit_);
@@ -33,6 +36,7 @@ void TitleScene::Update(void)
 	}
 	stage_->Update();
 	unit_->Update();
+	enemy_->Update(unit_);
 	ball_->Update();
 }
 
@@ -40,6 +44,7 @@ void TitleScene::Draw(void)
 {
 	stage_->Draw();
 	unit_->Draw();
+	enemy_->Draw();
 	ball_->Draw();
 	DrawDebug();
 }
@@ -72,8 +77,8 @@ void TitleScene::DrawDebug(void)
 	auto tmpPos = VSub(bPos, uPos);
 	auto bAngle = atan2f(tmpPos.x, tmpPos.z);
 
-	DrawFormatString(0, 130, 0xffffff, "Z正方向からのボール角度：x:%.1f", abs(AsoUtility::DegIn360(AsoUtility::Rad2Deg(bAngle))));
-	DrawFormatString(0, 150, 0xffffff, "Unitからのボール角度：x:%.1f", abs(AsoUtility::DegIn360(AsoUtility::Rad2Deg(bAngle - uAngle.y))));
+	DrawFormatString(0, 130, 0xffffff, "Z正方向からのボール角度：%.1f", abs(AsoUtility::DegIn360(AsoUtility::Rad2Deg(bAngle))));
+	DrawFormatString(0, 150, 0xffffff, "Unitからのボール角度：%.1f", abs(AsoUtility::DegIn360(AsoUtility::Rad2Deg(bAngle - uAngle.y))));
 #endif // _DEBUG
 	
 }
@@ -84,5 +89,8 @@ void TitleScene::Release(void)
 	delete stage_;
 	unit_->Release();
 	delete unit_;
-
+	enemy_->Release();
+	delete enemy_;
+	ball_->Release();
+	delete ball_;
 }

@@ -12,6 +12,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void Release(void);
+
 	VECTOR GetPos(void);
 
 private:
