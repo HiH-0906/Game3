@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "AsoUtility.h"
 #include "Camera.h"
+#include "Bullet.h"
 
 Unit::Unit(SceneManager* manager)
 {
@@ -37,6 +38,10 @@ void Unit::Init(void)
 
 void Unit::Update(void)
 {
+	for (const auto& bulet : bulet_)
+	{
+		bulet->Update();
+	}
 	// Œo‰ßŽžŠÔ‚ðŽæ“¾
 	float deltaTime = mSceneMnager_->GetDeltaTime();
 
@@ -81,12 +86,13 @@ void Unit::Update(void)
 	}
 	if (CheckHitKey(KEY_INPUT_Q))
 	{
-		pos_.y -= movePow;
+		auto bulet = std::make_shared<Bullet>(mSceneMnager_);
+		auto pos = pos_;
+		pos.y += 100.0f;
+		bulet->Init(pos, angle_);
+		bulet_.emplace_back(bulet);
 	}
-	if (CheckHitKey(KEY_INPUT_E))
-	{
-		pos_.y += movePow;
-	}
+
 	auto camera = mSceneMnager_->GetCamera();
 	auto cAngle = camera->GetAngle().y;
 	if (isHitMove)
@@ -122,6 +128,11 @@ void Unit::Update(void)
 
 void Unit::Draw(void)
 {
+	for (const auto& bulet : bulet_)
+	{
+		bulet->Draw();
+	}
+	DrawSphere3D(pos_, 10, 16, 0x88ff88, 0x88ff88, true);
 	// Model‚Ì•`‰æ
 	MV1DrawModel(modelID_);
 }

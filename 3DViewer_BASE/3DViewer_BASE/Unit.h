@@ -1,6 +1,9 @@
 #pragma once
 #include "DxLib.h"
+#include <vector>
+#include <memory>
 class SceneManager;
+class Bullet;
 class Unit
 {
 public:
@@ -20,6 +23,7 @@ public:
 
 private:
 	SceneManager* mSceneMnager_;
+	std::vector<std::shared_ptr<Bullet>> bulet_;
 
 	// ƒ‚ƒfƒ‹‚Ìƒnƒ“ƒhƒ‹ID
 	int modelID_;
