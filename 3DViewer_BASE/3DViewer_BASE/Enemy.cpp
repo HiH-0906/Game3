@@ -1,3 +1,4 @@
+#include <cmath>
 #include "Enemy.h"
 #include "AsoUtility.h"
 #include "SceneManager.h"
