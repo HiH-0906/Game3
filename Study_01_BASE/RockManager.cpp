@@ -7,7 +7,7 @@
 
 namespace
 {
-	constexpr float MAP_DIV_SIZE = 20000.0f;
+	constexpr float MAP_DIV_SIZE = 2000.0f;
 }
 
 RockManager::RockManager(SceneManager* sceneManager, Player* player)
@@ -43,12 +43,10 @@ void RockManager::Release(void)
 {
 	for (auto& rocks : mMapRocks)
 	{
-		for (const auto rock : rocks.second)
+		for (auto& rock : rocks.second)
 		{
 			rock->Release();
-			delete rock;
 		}
-		rocks.second.clear();
 	}
 	mMapRocks.clear();
 }
@@ -57,17 +55,31 @@ void RockManager::RandomRockInstance(void)
 {
 	VECTOR mapPos = mPlayer->GetTransForm().pos;
 	IntVector3 cMapPos = { static_cast<int>(mapPos.x / MAP_DIV_SIZE) ,static_cast<int>(mapPos.y / MAP_DIV_SIZE) ,static_cast<int>(mapPos.z / MAP_DIV_SIZE )};
-	if (mMapRocks.count(cMapPos) != 0)
-	{
-		return;
-	}
-	std::vector<Rock*> rocks;
-	for (int i = 0; i < 3000; i++)
-	{
-		rocks.emplace_back(CreateRock(cMapPos));
-	}
+	IntVector3 tmpPos = {};
 
-	mMapRocks.emplace(cMapPos, rocks);
+	std::vector<Rock*> rocks;
+	for (int i = -1; i < 2; i++)
+	{
+		tmpPos.x = cMapPos.x + i;
+		for (int j = -1; j < 2; j++)
+		{
+			tmpPos.y = cMapPos.y = j;
+			for (int k = -1; k < 2; k++)
+			{
+				tmpPos.z = cMapPos.z + k;
+				if (mMapRocks.count(tmpPos) != 0)
+				{
+					break;
+				}
+				for (int n = 0; n < 30; n++)
+				{
+					rocks.emplace_back(CreateRock(tmpPos));
+				}
+				mMapRocks.try_emplace(tmpPos, rocks);
+				rocks.clear();
+			}
+		}
+	}
 
 }
 
@@ -89,7 +101,7 @@ Rock* RockManager::CreateRock(IntVector3 mPos)
 
 	Rock* re = new Rock();
 
-	float scale = RandomEngine::RandomFloat(30.0f, 150.0f);
+	float scale = RandomEngine::RandomFloat(30.0f, 100.0f);
 
 	VECTOR pos = { RandomEngine::RandomFloat(-MAP_DIV_SIZE / 2.0f, MAP_DIV_SIZE / 2.0f),RandomEngine::RandomFloat(-MAP_DIV_SIZE / 2.0f, MAP_DIV_SIZE / 2.0f),RandomEngine::RandomFloat(-MAP_DIV_SIZE / 2.0f, MAP_DIV_SIZE / 2.0f) };
 	VECTOR angle = { RandomEngine::RandomFloat(0.0f, DX_TWO_PI_F),RandomEngine::RandomFloat(0.0f, DX_TWO_PI_F),0.0f };

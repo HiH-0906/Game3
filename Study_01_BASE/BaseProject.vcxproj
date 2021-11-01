@@ -155,6 +155,8 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleGenerator.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RandomEngine.cpp" />
     <ClCompile Include="Resource.cpp" />
@@ -181,6 +183,8 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RandomEngine.h" />
     <ClInclude Include="Resource.h" />
