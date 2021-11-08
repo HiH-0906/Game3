@@ -122,7 +122,7 @@ void SceneManager::Update(void)
 	// カメラ更新ステップ
 	mCamera->Update();
 
-	particleGenerator_->Update();
+	//particleGenerator_->Update();
 
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
@@ -137,7 +137,7 @@ void SceneManager::Update(void)
 	// 描画
 	mScene->Draw();
 	mCamera->Draw();
-	particleGenerator_->Draw();
+	//particleGenerator_->Draw();
 
 	switch (mSceneID)
 	{

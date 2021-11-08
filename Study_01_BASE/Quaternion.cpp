@@ -363,7 +363,7 @@ VECTOR Quaternion::GetRight(void)
 
 VECTOR Quaternion::GetLeft(void)
 {
-    return GetDir(AsoUtility::DIR_F);
+    return GetDir(AsoUtility::DIR_L);
 }
 
 VECTOR Quaternion::GetUp(void)

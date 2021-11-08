@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "TitleScene.h"
 #include "SpaceDome.h"
+#include "TextScroll.h"
 
 TitleScene::TitleScene(SceneManager* manager) : SceneBase(manager)
 {
@@ -17,11 +18,15 @@ void TitleScene::Init(void)
 
 	mSpaceDome = new SpaceDome(mSceneManager);
 	mSpaceDome->Init();
+
+	textScroll_ = new TextScroll(mSceneManager);
+	textScroll_->Init();
 }
 
 void TitleScene::Update(void)
 {
 	mSpaceDome->Update();
+	textScroll_->Update();
 
 	// ƒV[ƒ“‘JˆÚ
 	if (keyTrgDown[KEY_SYS_START])
@@ -34,6 +39,7 @@ void TitleScene::Update(void)
 void TitleScene::Draw(void)
 {
 	mSpaceDome->Draw();
+	textScroll_->Draw();
 	// ƒƒS•`‰æ
 	DrawLogo();
 
@@ -62,5 +68,6 @@ void TitleScene::Release(void)
 {
 	mSpaceDome->Release();
 	DeleteGraph(mImgStartLogo);
-
+	textScroll_->Release();
+	delete textScroll_;
 }

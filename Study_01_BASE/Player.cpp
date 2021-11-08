@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "SceneManager.h"
+#include "ParticleGenerator.h"
 #include "AsoUtility.h"
 
 
@@ -13,6 +14,7 @@ namespace
 Player::Player(SceneManager* manager)
 {
 	mSceneManager = manager;
+	parGene_ = nullptr;
 }
 
 void Player::Init(void)
@@ -25,6 +27,9 @@ void Player::Init(void)
 	mTransform.pos = AsoUtility::VECTOR_ZERO;
 
 	mTransform.Update();
+
+	parGene_ = new ParticleGenerator(mSceneManager, mTransform.pos, 20.0f);
+	parGene_->Init();
 }
 
 void Player::Update(void)
@@ -37,15 +42,28 @@ void Player::Update(void)
 	mTransform.pos = VAdd(mTransform.pos, moveVec);
 
 	mTransform.Update();
+	parGene_->SetPos(VAdd(mTransform.pos, VScale(mTransform.GetForward(), 10.0f)));
+
+	Quaternion rot = mTransform.rot;
+	Quaternion axis;
+	axis = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
+	rot = rot.Mult(axis);
+	axis = Quaternion::AngleAxis(AsoUtility::Deg2RadF(90.0f), AsoUtility::AXIS_X);
+	rot = rot.Mult(axis);
+	parGene_->SetRot(rot);
+	parGene_->Update();
 }
 
 void Player::Draw(void)
 {
+	parGene_->Draw();
 	MV1DrawModel(mTransform.modelId);
 }
 
 void Player::Release(void)
 {
+	parGene_->Release();
+	delete parGene_;
 }
 
 Transform Player::GetTransForm(void)

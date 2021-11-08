@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 #include <vector>
+#include "Quaternion.h"
 
 class SceneManager;
 class Particle;
@@ -13,23 +14,31 @@ public:
 	static constexpr int NUM_POLYGON = 10;
 	static constexpr float SPLT_ANGLE_DEG = 360 / NUM_POLYGON;
 
-	static constexpr float GEN_MIN_SIZE = 10.0f;
-	static constexpr float GEN_MAX_SIZE = 20.0f;
+	static constexpr float GEN_MIN_SIZE = 1.0f;
+	static constexpr float GEN_MAX_SIZE = 5.0f;
 
-	static constexpr float GEN_MIN_TIME = 5.0f;
-	static constexpr float GEN_MAX_TIME = 10.0f;
+	static constexpr float GEN_MIN_TIME = 10.0f;
+	static constexpr float GEN_MAX_TIME = 20.0f;
 
 	static constexpr float GEN_MIN_SPEED = 10.0f;
 	static constexpr float GEN_MAX_SPEED = 20.0f;
+
+	static constexpr float GEN_SPEED = 0.1f;
 
 	ParticleGenerator(SceneManager* manager,VECTOR pos,float radius);
 	~ParticleGenerator();
 	void Init(void);
 	void Update(void);
 	void Draw(void);
+	void DebugProcess(void);
 	void DrawMashSquere(void);
 	void DrawMashCircle(void);
 	void Release(void);
+
+	void SortParticle(void);
+
+	void SetPos(const VECTOR& pos);
+	void SetRot(const Quaternion& qua);
 
 private:
 	SceneManager* sceneManager_;
@@ -38,7 +47,10 @@ private:
 
 	VECTOR pos_;
 	float radius_;
+	float parGen_;
 	VERTEX3D vertexSquere[6];
+
+	Quaternion quaternion_;
 
 	std::vector<Particle*> particles_;
 

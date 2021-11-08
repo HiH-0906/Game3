@@ -13,6 +13,12 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Release(void);
+
+	const VECTOR& GetPos(void)const;
+
+	const float& GetZlen(void)const;
+	void SetZlen(const float& zlen);
+	bool isAlive(void);
 private:
 	SceneManager* sceneManager_;
 	int imageHandle_;
@@ -21,5 +27,7 @@ private:
 	float size_;
 	float speed_;
 	float limitTime_;
+
+	float zlen_;
 };
 

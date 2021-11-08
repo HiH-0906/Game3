@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 
 class SpaceDome;
+class TextScroll;
 
 class TitleScene : public SceneBase
 {
@@ -16,7 +17,7 @@ public:
 	void Release(void) override;
 
 private:
-
+	TextScroll* textScroll_;
 	int mImgStartLogo;
 	SpaceDome* mSpaceDome;
 };

@@ -1,14 +1,18 @@
 #include <cmath>
+#include <algorithm>
 #include "ParticleGenerator.h"
 #include "Particle.h"
 #include "Quaternion.h"
+#include "SceneManager.h"
+#include "Camera.h"
 #include "AsoUtility.h"
 #include "RandomEngine.h"
 
 ParticleGenerator::ParticleGenerator(SceneManager* manager, VECTOR pos, float radius):
 	sceneManager_(manager),pos_(pos),radius_(radius)
 {
-	
+	//imageLightHadle_ = -1;
+	parGen_ = 0.0f;
 }
 
 ParticleGenerator::~ParticleGenerator()
@@ -20,18 +24,26 @@ void ParticleGenerator::Init(void)
 	imageLightHadle_ = LoadGraph("Image/Light.png");
 	//CreateMeshSquere();
 	CreateMeshCircle();
-	for (int i = 0; i < NUM_PARTICLE; i++)
-	{
-		particles_.emplace_back(Generate(nullptr));
-	}
 }
 
 void ParticleGenerator::Update(void)
 {
-	for (const auto& par : particles_)
+	DebugProcess();
+	if (particles_.size() < NUM_PARTICLE && parGen_ >= GEN_SPEED)
+	{
+		particles_.emplace_back(Generate(nullptr));
+		parGen_ = 0.0f;
+	}
+	for (auto& par : particles_)
 	{
 		par->Update();
+		if (!par->isAlive())
+		{
+			par = Generate(par);
+		}
 	}
+	SortParticle();
+	parGen_ += sceneManager_->GetDeltaTime();
 }
 
 void ParticleGenerator::Draw(void)
@@ -43,6 +55,46 @@ void ParticleGenerator::Draw(void)
 	for (const auto& par : particles_)
 	{
 		par->Draw();
+	}
+}
+
+void ParticleGenerator::DebugProcess(void)
+{
+	Quaternion tmpQ = {};
+	bool isHitKey = false;
+	if (CheckHitKey(KEY_INPUT_L))
+	{
+		isHitKey = true;
+		tmpQ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(1.0f), AsoUtility::AXIS_Y);
+	}
+	if (CheckHitKey(KEY_INPUT_J))
+	{
+		isHitKey = true;
+		tmpQ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(-1.0f), AsoUtility::AXIS_Y);
+	}
+	if (CheckHitKey(KEY_INPUT_I))
+	{
+		isHitKey = true;
+		tmpQ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(1.0f), AsoUtility::AXIS_X);
+	}
+	if (CheckHitKey(KEY_INPUT_K))
+	{
+		isHitKey = true;
+		tmpQ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(-1.0f), AsoUtility::AXIS_X);
+	}
+	if (CheckHitKey(KEY_INPUT_U))
+	{
+		isHitKey = true;
+		tmpQ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(1.0f), AsoUtility::AXIS_Z);
+	}
+	if (CheckHitKey(KEY_INPUT_O))
+	{
+		isHitKey = true;
+		tmpQ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(-1.0f), AsoUtility::AXIS_Z);
+	}
+	if (isHitKey)
+	{
+		quaternion_ = quaternion_.Mult(tmpQ);
 	}
 }
 
@@ -67,6 +119,36 @@ void ParticleGenerator::DrawMashCircle(void)
 void ParticleGenerator::Release(void)
 {
 }
+
+void ParticleGenerator::SortParticle(void)
+{
+	Camera* camera = sceneManager_->GetCamera();
+	VECTOR cDir = camera->GetDir();
+	VECTOR cPos = camera->GetPos();
+	VECTOR pDir = {};
+	for (const auto& par : particles_)
+	{
+		pDir = VSub(par->GetPos(), cPos);
+		par->SetZlen(VDot(cDir, pDir));
+	}
+
+	std::sort(particles_.begin(), particles_.end(),
+		[](const Particle* parA, const Particle* parB) {return parA->GetZlen() > parB->GetZlen(); });
+
+}
+
+void ParticleGenerator::SetPos(const VECTOR& pos)
+{
+	pos_ = pos;
+	CreateMeshCircle();
+}
+
+void ParticleGenerator::SetRot(const Quaternion& qua)
+{
+	quaternion_ = qua;
+}
+
+
 
 void ParticleGenerator::CreateMeshSquere(void)
 {
@@ -96,7 +178,7 @@ void ParticleGenerator::CreateMeshCircle(void)
 	float cntAngle = 0.0f;
 	for (int i = 0; i < NUM_POLYGON; i++)
 	{
-		rot = Quaternion::AngleAxis(AsoUtility::Deg2RadF(cntAngle), AsoUtility::AXIS_Y);
+		rot = Quaternion::Mult(quaternion_, Quaternion::AngleAxis(AsoUtility::Deg2RadF(cntAngle), AsoUtility::AXIS_Y));
 		pos = VECTOR{ 0.0f,0.0f,radius_ };
 		pos = Quaternion::PosAxis(rot, pos);
 
@@ -108,7 +190,7 @@ void ParticleGenerator::CreateMeshCircle(void)
 	{
 		indexs[i * 3] = 0;
 		indexs[i * 3 + 1] = i + 1;
-		indexs[i * 3 + 2] = (i + 2) < NUM_POLYGON  ? i + 2 : 1;
+		indexs[i * 3 + 2] = (i + 2) < NUM_POLYGON + 1 ? i + 2 : 1;
 	}
 
 	for (auto& vertex : vertexCircle)
@@ -125,9 +207,9 @@ Particle* ParticleGenerator::Generate(Particle* particle)
 	{
 		particle = new Particle(sceneManager_, imageLightHadle_);
 	}
-	float angle = RandomEngine::RandomFloat(0, DX_TWO_PI_F);
-	float rad = RandomEngine::RandomFloat(0.0f, radius_);
-	Quaternion rot = Quaternion::AngleAxis(angle, AsoUtility::AXIS_Y);
+	float angle = RandomEngine::RandomFloat(0.0f, DX_TWO_PI_F);
+	float rad = RandomEngine::RandomFloat(radius_ / 2.0f, radius_);
+	Quaternion rot = Quaternion::Mult(quaternion_, Quaternion::AngleAxis(angle, AsoUtility::AXIS_Y));
 	VECTOR pos = VECTOR{ RandomEngine::RandomFloat(-radius_, radius_) ,0.0f,RandomEngine::RandomFloat(-radius_, radius_) };
 	pos = VAdd(pos, pos_);
 	pos = Quaternion::PosAxis(rot, pos);

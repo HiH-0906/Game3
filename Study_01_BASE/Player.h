@@ -2,6 +2,7 @@
 #include "Transform.h"
 
 class SceneManager;
+class ParticleGenerator;
 
 class Player
 {
@@ -19,6 +20,7 @@ public:
 	void Turn(float angle, VECTOR axis);
 private:
 	SceneManager* mSceneManager;
+	ParticleGenerator* parGene_;
 
 	// ƒ‚ƒfƒ‹§Œä‚ÌŠî–{î•ñ
 	Transform mTransform;

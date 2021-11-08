@@ -175,6 +175,7 @@
     <ClCompile Include="AsoUtility.cpp" />
     <ClCompile Include="SpaceDome.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="TextScroll.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="AsoUtility.h" />
     <ClInclude Include="SpaceDome.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="TextScroll.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
