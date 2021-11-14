@@ -1,6 +1,7 @@
-#include "TextScroll.h"]
+#include "TextScroll.h"
 #include "Quaternion.h"
 #include "AsoUtility.h"
+#include "SceneManager.h"
 
 
 TextScroll::TextScroll(SceneManager* sceneManager):
@@ -20,7 +21,7 @@ void TextScroll::Draw(void)
 {
 	Quaternion qua;
 	qua = Quaternion::LookRotation(AsoUtility::AXIS_Z);
-	qua = qua.Mult(Quaternion::AngleAxis(AsoUtility::Deg2RadF(10.0f), AsoUtility::AXIS_X));
+	qua = qua.Mult(Quaternion::AngleAxis(AsoUtility::Deg2RadF(30.0f), AsoUtility::AXIS_Z));
 	for (auto& msg : textMap_[type_])
 	{
 		VECTOR pos = msg.pos;
@@ -29,7 +30,7 @@ void TextScroll::Draw(void)
 			DrawBillboard3D(pos,0.5f,0.5f, IMAGE_SIZE_X,0.0f, images_[mes],true);
 			pos.x += IMAGE_SIZE_X;
 		}
-		msg.pos = VAdd(msg.pos, VScale(qua.ToEuler() , 10.0));
+		msg.pos = VAdd(msg.pos, VScale(qua.ToEuler() , sceneManager_->GetDeltaTime() * 100.0f));
 	}
 }
 
