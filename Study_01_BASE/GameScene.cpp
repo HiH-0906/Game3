@@ -10,6 +10,12 @@
 #include "Stage.h"
 #include "Player.h"
 #include "RockManager.h"
+#include "SpeechBalloon.h"
+
+namespace
+{
+	constexpr float RESTART_TIME = 2.0f;
+}
 
 GameScene::GameScene(SceneManager* manager) : SceneBase(manager)
 {
@@ -20,11 +26,11 @@ void GameScene::Init(void)
 	mSpaceDome = new SpaceDome(mSceneManager);
 	mSpaceDome->Init();
 
-	mStage = new Stage(mSceneManager);
-	mStage->Init();
-
 	mPlayer = new Player(mSceneManager);
 	mPlayer->Init();
+
+	mStage = new Stage(mSceneManager, mPlayer);
+	mStage->Init();
 
 	rockManager = new RockManager(mSceneManager, mPlayer);
 	rockManager->Init();
@@ -33,6 +39,8 @@ void GameScene::Init(void)
 	mSceneManager->GetCamera()->SetPlayer(mPlayer);
 
 	mSpaceDome->SetPlayer(mPlayer);
+
+	playerDeadTime_ = RESTART_TIME;
 }
 
 void GameScene::Update(void)
@@ -40,6 +48,28 @@ void GameScene::Update(void)
 	mSpaceDome->Update();
 	mPlayer->Update();
 	rockManager->Update();
+	mStage->Update();
+	if (mPlayer->isAlive())
+	{
+		auto info = MV1CollCheck_Sphere(mStage->GetModelHadle(), -1, mPlayer->GetTransForm().pos, Player::COLLISION_RADIUS);
+
+		if (info.HitNum)
+		{
+			mPlayer->Dead();
+		}
+		MV1CollResultPolyDimTerminate(info);
+	}
+	else
+	{
+		if (mPlayer->isEnd())
+		{
+			playerDeadTime_ -= mSceneManager->GetDeltaTime();
+			if (playerDeadTime_ <= 0.0f)
+			{
+				mSceneManager->ChangeScene(SceneManager::SCENE_ID::GAME, true);
+			}
+		}
+	}
 
 	// ƒV[ƒ“‘JˆÚ
 	if (keyTrgDown[KEY_SYS_START])
@@ -56,6 +86,8 @@ void GameScene::Draw(void)
 	mStage->Draw();
 	mPlayer->Draw();
 	rockManager->Draw();
+	// ‚±‚±‚©‚çUIŒn
+	mPlayer->speechBalloon_->Draw();
 }
 
 void GameScene::Release(void)

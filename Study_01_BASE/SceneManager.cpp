@@ -3,6 +3,7 @@
 #include "Fader.h"
 #include "TitleScene.h"
 #include "GameScene.h"
+#include "EventScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -74,6 +75,10 @@ void SceneManager::Init3D(void)
 	//	{ 0.0f, 200, -500.0f },
 	//	30.0f * (DX_PI_F / 180.0f), 0.0f, 0.0f
 	//);
+
+	SetFogEnable(true);
+	SetFogColor(5, 5, 5);
+	SetFogStartEnd(3000.0f, 15000.0f);
 
 }
 
@@ -234,6 +239,7 @@ void SceneManager::DoChangeScene(void)
 		mScene = new GameScene(this);
 		break;
 	case SCENE_ID::EVENT:
+		mScene = new EventScene(this);
 		break;
 	case SCENE_ID::BATTLE:
 		break;

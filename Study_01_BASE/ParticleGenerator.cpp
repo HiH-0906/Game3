@@ -12,7 +12,7 @@ ParticleGenerator::ParticleGenerator(SceneManager* manager, VECTOR pos, float ra
 	sceneManager_(manager),pos_(pos),radius_(radius)
 {
 	//imageLightHadle_ = -1;
-	parGen_ = 0.0f;
+	parGen_ = 0.0f; 
 }
 
 ParticleGenerator::~ParticleGenerator()
@@ -51,7 +51,7 @@ void ParticleGenerator::Draw(void)
 	//DrawBillboard3D(pos_, 0.5f, 0.5f, 100.0f, 0.0f, imageLightHadle_, true);
 
 	//DrawMashSquere();
-	DrawMashCircle();
+	//DrawMashCircle();
 	for (const auto& par : particles_)
 	{
 		par->Draw();
@@ -211,7 +211,6 @@ Particle* ParticleGenerator::Generate(Particle* particle)
 	float rad = RandomEngine::RandomFloat(radius_ / 2.0f, radius_);
 	Quaternion rot = Quaternion::Mult(quaternion_, Quaternion::AngleAxis(angle, AsoUtility::AXIS_Y));
 	VECTOR pos = VECTOR{ RandomEngine::RandomFloat(-radius_, radius_) ,0.0f,RandomEngine::RandomFloat(-radius_, radius_) };
-	pos = VAdd(pos, pos_);
 	pos = Quaternion::PosAxis(rot, pos);
 
 	VECTOR dir = { 0.0f,0.0f,0.0f };

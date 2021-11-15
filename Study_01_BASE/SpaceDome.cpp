@@ -20,6 +20,8 @@ void SpaceDome::Init(void)
 	player_ = nullptr;
 
 	mTransform.Update();
+
+	MV1SetWriteZBuffer(mTransform.modelId, false);
 }
 
 void SpaceDome::Update(void)

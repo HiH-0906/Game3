@@ -4,6 +4,7 @@
 #include "Rock.h"
 #include "RandomEngine.h"
 #include "Player.h"
+#include "_debug/_DebugConOut.h"
 
 namespace
 {
@@ -63,14 +64,15 @@ void RockManager::RandomRockInstance(void)
 		tmpPos.x = cMapPos.x + i;
 		for (int j = -1; j < 2; j++)
 		{
-			tmpPos.y = cMapPos.y = j;
+			tmpPos.y = cMapPos.y + j;
 			for (int k = -1; k < 2; k++)
 			{
 				tmpPos.z = cMapPos.z + k;
 				if (mMapRocks.count(tmpPos) != 0)
 				{
-					break;
+					continue;
 				}
+				TRACE("%d,%d,%d\n", tmpPos.x, tmpPos.y, tmpPos.z);
 				for (int n = 0; n < 30; n++)
 				{
 					rocks.emplace_back(CreateRock(tmpPos));
@@ -101,7 +103,7 @@ Rock* RockManager::CreateRock(IntVector3 mPos)
 
 	Rock* re = new Rock();
 
-	float scale = RandomEngine::RandomFloat(30.0f, 100.0f);
+	float scale = RandomEngine::RandomFloat(3.0f, 10.0f);
 
 	VECTOR pos = { RandomEngine::RandomFloat(-MAP_DIV_SIZE / 2.0f, MAP_DIV_SIZE / 2.0f),RandomEngine::RandomFloat(-MAP_DIV_SIZE / 2.0f, MAP_DIV_SIZE / 2.0f),RandomEngine::RandomFloat(-MAP_DIV_SIZE / 2.0f, MAP_DIV_SIZE / 2.0f) };
 	VECTOR angle = { RandomEngine::RandomFloat(0.0f, DX_TWO_PI_F),RandomEngine::RandomFloat(0.0f, DX_TWO_PI_F),0.0f };

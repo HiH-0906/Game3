@@ -17,8 +17,8 @@ public:
 	static constexpr float GEN_MIN_SIZE = 1.0f;
 	static constexpr float GEN_MAX_SIZE = 5.0f;
 
-	static constexpr float GEN_MIN_TIME = 10.0f;
-	static constexpr float GEN_MAX_TIME = 20.0f;
+	static constexpr float GEN_MIN_TIME = 1.0f;
+	static constexpr float GEN_MAX_TIME = 1.0f;
 
 	static constexpr float GEN_MIN_SPEED = 10.0f;
 	static constexpr float GEN_MAX_SPEED = 20.0f;
