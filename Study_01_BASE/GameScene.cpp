@@ -45,19 +45,23 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
+	auto Collision = [](const int& handle,const VECTOR& center,const float& rad)
+	{
+		auto info = MV1CollCheck_Sphere(handle, -1, center, rad);
+		bool isHit = info.HitNum != 0 ? true : false;
+		MV1CollResultPolyDimTerminate(info);
+		return isHit;
+	};
 	mSpaceDome->Update();
 	mPlayer->Update();
 	rockManager->Update();
 	mStage->Update();
 	if (mPlayer->isAlive())
 	{
-		auto info = MV1CollCheck_Sphere(mStage->GetModelHadle(), -1, mPlayer->GetTransForm().pos, Player::COLLISION_RADIUS);
-
-		if (info.HitNum)
+		if (Collision(mStage->GetModelHadle(), mPlayer->GetTransForm()->pos, Player::COLLISION_RADIUS))
 		{
 			mPlayer->Dead();
 		}
-		MV1CollResultPolyDimTerminate(info);
 	}
 	else
 	{
@@ -70,6 +74,7 @@ void GameScene::Update(void)
 			}
 		}
 	}
+
 
 	// ƒV[ƒ“‘JˆÚ
 	if (keyTrgDown[KEY_SYS_START])

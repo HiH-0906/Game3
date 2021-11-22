@@ -5,12 +5,14 @@
 #include "AsoUtility.h"
 #include "Camera.h"
 #include "SpeechBalloon.h"
+#include "PlayerShot.h"
 
 namespace
 {
 	constexpr float MOVE_POW = 10.0f;
 	constexpr float MOVE_ROT_DEG_X = 1.0f;
 	constexpr float MOVE_ROT_DEG_Y = 1.0f;
+	constexpr float SHOT_INTERVAL = 0.3f;
 }
 
 
@@ -38,15 +40,22 @@ void Player::Init(void)
 
 	mTransform.Update();
 
+	shotInterval_ = 0.0f;
+
 	ChengeState(PLAYER_STATE::RUN);
 
-	parGene_ = new ParticleGenerator(mSceneManager, mTransform.pos, 20.0f);
+	parGene_ = new ParticleGenerator(mSceneManager, mTransform.pos, 10.0f);
 	parGene_->Init();
 	isAlive_ = true;
 }
 
 void Player::Update(void)
 {
+	shotInterval_ -= mSceneManager->GetDeltaTime();
+	if (shotInterval_ <= 0.0f)
+	{
+		shotInterval_ = 0.0f;
+	}
 	switch (state_)
 	{
 	case Player::PLAYER_STATE::NON:
@@ -61,6 +70,7 @@ void Player::Update(void)
 
 		mTransform.Update();
 		parGene_->SetPos(VAdd(mTransform.pos, VScale(mTransform.GetForward(), 10.0f)));
+		Shot();
 		break;
 	case Player::PLAYER_STATE::EXP:
 		if (spriteAnimator_->IsEnd())
@@ -82,7 +92,14 @@ void Player::Update(void)
 	parGene_->SetRot(rot);
 	parGene_->Update();
 	spriteAnimator_->Update();
-
+	for (auto shot : shots_)
+	{
+		if (!shot->IsAlive())
+		{
+			continue;
+		}
+		shot->Update();
+	}
 }
 
 void Player::Draw(void)
@@ -104,9 +121,16 @@ void Player::Draw(void)
 	}
 	DrawFormatString(0, 32, 0xffffff, "%f,%f,%f", mTransform.pos.x, mTransform.pos.y, mTransform.pos.z);
 	spriteAnimator_->Draw();
-
+	for (auto shot : shots_)
+	{
+		if (!shot->IsAlive())
+		{
+			continue;
+		}
+		shot->Draw();
+	}
 #ifdef _DEBUG
-	DrawSphere3D(mTransform.pos, COLLISION_RADIUS, 16, 0xffffff, 0xffffff, false);
+	//DrawSphere3D(mTransform.pos, COLLISION_RADIUS, 16, 0xffffff, 0xffffff, false);
 #endif // _DEBUG
 
 }
@@ -119,11 +143,17 @@ void Player::Release(void)
 	delete spriteAnimator_;
 	speechBalloon_->Release();
 	delete speechBalloon_;
+	for (auto shot:shots_)
+	{
+		shot->Release();
+		delete shot;
+	}
+	shots_.clear();
 }
 
-Transform Player::GetTransForm(void)
+Transform* Player::GetTransForm(void)
 {
-	return mTransform;
+	return &mTransform;
 }
 
 void Player::ProcessTurn(void)
@@ -166,6 +196,27 @@ bool Player::isAlive(void)
 bool Player::isEnd(void)
 {
 	return state_ == PLAYER_STATE::END;
+}
+
+void Player::Shot(void)
+{
+	if (shotInterval_ != 0.0f)
+	{
+		return;
+	}
+	if (!CheckHitKey(KEY_INPUT_N))
+	{
+		return;
+	}
+	shotInterval_ = SHOT_INTERVAL;
+	PlayerShot* shot = new PlayerShot(mSceneManager, &mTransform);
+	shot->Create(mTransform.pos, VNorm(mTransform.GetForward()));
+	shots_.emplace_back(std::move(shot));
+}
+
+const std::vector<PlayerShot*>& Player::GetShots(void) const
+{
+	return shots_;
 }
 
 void Player::ChengeState(PLAYER_STATE state)

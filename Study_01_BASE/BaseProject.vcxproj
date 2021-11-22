@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BattelScene.cpp" />
     <ClCompile Include="BossShip.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EventScene.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleGenerator.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerShot.cpp" />
     <ClCompile Include="RandomEngine.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -190,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BattelScene.h" />
     <ClInclude Include="BossShip.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EventScene.h" />
@@ -197,6 +200,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerShot.h" />
     <ClInclude Include="RandomEngine.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />

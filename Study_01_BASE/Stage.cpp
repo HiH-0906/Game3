@@ -35,7 +35,7 @@ void Stage::Init(void)
 
 void Stage::Update(void)
 {
-	auto pPos = player_->GetTransForm().pos;
+	auto pPos = player_->GetTransForm()->pos;
 	auto ePos = enemyPos_;
 
 	auto diffVec = VSub(pPos, ePos);

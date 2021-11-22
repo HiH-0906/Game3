@@ -16,6 +16,13 @@ namespace
 	constexpr float spring_pow = 24.0f;
 }
 
+namespace
+{
+	constexpr float shake_time = 2.0f;
+	constexpr float shake_width = 3.0f;
+	constexpr float shake_speed = 30.0f;
+}
+
 Camera::Camera(SceneManager* manager)
 {
 	mSceneManager = manager;
@@ -80,6 +87,9 @@ void Camera::SetBeforeDraw(void)
 		break;
 	case CAMERA_MODE::FOLLOW_SPRING:
 		SetBeforeDrawSpring();
+		break;
+	case CAMERA_MODE::SHAKE:
+		SetBeforeDrawShake();
 		break;
 	default:
 		break;
@@ -152,6 +162,24 @@ void Camera::ChangeMode(CAMERA_MODE mode)
 	mMode = mode;
 
 	SetDefault();
+	switch (mMode)
+	{
+	case CAMERA_MODE::FREE:
+		break;
+	case CAMERA_MODE::FIXED:
+		break;
+	case CAMERA_MODE::FOLLOW:
+		break;
+	case CAMERA_MODE::FOLLOW_SPRING:
+		break;
+	case CAMERA_MODE::SHAKE:
+		stepShake_ = shake_time;
+		shakeDir_ = VNorm({ 0.7f,0.7f,0.0f });
+		defPos_ = mPos;
+		break;
+	default:
+		break;
+	}
 }
 
 void Camera::SetPlayer(Player* player)
@@ -234,10 +262,10 @@ void Camera::SetBeforeDrawFollow()
 
 	if (player_ != nullptr)
 	{
-		VECTOR playerPos = player_->GetTransForm().pos;
+		VECTOR playerPos = player_->GetTransForm()->pos;
 
-		MATRIX playerMat = player_->GetTransForm().matPos;
-		Quaternion playerRot = player_->GetTransForm().quaRot;
+		MATRIX playerMat = player_->GetTransForm()->matPos;
+		Quaternion playerRot = player_->GetTransForm()->quaRot;
 
 
 
@@ -255,7 +283,7 @@ void Camera::SetBeforeDrawFollow()
 
 		mTargetPos = VAdd(mPos, relativeTargetPos);
 
-		mCameraUp = player_->GetTransForm().GetUp();
+		mCameraUp = player_->GetTransForm()->GetUp();
 	}
 
 	// カメラの設定
@@ -273,10 +301,10 @@ void Camera::SetBeforeDrawSpring()
 
 	if (player_ != nullptr)
 	{
-	VECTOR playerPos = player_->GetTransForm().pos;
+	VECTOR playerPos = player_->GetTransForm()->pos;
 
-	MATRIX playerMat = player_->GetTransForm().matPos;
-	Quaternion playerRot = player_->GetTransForm().quaRot;
+	MATRIX playerMat = player_->GetTransForm()->matPos;
+	Quaternion playerRot = player_->GetTransForm()->quaRot;
 
 	VECTOR relativeCameraPos = {};
 
@@ -303,10 +331,35 @@ void Camera::SetBeforeDrawSpring()
 
 	mTargetPos = VAdd(mPos, relativeTargetPos);
 
-	mCameraUp = player_->GetTransForm().GetUp();
+	mCameraUp = player_->GetTransForm()->GetUp();
 
 	}
 
+	// カメラの設定
+	SetCameraPositionAndTargetAndUpVec(
+		mPos,
+		mTargetPos,
+		mCameraUp
+	);
+}
+
+void Camera::SetBeforeDrawShake()
+{
+	stepShake_ -= mSceneManager->GetDeltaTime();
+	if (stepShake_ < 0.0f)
+	{
+		// カメラの設定
+		SetCameraPositionAndTargetAndUpVec(
+			mPos,
+			mTargetPos,
+			mCameraUp
+		);
+		mPos = defPos_;
+		ChangeMode(CAMERA_MODE::FIXED);
+		return;
+	}
+	float pow = sinf(stepShake_ * shake_speed) * shake_width;
+	mPos = VAdd(defPos_, VScale(shakeDir_, pow));
 	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(
 		mPos,

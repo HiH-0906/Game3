@@ -172,6 +172,13 @@ void Turret::Release(void)
 
 void Turret::SyncParent(Transform* transform, VECTOR addAxis)
 {
+	VECTOR localPos;
+	transform->quaRot = mTransformParent->quaRot;
+	localPos = Quaternion::PosAxis(transform->quaRot, mLocalPos);
+	transform->pos = VAdd(mTransformParent->pos, VScale(localPos, SCALE));
+
+	transform->Update();
+
 }
 
 bool Turret::IsAlive(void)

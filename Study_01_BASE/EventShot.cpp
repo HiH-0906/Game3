@@ -13,15 +13,24 @@ void EventShot::Update(void)
 	// 着弾時のエフェクト
 	mExplosion->Update();
 
+	if (!IsAlive())
+	{
+		return;
+	}
+
 	// 移動処理
 	Move();
 
 	VECTOR pos2D = ConvWorldPosToScreenPos(mTransform.pos);
 	if (pos2D.z <= 0 || pos2D.z >= 1)
 	{
+		VECTOR velocity = VScale(VScale(mDir, -1),100);
+		mTransform.pos = VAdd(mTransform.pos, velocity);
+		mTransform.Update();
 		// 着弾エフェクト
 		CreateExplosion();
 		// カメラシェイクタイミング
+		mSceneManager->GetCamera()->ChangeMode(CAMERA_MODE::SHAKE);
 	}
 
 	// モデル制御の基本情報更新

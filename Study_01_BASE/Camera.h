@@ -9,7 +9,8 @@ enum class CAMERA_MODE
 	FREE,
 	FIXED,
 	FOLLOW,
-	FOLLOW_SPRING
+	FOLLOW_SPRING,
+	SHAKE
 };
 
 class SceneManager;
@@ -71,6 +72,10 @@ private:
 	// ÉJÉÅÉâäpìx
 	Quaternion mQuaRot;
 
+	float stepShake_;
+	VECTOR defPos_;
+	VECTOR shakeDir_;
+
 	void Move();
 	void Rotate();
 
@@ -78,5 +83,6 @@ private:
 	void SetBeforeDrawFixed();
 	void SetBeforeDrawFollow();
 	void SetBeforeDrawSpring();
+	void SetBeforeDrawShake();
 };
 
