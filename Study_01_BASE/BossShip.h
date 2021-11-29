@@ -41,8 +41,11 @@ private:
 	std::vector<Turret*> turretList_;
 
 	void MakeTurret(VECTOR localPos,VECTOR localAngle);
+	void ExpInit(void);
 
 	BOSS_STATE state_;
+
+	std::vector<VECTOR> expPosList_;
 
 	void ChengeState(BOSS_STATE state);
 };

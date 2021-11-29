@@ -12,6 +12,13 @@ namespace
 	constexpr float EVENT_TIME = 2.0f;
 }
 
+namespace
+{
+	constexpr float EXP_RADIUS_X = 100.0f;
+	constexpr float EXP_RADIUS_Y = 100.0f;
+	constexpr float EXP_RADIUS_Z = 400.0f;
+}
+
 BossShip::BossShip(SceneManager* manager, Player* player) :
 	sceneManager_(manager), player_(player)
 {
@@ -65,7 +72,6 @@ void BossShip::Init(void)
 	default:
 		break;
 	}
-
 }
 
 void BossShip::Update(void)
@@ -96,6 +102,18 @@ void BossShip::Update(void)
 		Quaternion que = Quaternion::AngleAxis(speed, AsoUtility::AXIS_Y);
 		transform_.quaRot = Quaternion::Mult(transform_.quaRot, que);
 		UpdateTurret();
+		int cnt = 0;
+		for (const auto& turret : turretList_)
+		{
+			if (turret->IsAlive())
+			{
+				cnt++;
+			}
+		}
+		if (cnt == 0)
+		{
+			ChengeState(BOSS_STATE::EXP);
+		}
 		break;
 	}
 	transform_.Update();
@@ -125,9 +143,16 @@ void BossShip::Draw(void)
 		DrawTurret();
 		break;
 	case BOSS_STATE::EXP:
+		MV1DrawModel(transform_.modelId);
+		DrawTurret();
+		
 		break;
 	default:
 		break;
+	}
+	for (const auto& pos : expPosList_)
+	{
+		DrawSphere3D(pos, 1.0f, 16, 0xffffff, 0xffffff, true);
 	}
 }
 
@@ -153,6 +178,7 @@ void BossShip::Release(void)
 		delete turret;
 	}
 	turretList_.clear();
+	expPosList_.clear();
 }
 
 std::vector<Turret*> BossShip::GetTurret(void)
@@ -173,6 +199,30 @@ void BossShip::MakeTurret(VECTOR localPos, VECTOR localAngle)
 	turretList_.emplace_back(turret);
 }
 
+void BossShip::ExpInit(void)
+{
+	float angleX = AsoUtility::Deg2RadD(360.0f / 30.0f);
+	float angleY = AsoUtility::Deg2RadD(360.0f / 40.0f);
+	while (angleX <= DX_TWO_PI_F)
+	{
+		while (angleY <= DX_TWO_PI_F)
+		{
+			
+			Quaternion rot = Quaternion::AngleAxis(angleY, AsoUtility::AXIS_Y);
+			rot = rot.Mult(Quaternion::AngleAxis(angleX, AsoUtility::AXIS_X));
+			VECTOR tmpPos = Quaternion::PosAxis(rot, transform_.pos);
+			tmpPos = VNorm(tmpPos);
+			tmpPos.x *= EXP_RADIUS_X;
+			tmpPos.y *= EXP_RADIUS_Y;
+			tmpPos.z *= EXP_RADIUS_Z;
+			expPosList_.emplace_back(tmpPos);
+			angleY += AsoUtility::Deg2RadD(360.0f / 80.0f);
+		}
+		angleY = AsoUtility::Deg2RadD(360.0f / 80.0f);
+		angleX += AsoUtility::Deg2RadD(360.0f / 60.0f);
+	}
+}
+
 void BossShip::ChengeState(BOSS_STATE state)
 {
 	if (state_ == state)
@@ -180,6 +230,7 @@ void BossShip::ChengeState(BOSS_STATE state)
 		return;
 	}
 	state_ = state;
+	
 	switch (state_)
 	{
 	case BossShip::BOSS_STATE::NON:
@@ -191,8 +242,10 @@ void BossShip::ChengeState(BOSS_STATE state)
 		eventShot_->Create(transform_.pos, norVec);
 		break;
 	case BossShip::BOSS_STATE::BATTLE:
+		ExpInit();
 		break;
 	case BossShip::BOSS_STATE::EXP:
+
 		break;
 	case BossShip::BOSS_STATE::END:
 		break;

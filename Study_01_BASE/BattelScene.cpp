@@ -10,6 +10,10 @@
 #include "SceneManager.h"
 #include "Camera.h"
 
+#include "Turret.h"
+#include "TurretShot.h"
+
+#include "AsoUtility.h"
 namespace
 {
 	constexpr float RESTART_TIME = 2.0f;
@@ -66,6 +70,39 @@ void BattelScene::Update(void)
 			player_  ->Dead();
 		}
 		MV1CollResultPolyDimTerminate(info);
+
+		auto turrets = boss_->GetTurret();
+		for (const auto& t:turrets)
+		{
+			if (!t->IsAlive())
+			{
+				continue;
+			}
+			for (const auto&s:t->GetShots())
+			{
+				if (!s->IsAlive())
+				{
+					continue;
+				}
+				if (AsoUtility::IsHitSpheres(player_->GetTransForm()->pos, Player::COLLISION_RADIUS, s->GetPos(), s->GetCollisionRadius()))
+				{
+					player_->Dead();
+					s->CreateExplosion();
+				}
+			}
+			for (const auto& ps : player_->GetShots())
+			{
+				if (!ps->IsAlive())
+				{
+					continue;
+				}
+				if (AsoUtility::IsHitSpheres(ps->GetPos(), ps->GetCollisionRadius(), t->GetPos(), Turret::COLLISION_RADIUS))
+				{
+					ps->CreateExplosion();
+					t->Damage();
+				}
+			}
+		}
 	}
 	else
 	{

@@ -3,6 +3,7 @@
 #include "Transform.h"
 class SceneManager;
 class SpriteAnimator;
+class TurretShot;
 
 class Turret
 {
@@ -31,6 +32,8 @@ public:
 	// 砲身ローカル稼働量(deg)
 	static constexpr float ANGLE_POW_GUN = 0.2f;
 
+	static constexpr float ATTACK_TIME = 0.5f;
+
 	enum class STATE
 	{
 		NONE,
@@ -50,6 +53,8 @@ public:
 	void Release(void);
 
 	void SyncParent(Transform* transform, VECTOR addAxis);
+
+	const std::vector<TurretShot*> GetShots(void)const;
 
 	bool IsAlive(void);
 	VECTOR GetPos(void);
@@ -101,6 +106,9 @@ private:
 	// 砲身ローカル稼働量(deg)
 	float mAnglePowGun;
 
+	float mAttackTime;
+
+	std::vector<TurretShot*> shots_;
 
 	// 状態遷移
 	void ChangeState(STATE state);
