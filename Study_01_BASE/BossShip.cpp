@@ -201,7 +201,7 @@ void BossShip::MakeTurret(VECTOR localPos, VECTOR localAngle)
 
 void BossShip::ExpInit(void)
 {
-	float angleX = AsoUtility::Deg2RadD(360.0f / 30.0f);
+	/*float angleX = AsoUtility::Deg2RadD(360.0f / 30.0f);
 	float angleY = AsoUtility::Deg2RadD(360.0f / 40.0f);
 	while (angleX <= DX_TWO_PI_F)
 	{
@@ -220,7 +220,7 @@ void BossShip::ExpInit(void)
 		}
 		angleY = AsoUtility::Deg2RadD(360.0f / 80.0f);
 		angleX += AsoUtility::Deg2RadD(360.0f / 60.0f);
-	}
+	}*/
 }
 
 void BossShip::ChengeState(BOSS_STATE state)
