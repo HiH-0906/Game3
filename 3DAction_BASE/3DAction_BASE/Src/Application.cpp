@@ -8,7 +8,7 @@
 
 bool Application::Init(void)
 {
-
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
 	// ÉVÉXÉeÉÄèàóù
 	SetWindowText("Project");
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
@@ -52,6 +52,7 @@ bool Application::Release(void)
 {
 	mSceneManager.Release();
 
+	Effkseer_End();
 	DxLib_End();
 
 	return true;
