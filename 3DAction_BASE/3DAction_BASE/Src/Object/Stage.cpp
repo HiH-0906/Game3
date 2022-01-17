@@ -49,6 +49,17 @@ void Stage::Update(void)
 	for (auto& s : mPlanets)
 	{
 		s.second->Update();
+		// ¡‚Æ‚ÍˆÙ‚È‚é˜f¯‚©
+		if (mActiveName != s.second->GetName())
+		{
+			// ˜f¯‚Ìd—ÍŒ—“à‚É“ü‚Á‚½‚ç
+			if (s.second->InRangeGravity(mPlayer->GetTransform()->pos))
+			{
+				// ŽŸ‚ÌƒXƒe[ƒW‚Ö‘JˆÚ‚·‚é
+				ChangeStage(s.second->GetName());
+			}
+		}
+		
 	}
 
 }

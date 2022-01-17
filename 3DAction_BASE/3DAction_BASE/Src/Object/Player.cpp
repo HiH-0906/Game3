@@ -41,6 +41,12 @@ void Player::Init(void)
 	// 足煙読み込み
 	mEffectSmoke = mResourceManager->Load(ResourceManager::SRC::FOOT_SMOKE).mHandleId;
 
+	mEffectWarpOrbit = mResourceManager->Load(
+		ResourceManager::SRC::WARP_ORBIT).mHandleId;
+
+	mFrameLeftHand = MV1SearchFrame(mTransform.modelId, "mixamorig:LeftHand");
+	mFrameRightHand = MV1SearchFrame(mTransform.modelId, "mixamorig:RightHand");
+
 	// ジャンプ系変数の初期化
 	mIsJump = false;
 	mStepJump = 0.0f;
@@ -87,8 +93,10 @@ void Player::Update(void)
 		UpdatePlay();
 		break;
 	case Player::STATE::WARP_RESERVE:
+		UpdateWarpReserve();
 		break;
 	case Player::STATE::WARP_MOVE:
+		UpdateWarpMove();
 		break;
 	case Player::STATE::DEAD:
 		break;
@@ -108,6 +116,8 @@ void Player::UpdatePlay(void)
 	ProcessMove();
 
 	ProcessJump();
+
+	CalcSlope();
 
 	CalcGravityPow();
 
@@ -252,6 +262,11 @@ void Player::DrawDebug(void)
 		v.x, v.y, v.z
 	);
 
+	
+	DrawFormatString(20, 100, black, "傾斜角 ： (%0.2f)",
+		mSlopeAngleDeg
+	);
+
 	mCapsule->Draw();
 }
 
@@ -353,7 +368,7 @@ void Player::SetGoalRotate(double rotRad)
 {
 	const auto& camera = mSceneManager->GetCamera();
 
-	Quaternion cameraRot = camera->GetQuaRotOutX();
+	Quaternion cameraRot = camera->GetQuaRot();
 
 	Quaternion  axsis = Quaternion::AngleAxis(cameraRot.y + rotRad, AsoUtility::AXIS_Y);
 
@@ -371,6 +386,34 @@ void Player::Rotate(void)
 	mRotateRotTime -= mSceneManager->GetDeltaTime();
 
 	mPlayerRotY = Quaternion::Slerp(mPlayerRotY, mGoalQuaRotY, (TIME_ROT - mRotateRotTime) / TIME_ROT);
+}
+
+void Player::CalcSlope(void)
+{
+	VECTOR gravityUp = mGravityManager->GetDirUpGravity();
+	// 重力の反対方向から地面の法線方向に向けた回転量を取得
+	Quaternion up2GNorQua = Quaternion::FromToRotation(gravityUp, mHitNormal);
+	// 取得した回転の軸と角度を取得する
+	float angle;
+	float* anglePtr = &angle;
+	VECTOR axis;
+	up2GNorQua.ToAngleAxis(anglePtr, &axis);
+	// 90度足して、傾斜ベクトルへの回転を取得する
+	Quaternion slopeQ = Quaternion::AngleAxis(angle + AsoUtility::Deg2RadD(90.0), axis);
+	// 地面の傾斜線(緑)
+	mSlopeDir = slopeQ.PosAxis(gravityUp);
+	// 傾斜の角度
+	mSlopeAngleDeg = AsoUtility::AngleDeg(gravityUp, mSlopeDir);
+	// 傾斜による移動
+	if (AsoUtility::SqrMagnitude(mJumpPow) == 0.0f)
+	{
+		float CHECK_ANGLE = 120.0f;
+		if (mSlopeAngleDeg >= CHECK_ANGLE)
+		{
+			float diff = abs(mSlopeAngleDeg - CHECK_ANGLE);
+			mSlopePow = VScale(mSlopeDir, diff / 3.0f);mMovePow = VAdd(mMovePow, mSlopePow);
+		}
+	}
 }
 
 void Player::CalcGravityPow(void)
@@ -399,6 +442,66 @@ void Player::AddCollider(Collider* collider)
 void Player::ClearCollider(void)
 {
 	mColliders.clear();
+}
+
+void Player::UpdateWarpReserve(void)
+{
+	mStepWarp -= mSceneManager->GetDeltaTime(); 
+	if (mStepWarp < 0.0f) 
+	{ 
+		mTransform.quaRot = mWarpQua; mTransform.pos = mWarpReservePos; ChangeState(STATE::WARP_MOVE); 
+		return; 
+	}
+	else 
+	{ 
+		float t = 1.0f - (mStepWarp / mTimeWarp);
+		mTransform.quaRot = Quaternion::Slerp(mReserveStartQua, mWarpQua, t);
+		mTransform.pos = AsoUtility::Lerp(mReserveStartPos, mWarpReservePos, t); 
+	}
+}
+
+void Player::UpdateWarpMove(void)
+{
+	VECTOR dir = mWarpQua.GetForward(); 
+	mTransform.pos = VAdd(mTransform.pos, VScale(dir, 30.0f)); 
+	Stage::NAME name = mGravityManager->GetActivePlanet()->GetName();
+	if (name != mPreWarpName) 
+	{
+		// エフェクト停止
+		StopOrbitEffect();
+		// 落下アニメーション
+		mAnimationController->Play((int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
+		mAnimationController->SetEndLoop(23.0f, 25.0f, 5.0f);
+		ChangeState(Player::STATE::PLAY);
+		return;
+	}mTransform.Update();
+	// エフェクトの位置を同期
+	SyncWarpOrbitPos();
+}
+
+Capsule* Player::GetCapsule(void)
+{
+	return mCapsule;
+}
+
+bool Player::IsPlay(void)
+{
+	return mState == STATE::PLAY;
+}
+
+bool Player::IsWarpMove(void)
+{
+	return mState == STATE::WARP_MOVE;
+}
+
+void Player::StartWarp(float time, Quaternion goalRot, VECTOR goalPos)
+{
+	mTimeWarp = time;
+	mStepWarp = time; 
+	mWarpQua = goalRot;
+	mWarpReservePos = goalPos; 
+	mPreWarpName = mGravityManager->GetActivePlanet()->GetName(); 
+	ChangeState(STATE::WARP_RESERVE);
 }
 
 void Player::Collision(void)
@@ -431,6 +534,10 @@ void Player::CollisionGravity(void)
 		auto hit = MV1CollCheck_Line(col->mModelId, -1, mGravHitUp, mGravHitDown);
 		if (hit.HitFlag)
 		{
+			// 傾斜計算用衝突情報保存
+			mHitNormal = hit.Normal;
+			mHitPos = hit.HitPosition;
+
 			mMovedPos = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
 			mJumpPow = AsoUtility::VECTOR_ZERO;
 			mStepJump = 0.0f;
@@ -500,6 +607,34 @@ void Player::EffectFootSmoke(void)
 	}
 }
 
+void Player::EffectWarpOrbit(void)
+{
+	// エフェクト再生
+	mHandleWarpOrbitL = PlayEffekseer3DEffect(mEffectWarpOrbit);
+	mHandleWarpOrbitR = PlayEffekseer3DEffect(mEffectWarpOrbit);
+	// 大きさ
+	SetScalePlayingEffekseer3DEffect(mHandleWarpOrbitL, 10.0f, 10.0f, 10.0f);
+	SetScalePlayingEffekseer3DEffect(mHandleWarpOrbitR, 10.0f, 10.0f, 10.0f);
+	// エフェクトの位置
+	SyncWarpOrbitPos();
+	// エフェクトの回転
+	VECTOR euler = mTransform.quaRot.ToEuler();
+	SetRotationPlayingEffekseer3DEffect(mHandleWarpOrbitL, euler.x, euler.y, euler.z);
+	SetRotationPlayingEffekseer3DEffect(mHandleWarpOrbitR, euler.x, euler.y, euler.z);
+}
+
+void Player::SyncWarpOrbitPos(void)
+{
+	VECTOR pos; pos = MV1GetFramePosition(mTransform.modelId, mFrameLeftHand);
+	SetPosPlayingEffekseer3DEffect(mHandleWarpOrbitL, pos.x, pos.y, pos.z);
+	pos = MV1GetFramePosition(mTransform.modelId, mFrameRightHand); 
+	SetPosPlayingEffekseer3DEffect(mHandleWarpOrbitR, pos.x, pos.y, pos.z);
+}
+
+void Player::StopOrbitEffect(void)
+{
+}
+
 void Player::ChangeState(STATE state)
 {
 
@@ -511,8 +646,19 @@ void Player::ChangeState(STATE state)
 	case Player::STATE::PLAY:
 		break;
 	case Player::STATE::WARP_RESERVE:
+		mJumpPow = AsoUtility::VECTOR_ZERO;
+		// ワープ準備開始時のプレイヤー情報
+		mReserveStartQua = mTransform.quaRot;
+		mReserveStartPos = mTransform.pos;
+		mAnimationController->Play((int)Player::ANIM_TYPE::WARP_PAUSE);
 		break;
 	case Player::STATE::WARP_MOVE:
+		// 正面を向いているはずなのでリセット
+		mPlayerRotY = Quaternion();
+		mGoalQuaRotY = Quaternion();
+		mAnimationController->Play((int)Player::ANIM_TYPE::FLY);
+		// エフェクト再生
+		EffectWarpOrbit();
 		break;
 	case Player::STATE::DEAD:
 		break;

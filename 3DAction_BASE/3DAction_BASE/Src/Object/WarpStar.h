@@ -55,7 +55,13 @@ private:
 
 	STATE mState;
 
+	// ƒ[ƒv•ûŒü
+	Quaternion mWarpQua;
+	VECTOR mWarpReservePos;
+
 	void ChangeState(STATE state);
 
+	// ‰ñ“]
+	void RotateZ(const float& speed);
 };
 

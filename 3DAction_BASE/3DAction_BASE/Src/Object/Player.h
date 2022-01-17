@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 #include "Common/Transform.h"
+#include "Stage.h"
 class SceneManager;
 class ResourceManager;
 class GravityManager;
@@ -63,8 +64,19 @@ public:
 
 	Transform* GetTransform(void);
 
+
 	void AddCollider(Collider* collider);
 	void ClearCollider(void);
+
+	// 状態別更新ステップ
+	void UpdateWarpReserve(void);
+	void UpdateWarpMove(void);
+	Capsule* GetCapsule(void);
+	// 状態判定
+	bool IsPlay(void);
+	bool IsWarpMove(void);
+	// ワープ開始
+	void StartWarp(float time, Quaternion goalRot, VECTOR goalPos);
 
 private:
 
@@ -76,6 +88,9 @@ private:
 	void SetGoalRotate(double rotRad);
 	void Rotate(void);
 
+	// 傾斜の計算
+	void CalcSlope(void);
+
 	void CalcGravityPow(void);
 
 
@@ -85,6 +100,30 @@ private:
 	void CollisionCapsule(void);
 
 	void EffectFootSmoke(void);
+
+	// ワープ用
+	float mTimeWarp;
+	float mStepWarp;
+	// ワープ準備完了時の情報
+	Quaternion mWarpQua;
+	VECTOR mWarpReservePos;
+	// ワープ準備開始時のプレイヤー情報
+	Quaternion mReserveStartQua;
+	VECTOR mReserveStartPos;
+	// ワープ前の惑星名
+	Stage::NAME mPreWarpName;
+	// 軌跡エフェクト
+	int mEffectWarpOrbit;
+	int mHandleWarpOrbitL;
+	int mHandleWarpOrbitR;
+	// モデルパーツのフレーム番号
+	int mFrameLeftHand;
+	int mFrameRightHand;
+
+	// 軌跡エフェクト
+	void EffectWarpOrbit(void);
+	void SyncWarpOrbitPos(void);
+	void StopOrbitEffect(void);
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -130,6 +169,12 @@ private:
 
 	VECTOR mGravHitDown;
 	VECTOR mGravHitUp;
+
+	VECTOR mSlopeDir;
+	float mSlopeAngleDeg;
+	VECTOR mSlopePow;
+	VECTOR mHitNormal;
+	VECTOR mHitPos;
 
 	// 回転
 	Quaternion mPlayerRotY;

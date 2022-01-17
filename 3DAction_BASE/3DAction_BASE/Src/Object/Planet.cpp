@@ -85,7 +85,14 @@ Transform* Planet::GetTransform(void)
 
 bool Planet::InRangeGravity(VECTOR pos)
 {
-	return false;
+	auto diff = VSub(pos,mTransform.pos);
+	float dis = (diff.x * diff.x) + (diff.y * diff.y) + (diff.z * diff.z);
+
+	if (dis > (mGravityRadius * mGravityRadius))
+	{
+		return false;
+	}
+	return true;
 }
 
 bool Planet::InRangeDead(VECTOR pos)
