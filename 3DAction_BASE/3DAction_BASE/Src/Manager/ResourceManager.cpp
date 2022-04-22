@@ -34,6 +34,18 @@ void ResourceManager::Init(void)
 	res = Resource(Resource::TYPE::MODEL, "Data/Model/Player/Player.mv1");
 	mResourcesMap.emplace(SRC::PLAYER, res);
 
+	// タンク土台
+	res = Resource(Resource::TYPE::MODEL, "Data/Model/Tank/Body.mv1");
+	mResourcesMap.emplace(SRC::TANK_BODY, res);
+
+	// タンク車輪
+	res = Resource(Resource::TYPE::MODEL, "Data/Model/Tank/Wheel.mv1");
+	mResourcesMap.emplace(SRC::TANK_WHEEL, res);
+
+	// タンク車輪
+	res = Resource(Resource::TYPE::MODEL, "Data/Model/Tank/Barrel.mv1");
+	mResourcesMap.emplace(SRC::TANK_BARREL, res);
+
 	// スカイドーム
 	res = Resource(Resource::TYPE::MODEL, "Data/Model/SkyDome/SkyDome.mv1");
 	mResourcesMap.emplace(SRC::SKY_DOME, res);

@@ -42,6 +42,8 @@ void CheckKeyList(void)
 	//システム関連
 	keyNew[KEY_SYS_START] = CheckHitKey(KEY_INPUT_SPACE);
 
+	keyNew[KEY_SYS_TANK_START] = CheckHitKey(KEY_INPUT_T);
+
 	//Player1関連
 	keyNew[KEY_P1_UP] = CheckHitKey(KEY_INPUT_UP);
 	keyNew[KEY_P1_DOWN] = CheckHitKey(KEY_INPUT_DOWN);

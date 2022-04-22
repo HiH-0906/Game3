@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <DxLib.h>
 #include "Common/Transform.h"
 #include "Stage.h"
@@ -8,6 +9,7 @@ class GravityManager;
 class AnimationController;
 class Capsule;
 class Collider;
+class Bullet;
 
 class Player
 {
@@ -30,6 +32,7 @@ public:
 	{
 		NONE,
 		PLAY,
+		TANK,
 		WARP_RESERVE,
 		WARP_MOVE,
 		DEAD,
@@ -51,10 +54,12 @@ public:
 	};
 
 	Player(SceneManager* manager);
-	void Init(void);
+	void Init(bool isTank = false);
+	void TankModelInit(void);
 	void InitAnimation(void);
 	void Update(void);
 	void UpdatePlay(void);
+	void UpdateTank(void);
 
 	void Draw(void);
 	void DrawShadow(void);
@@ -92,6 +97,13 @@ private:
 	void CalcSlope(void);
 
 	void CalcGravityPow(void);
+
+
+	void ProcessTank(void);
+	void ProcessTankMove(void);
+	void ProcessTankRotate(void);
+	void ProcessTankBarrel(void);
+	void ProcessTankShot(void);
 
 
 	void Collision(void);
@@ -190,5 +202,17 @@ private:
 
 	VECTOR mMoveDiff;
 
+	bool isTank_;
+
+	Transform t_Body_;
+	Transform t_Wheel_L_;
+	Transform t_Wheel_R_;
+	Transform t_Barrel_;
+
+	Transform t_Parent_;
+
+	float delta_;
+	float waitTIme_;
+	std::vector<Bullet*> bullet_;
 };
 

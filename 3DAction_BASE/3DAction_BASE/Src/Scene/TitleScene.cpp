@@ -76,6 +76,11 @@ void TitleScene::Update(void)
 		mSceneManager->ChangeScene(SCENE_ID::GAME, true);
 	}
 
+	if (keyTrgDown[KEY_SYS_TANK_START])
+	{
+		mSceneManager->ChangeScene(SCENE_ID::TANK, true);
+	}
+
 	// ˜f¯‚Ì‰ñ“]
 	mMovePlanet.quaRot = mMovePlanet.quaRot.Mult(
 		Quaternion::Euler(0.0f, 0.0f, AsoUtility::Deg2RadF(-1.0f)));

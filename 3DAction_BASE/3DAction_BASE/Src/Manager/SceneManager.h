@@ -12,7 +12,8 @@ enum class SCENE_ID
 {
 	NONE,
 	TITLE,
-	GAME
+	GAME,
+	TANK
 };
 
 class SceneManager

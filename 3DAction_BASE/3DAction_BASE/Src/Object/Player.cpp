@@ -1,4 +1,5 @@
 #include <string>
+#include <algorithm>
 #include <EffekseerForDXLib.h>
 #include "../Utility/AsoUtility.h"
 #include "../Manager/SceneManager.h"
@@ -11,29 +12,38 @@
 #include "Common/SpeechBalloon.h"
 #include "Planet.h"
 #include "Player.h"
+#include "Bullet.h"
+#include "../_debug/_DebugConOut.h"
+
+namespace
+{
+	constexpr VECTOR TANK_BODY_LOCAL = { 0.0f, 50.0f,00.0f };
+	constexpr VECTOR TANK_WHEEL_L_LOCAL = { 40.0f, 30.0f,0.0f };
+	constexpr VECTOR TANK_WHEEL_R_LOCAL = { -40.0f, 30.0f,0.0f };
+	constexpr VECTOR TANK_BARREL_LOCAL = { 0.0f, 50.0f,0.0f };
+}
 
 Player::Player(SceneManager* manager)
 {
 	mSceneManager = manager;
 	mResourceManager = manager->GetResourceManager();
 	mGravityManager = manager->GetGravityManager();
-
+	delta_ = 0.0f;
+	waitTIme_ = 0.0f;
 	mAnimationController = nullptr;
 	mState = STATE::NONE;
 }
 
-void Player::Init(void)
+void Player::Init(bool isTank)
 {
-
-	// モデルの基本設定
-	mTransform.SetModel(mResourceManager->LoadModelDuplicate(
-		ResourceManager::SRC::PLAYER));
+	isTank_ = isTank;
+	
 	mTransform.scl = AsoUtility::VECTOR_ONE;
 	mTransform.pos = { 0.0f, -30.0f, 0.0f };
 	mTransform.quaRot = Quaternion();
 	mTransform.quaRotLocal = 
 		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
-	mTransform.Update();
+
 	
 	// 丸影読み込み
 	mImageShadow = LoadGraph("Data/Image/Shadow.png");
@@ -57,11 +67,58 @@ void Player::Init(void)
 	mCapsule->SetRelativePosDown({ 0.0f,30.0f,0.0f });
 	mCapsule->SetRadius(20.0f);
 
+	
+
+	if (isTank)
+	{
+		TankModelInit();
+		ChangeState(STATE::TANK);
+	}
+	else
+	{
+		// モデルの基本設定
+		mTransform.SetModel(mResourceManager->LoadModelDuplicate(
+			ResourceManager::SRC::PLAYER));
+		
+		// 初期状態の設定
+		ChangeState(STATE::PLAY);
+	}
 	// アニメーションの設定
 	InitAnimation();
+	mTransform.Update();
+	
+}
 
-	// 初期状態の設定
-	ChangeState(STATE::PLAY);
+void Player::TankModelInit(void)
+{
+	// タンクモデルの基本設定
+	t_Body_.SetModel(mResourceManager->LoadModelDuplicate(
+		ResourceManager::SRC::TANK_BODY));
+	t_Wheel_L_.SetModel(mResourceManager->LoadModelDuplicate(
+		ResourceManager::SRC::TANK_WHEEL));
+	t_Wheel_R_.SetModel(mResourceManager->LoadModelDuplicate(
+		ResourceManager::SRC::TANK_WHEEL));
+	t_Barrel_.SetModel(mResourceManager->LoadModelDuplicate(
+		ResourceManager::SRC::TANK_BARREL));
+
+	t_Body_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_BODY_LOCAL));
+	t_Wheel_L_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_WHEEL_L_LOCAL));
+	t_Wheel_R_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_WHEEL_R_LOCAL));
+	t_Barrel_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_BARREL_LOCAL));
+
+	VECTOR scl = { 0.3f,0.3f,0.3f };
+
+	t_Body_.scl = scl;
+	t_Wheel_L_.scl = scl;
+	t_Wheel_R_.scl = scl;
+	t_Barrel_.scl = scl;
+
+	t_Body_.Update();
+	t_Wheel_L_.Update();
+	t_Wheel_R_.Update();
+	t_Barrel_.Update();
+
+
 }
 
 void Player::InitAnimation(void)
@@ -84,13 +141,16 @@ void Player::InitAnimation(void)
 
 void Player::Update(void)
 {
-
+	delta_ += mSceneManager->GetDeltaTime();
 	switch (mState)
 	{
 	case Player::STATE::NONE:
 		break;
 	case Player::STATE::PLAY:
 		UpdatePlay();
+		break;
+	case Player::STATE::TANK:
+		UpdateTank();
 		break;
 	case Player::STATE::WARP_RESERVE:
 		UpdateWarpReserve();
@@ -107,7 +167,22 @@ void Player::Update(void)
 	}
 
 	mTransform.Update();
-	mAnimationController->Update();
+
+	if (isTank_)
+	{
+		for (const auto& b : bullet_)
+		{
+			b->Update();
+		}
+
+		auto itr = std::remove_if(bullet_.begin(), bullet_.end(), [](Bullet* b) {return !b->isActive(); });
+
+		bullet_.erase(itr, bullet_.end());
+	}
+	else
+	{
+		mAnimationController->Update();
+	}
 	
 }
 
@@ -130,18 +205,57 @@ void Player::UpdatePlay(void)
 	EffectFootSmoke();
 }
 
+void Player::UpdateTank(void)
+{
+	ProcessTank();
+	waitTIme_ -= mSceneManager->GetDeltaTime();
+
+	ProcessTankMove();
+	ProcessTankBarrel();
+	ProcessTankRotate();
+	t_Body_.quaRot = t_Body_.quaRot.Mult(t_Parent_.quaRotLocal);
+	t_Barrel_.quaRot = t_Barrel_.quaRot.Mult(t_Parent_.quaRotLocal);
+	if (waitTIme_ <= 0.0f)
+	{
+		ProcessTankShot();
+	}
+
+	CalcSlope();
+	Collision();
+
+	mTransform.quaRot = mTransform.quaRot.Mult(mPlayerRotY);
+	mPlayerRotY = Quaternion();
+	
+	t_Parent_.Update();
+
+	t_Body_.Update();
+	t_Wheel_L_.Update();
+	t_Wheel_R_.Update();
+	t_Barrel_.Update();
+}
+
 void Player::Draw(void)
 {
 
 	// モデルの描画
 	MV1DrawModel(mTransform.modelId);
+	if (isTank_)
+	{
+		MV1DrawModel(t_Body_.modelId);
+		MV1DrawModel(t_Wheel_L_.modelId);
+		MV1DrawModel(t_Wheel_R_.modelId);
+		MV1DrawModel(t_Barrel_.modelId);
+		for (const auto& b : bullet_)
+		{
+			b->Draw();
+		}
+	}
 
 	// 丸影描画
 	DrawShadow();
 
 	// デバッグ用描画
 	DrawDebug();
-
 }
 
 void Player::DrawShadow(void)
@@ -227,9 +341,6 @@ void Player::DrawShadow(void)
 
 	// ライティングを有効にする
 	SetUseLighting(TRUE);
-
-	// Ｚバッファを無効にする
-	SetUseZBuffer3D(FALSE);
 }
 
 void Player::DrawDebug(void)
@@ -248,26 +359,26 @@ void Player::DrawDebug(void)
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
-	v = mTransform.pos;
-	DrawFormatString(20, 60, black, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
-		v.x, v.y, v.z
-	);
-	//-------------------------------------------------------
+	//v = mTransform.pos;
+	//DrawFormatString(20, 60, black, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
+	//	v.x, v.y, v.z
+	//);
+	////-------------------------------------------------------
 
-	DrawLine3D(mGravHitUp, mGravHitDown, 0xffffff);
+	//DrawLine3D(mGravHitUp, mGravHitDown, 0xffffff);
 
-	// キャラ座標
-	v = mJumpPow;
-	DrawFormatString(20, 80, black, "重力 ： (%0.2f, %0.2f, %0.2f)",
-		v.x, v.y, v.z
-	);
+	//// キャラ座標
+	//v = mJumpPow;
+	//DrawFormatString(20, 80, black, "重力 ： (%0.2f, %0.2f, %0.2f)",
+	//	v.x, v.y, v.z
+	//);
 
-	
-	DrawFormatString(20, 100, black, "傾斜角 ： (%0.2f)",
-		mSlopeAngleDeg
-	);
+	//
+	//DrawFormatString(20, 100, black, "傾斜角 ： (%0.2f)",
+	//	mSlopeAngleDeg
+	//);
 
-	mCapsule->Draw();
+	//mCapsule->Draw();
 }
 
 void Player::Release(void)
@@ -338,6 +449,10 @@ void Player::ProcessMove(void)
 
 void Player::ProcessJump(void)
 {
+	if (isTank_)
+	{
+		return;
+	}
 	bool isHitKey = CheckHitKey(KEY_INPUT_BACKSLASH);
 	if (isHitKey && (mIsJump || isEndLanding()))
 	{
@@ -345,7 +460,6 @@ void Player::ProcessJump(void)
 		if (mIsJump)
 		{
 			// ジャンプアニメーション
-			//mAnimationController->Play(static_cast<int>(ANIM_TYPE::JUMP));
 			mAnimationController->Play(static_cast<int>(ANIM_TYPE::JUMP), true, 13.0f, 25.0f);
 			mAnimationController->SetEndLoop(23.0f, 25.0f, 5.0f);
 		}
@@ -368,13 +482,13 @@ void Player::SetGoalRotate(double rotRad)
 {
 	const auto& camera = mSceneManager->GetCamera();
 
-	Quaternion cameraRot = camera->GetQuaRot();
+	VECTOR cameraRot = camera->GetAngles();
 
 	Quaternion  axsis = Quaternion::AngleAxis(cameraRot.y + rotRad, AsoUtility::AXIS_Y);
 
 	double angleDiffDeg = Quaternion::Angle(axsis, mGoalQuaRotY);
 
-	if (std::abs(angleDiffDeg) >= 5.0)
+	if (std::abs(angleDiffDeg) >= 1.0)
 	{
 		mRotateRotTime = TIME_ROT;
 		mGoalQuaRotY = axsis;
@@ -432,6 +546,107 @@ void Player::CalcGravityPow(void)
 	{
 		mJumpPow = gravity;
 	}
+}
+
+void Player::ProcessTankMove(void)
+{
+	if (!AsoUtility::EqualsVZero(mPlayerRotY.xyz()))
+	{
+		return;
+	}
+	// 移動量のリセット
+	mMovePow = AsoUtility::VECTOR_ZERO;
+
+	const auto& camera = mSceneManager->GetCamera();
+
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	float rot = 0.0f;
+	if (CheckHitKey(KEY_INPUT_W))
+	{
+		dir = mTransform.GetForward();
+		rot = 3.0f;
+	}
+	if (CheckHitKey(KEY_INPUT_S))
+	{
+		dir = mTransform.GetBack();
+		rot = -3.0f;
+	}
+
+	t_Wheel_L_.quaRotLocal = t_Wheel_L_.quaRotLocal.Mult(Quaternion::AngleAxis(t_Wheel_L_.quaRotLocal.y + AsoUtility::Deg2RadF(rot), AsoUtility::AXIS_X));
+	t_Wheel_R_.quaRotLocal = t_Wheel_R_.quaRotLocal.Mult(Quaternion::AngleAxis(t_Wheel_R_.quaRotLocal.y + AsoUtility::Deg2RadF(rot), AsoUtility::AXIS_X));
+
+	if (!AsoUtility::EqualsVZero(dir) && (mIsJump || isEndLanding()))
+	{
+		mSpeed = SPEED_MOVE;
+		if (CheckHitKey(KEY_INPUT_RSHIFT))
+		{
+			mSpeed = SPEED_RUN;
+		}
+		mMovePow = VScale(dir, mSpeed);
+	}
+}
+
+void Player::ProcessTankRotate(void)
+{
+	if (!AsoUtility::EqualsVZero(mMovePow))
+	{
+		return;
+	}
+	float rot = 0.0f;
+	if (CheckHitKey(KEY_INPUT_LEFT))
+	{
+		mPlayerRotY = mPlayerRotY.Mult(Quaternion::AngleAxis(AsoUtility::Deg2RadF(-3.0f), AsoUtility::AXIS_Y));
+		rot = 3.0f;
+	}
+	if (CheckHitKey(KEY_INPUT_RIGHT))
+	{
+		mPlayerRotY = mPlayerRotY.Mult(Quaternion::AngleAxis(AsoUtility::Deg2RadF(3.0f), AsoUtility::AXIS_Y));
+		rot = -3.0f;
+	}
+	t_Wheel_L_.quaRotLocal = t_Wheel_L_.quaRotLocal.Mult(Quaternion::AngleAxis(t_Wheel_L_.quaRotLocal.y + AsoUtility::Deg2RadF(rot), AsoUtility::AXIS_X));
+	t_Wheel_R_.quaRotLocal = t_Wheel_R_.quaRotLocal.Mult(Quaternion::AngleAxis(t_Wheel_R_.quaRotLocal.y + AsoUtility::Deg2RadF(-rot), AsoUtility::AXIS_X));
+}
+
+void Player::ProcessTankBarrel(void)
+{
+	float rot = 0.0f;
+	if (CheckHitKey(KEY_INPUT_UP))
+	{
+		rot = -3.0f;
+	}
+	if (CheckHitKey(KEY_INPUT_DOWN))
+	{
+		rot = 3.0f;
+	}
+	t_Parent_.quaRotLocal = t_Parent_.quaRotLocal.Mult(Quaternion::AngleAxis(t_Parent_.quaRotLocal.y + AsoUtility::Deg2RadF(rot), AsoUtility::AXIS_X));
+}
+
+void Player::ProcessTankShot(void)
+{
+	if (!CheckHitKey(KEY_INPUT_N))
+	{
+		return;
+	}
+	bullet_.emplace_back(new Bullet(VAdd(t_Barrel_.pos, VScale(t_Barrel_.GetForward(),80.0f)), VScale(t_Barrel_.GetForward(), 10.0f), mSceneManager));
+	waitTIme_ = 0.5f;
+}
+
+void Player::ProcessTank(void)
+{
+	t_Body_.quaRot = mTransform.quaRot;
+	t_Wheel_L_.quaRot = mTransform.quaRot;
+	t_Wheel_R_.quaRot = mTransform.quaRot;
+	t_Barrel_.quaRot = mTransform.quaRot;
+
+	t_Parent_.quaRot = mTransform.quaRot;
+
+	t_Body_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_BODY_LOCAL));
+	t_Wheel_L_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_WHEEL_L_LOCAL));
+	t_Wheel_R_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_WHEEL_R_LOCAL));
+	t_Barrel_.pos = VAdd(mTransform.pos, mTransform.quaRot.PosAxis(TANK_BARREL_LOCAL));
+
+
+	t_Barrel_.quaRotLocal = t_Barrel_.quaRotLocal.Mult(Quaternion::AngleAxis(t_Barrel_.quaRotLocal.y + AsoUtility::Deg2RadF(3.0f), AsoUtility::AXIS_Z));
 }
 
 void Player::AddCollider(Collider* collider)
@@ -512,8 +727,6 @@ void Player::Collision(void)
 	CollisionGravity();
 
 	CollisionCapsule();
-
-
 
 	mMoveDiff = VSub(mMovedPos, mTransform.pos);
 	mTransform.pos = mMovedPos;
@@ -644,6 +857,8 @@ void Player::ChangeState(STATE state)
 	case Player::STATE::NONE:
 		break;
 	case Player::STATE::PLAY:
+		break;
+	case Player::STATE::TANK:
 		break;
 	case Player::STATE::WARP_RESERVE:
 		mJumpPow = AsoUtility::VECTOR_ZERO;

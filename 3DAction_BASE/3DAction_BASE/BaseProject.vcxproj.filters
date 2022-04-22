@@ -138,6 +138,12 @@
     <ClCompile Include="Src\Object\Common\SpeechBalloon.cpp">
       <Filter>ソース ファイル\Object\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scene\TankScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Bullet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\_debug\_DebugConOut.h">
@@ -214,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="Src\Object\Common\SpeechBalloon.h">
       <Filter>ヘッダー ファイル\Object\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\TankScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Bullet.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

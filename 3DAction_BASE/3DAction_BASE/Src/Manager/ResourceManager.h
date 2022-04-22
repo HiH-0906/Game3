@@ -29,6 +29,9 @@ public:
 		BLACK_HOLE,
 		GOAL_STAR,
 		CLEAR,
+		TANK_BODY,
+		TANK_WHEEL,
+		TANK_BARREL,
 	};
 
 	void Init(void);

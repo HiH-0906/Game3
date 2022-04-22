@@ -10,7 +10,7 @@ bool Application::Init(void)
 {
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
 	// システム処理
-	SetWindowText("Project");
+	SetWindowText("1916035_橋本大輝");
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
 	ChangeWindowMode(true);
 	if (DxLib_Init() == -1)

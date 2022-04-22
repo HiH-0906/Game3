@@ -7,6 +7,7 @@
 #include "../Manager/GravityManager.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
+#include "../Scene/TankScene.h"
 #include "Camera.h"
 #include "SceneManager.h"
 
@@ -229,6 +230,9 @@ void SceneManager::DoChangeScene(void)
 		break;
 	case SCENE_ID::GAME:
 		mScene = new GameScene(this);
+		break;
+	case SCENE_ID::TANK:
+		mScene = new TankScene(this);
 		break;
 	}
 

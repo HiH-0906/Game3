@@ -64,7 +64,7 @@ void GravityManager::Calculate(void)
 	mDirUpGravity = VScale(mDirGravity, -1.0f);
 
 	VECTOR up = mTransform.GetUp();
-	Quaternion toRot = Quaternion::FromToRotation(up, mDirGravity);
+	Quaternion toRot = Quaternion::FromToRotation(up, mDirUpGravity);
 
 	toRot = toRot.Mult(mTransform.quaRot);
 	
